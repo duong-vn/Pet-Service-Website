@@ -159,32 +159,52 @@ export class AppointmentsService {
     bookedTime: { startTime: string; endTime: string }[],
     duration: number,
   ): string[] {
-    let slots: string[] = [];
-    for (
-      let i = this.toMinutes(ShopSetting.openingTime);
-      i <= this.toMinutes(ShopSetting.closingTime) - duration;
-      i += ShopSetting.slotsStep
-    ) {
-      for (let j = 0; j < bookedTime.length; j++) {
-        if (i <= this.toMinutes(bookedTime[j].startTime)) {
-          if (i + duration > this.toMinutes(bookedTime[j].startTime)) {
-            // skip i
-            break;
-          } else if (i + duration < this.toMinutes(bookedTime[j].startTime)) {
-            slots.push(this.minutesToTimeString(i));
+    const open = this.toMinutes(ShopSetting.openingTime);
+    const close = this.toMinutes(ShopSetting.closingTime);
+    const step = ShopSetting.slotsStep;
 
-            break;
-          } else break;
-        } else {
-          if (i > this.toMinutes(bookedTime[j].endTime)) {
-            if (j == bookedTime.length - 1) {
-              slots.push(this.minutesToTimeString(i));
-            }
-            continue;
-          } else break;
+    let slots: string[] = [];
+
+    if (bookedTime.length === 0) {
+      for (let start = open; start <= close - duration; start += step) {
+        slots.push(
+          this.minutesToTimeString(start) +
+            '-' +
+            this.minutesToTimeString(start + duration),
+        );
+      }
+
+      return slots;
+    }
+
+    const busy = bookedTime.map((b) => ({
+      start: this.toMinutes(b.startTime),
+      end: this.toMinutes(b.endTime),
+    }));
+
+    let begin = open;
+    for (const b of busy) {
+      if (begin + duration <= b.start) {
+        while (begin + duration <= b.start) {
+          slots.push(
+            this.minutesToTimeString(begin) +
+              '-' +
+              this.minutesToTimeString(begin + duration),
+          );
+          begin += step;
         }
+
+        begin = Math.max(b.end, begin + duration);
+      } else {
+        begin = b.end;
       }
     }
+
+    while (begin + duration <= close) {
+      slots.push(this.minutesToTimeString(begin));
+      begin += step;
+    }
+
     return slots;
   }
 }

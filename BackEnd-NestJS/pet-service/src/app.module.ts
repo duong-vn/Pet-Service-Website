@@ -12,7 +12,6 @@ import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { DatabaseModule } from './database/database.module';
 import { AppointmentsModule } from './appointments/appointments.module';
-import { TimeslotsModule } from './timeslots/timeslots.module';
 
 @Module({
   imports: [
@@ -35,7 +34,6 @@ import { TimeslotsModule } from './timeslots/timeslots.module';
     PermissionsModule,
     DatabaseModule,
     AppointmentsModule,
-    TimeslotsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
