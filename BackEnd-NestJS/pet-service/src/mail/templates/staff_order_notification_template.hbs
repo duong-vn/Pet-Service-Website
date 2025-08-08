@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông báo đơn hàng mới</title>
+    <style>
+body{
+
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+margin:0px auto;
+background-color: #fff7f0;
+width:500px;
+border:2px solid #FFD19C;
+border-radius:15px;
+padding:10px;
+
+}
+.header{ color:white; background-color: #f7b733; text-align:center;font-size:22px; padding:15px 0px; border-radius:15px 15px 0px 0px; font-weight:bold;}
+
+ul{list-style:none; color: #f48c06; border:1px solid #FFD19C; border-radius:15px; background-color: #fff3e0;padding:10px;line-height:1.8;}
+p{padding-left:5px ;color: #f48c06;font-weight:bold; margin-top:10px; margin-bottom:0px}
+
+    </style>
+</head>
+<body>
+    <div class="header">📦
+Đơn hàng đã được đặt
+ </div>
+<p>
+ZoZo Pet's Service vừa nhận được đơn đặt hàng:
+</p>
+<ul>
+<li><strong>Dịch vụ: </strong>{{serviceName}}. </li>
+<li><strong>Loại thú cưng: </strong>{{petType}}. </li>
+<li><strong>Khách:</strong> {{customerName}}. </li>
+<li><strong>Liên hệ:</strong> {{phone}}. </li>
+<li><strong>Trạng thái:</strong> {{status}}. </li>
+<li><strong>Ngày hẹn:</strong> {{appointmentDate}}. </li>
+<li><strong>Thời gian :</strong> {{duration}}. </li>
+<li><strong>Đặt lúc:</strong> {{orderedAt}}. </li>
+
+
+
+
+</ul>
+<div style="border:1px dotted #FFD19C; "></div>
+<p>
+Vui lòng liên hệ để xác nhận đơn hàng và xác nhận đơn hàng trên website.
+</p>
+
+<p style="text-align:end;font-weight:normal">-Mail tự động NTD-
+<p/>
+
+
+
+
+
+</body>
+</html>

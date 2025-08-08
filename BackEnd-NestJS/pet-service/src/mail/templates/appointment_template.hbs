@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Thông báo lịch hẹn</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 20px auto;
+        width: 500px;
+        padding: 20px;
+        border-radius: 15px;
+        background-color: #fff8f0;
+        border: 2px solid #ffd19c;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        font-size: 28px;
+        font-weight: bold;
+        color: #d2691e; /* Dark orange tone */
+        margin-bottom: 15px;
+      }
+
+      p {
+        margin-bottom: 10px;
+        color: #4b3e2e;
+      }
+
+      ul {
+        border: 2px solid #ffd19c;
+        border-radius: 10px;
+        background-color: #fff2e5;
+        padding: 10px 20px;
+        width: 90%;
+        margin-bottom: 15px;
+        list-style: none;
+      }
+
+      li {
+        color: #4b3e2e;
+      }
+
+      strong {
+        color: #d2691e;
+      }
+
+      .footer {
+        font-style: italic;
+        color: #6b4f3b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='header'>🐶 Xin chào {{customerName}},</div>
+    <p>Bạn đã đặt lịch hẹn thành công với thông tin như sau:</p>
+    <ul>
+      <li><strong>Ngày hẹn:</strong> {{appointmentDate}}</li>
+      <li><strong>Thời lượng:</strong> {{duration}}</li>
+      <li><strong>Số điện thoại:</strong> {{phone}}</li>
+      <li><strong>Thời gian gửi mail:</strong> {{orderedAt}}</li>
+    </ul>
+    <p>Chúng tôi sẽ liên hệ với bạn nếu có bất kỳ thay đổi nào. Cảm ơn bạn đã sử
+      dụng dịch vụ!</p>
+
+    <div style='border:1px dotted #FFD19C '></div>
+    <p class='footer'>🐾 Trân trọng,<br />Đội ngũ chăm sóc khách hàng</p>
+
+  </body>
+</html>
