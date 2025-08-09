@@ -16,9 +16,13 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty({ message: 'Email is required' })
   email: string;
+  @IsNotEmpty({ message: 'Provider is required' })
+  @IsIn(providers)
+  provider: string;
 
   @IsNotEmpty({ message: 'Password is required' })
   password: string;
+
   @IsOptional()
   address: string;
   @IsOptional()
@@ -39,9 +43,6 @@ export class RegisterUserDto {
   @IsOptional()
   address: string;
 
-  @IsNotEmpty({ message: 'Provider is required' })
-  @IsIn(providers)
-  provider: string;
   @IsOptional()
   age: number;
   @IsOptional()

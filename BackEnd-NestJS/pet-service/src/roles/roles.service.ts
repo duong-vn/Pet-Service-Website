@@ -9,6 +9,7 @@ import mongoose, { Model } from 'mongoose';
 import aqp from 'api-query-params';
 import { ConfigService } from '@nestjs/config';
 import { checkMongoId } from 'src/core/service';
+import { ADMIN_ROLE } from 'src/database/sample';
 
 @Injectable()
 export class RolesService {
@@ -99,7 +100,7 @@ export class RolesService {
   async remove(id: string, user: IUser) {
     checkMongoId(id);
     const foundRole = await this.roleModel.findById(id);
-    if (foundRole && foundRole.name === this.configService.get('ADMIN_ROLE')) {
+    if (foundRole && foundRole.name === ADMIN_ROLE) {
       throw new BadGatewayException('Cannot delete admin role');
     }
 

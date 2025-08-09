@@ -6,10 +6,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GoogleAuthService } from './google-auth/google-auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtStrategy } from './passport/jwt.strategy';
+import { RolesModule } from 'src/roles/roles.module';
+import { LocalStrategy } from './passport/local.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    RolesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -22,6 +25,6 @@ import { JwtStrategy } from './passport/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleAuthService, JwtStrategy],
+  providers: [AuthService, GoogleAuthService, JwtStrategy, LocalStrategy],
 })
 export class AuthModule {}

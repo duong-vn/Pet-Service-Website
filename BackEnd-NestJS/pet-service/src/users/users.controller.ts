@@ -34,15 +34,15 @@ export class UsersController {
     return this.usersService.create(dto);
   }
 
-  // @Get()
-  // @ResponseMessage('Get users paginate')
-  // findAll(
-  //   @Query('current') page: string,
-  //   @Query('pageSize') limit: string,
-  //   @Query() qs: string, // Assuming you have a User decorator to get the current
-  // ) {
-  //   return this.usersService.findAll(+page, +limit, qs);
-  // }
+  @Get()
+  @ResponseMessage('Get users paginate')
+  findAll(
+    @Query('current') page: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string, // Assuming you have a User decorator to get the current
+  ) {
+    return this.usersService.findAll(+page, +limit, qs);
+  }
 
   @Get(':id')
   @ResponseMessage('Get user by id')

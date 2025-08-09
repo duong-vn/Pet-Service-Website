@@ -7,9 +7,12 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/schemas/user.schema';
+import { Appointment } from 'src/appointments/schemas/appointment.schema';
+import { AppointmentsModule } from 'src/appointments/appointments.module';
 
 @Module({
   imports: [
+    AppointmentsModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MailerModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({

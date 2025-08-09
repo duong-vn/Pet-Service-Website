@@ -11,11 +11,14 @@ import { IUser } from './users.interface';
 import { IGoogle } from 'src/auth/google-auth/google';
 import { checkMongoId } from 'src/core/service';
 import aqp from 'api-query-params';
+import { Role } from 'src/roles/schemas/role.schema';
+import { USER_ROLE } from 'src/database/sample';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Role.name) private roleModel: Model<Role>,
     private configService: ConfigService,
   ) {}
 
@@ -25,16 +28,21 @@ export class UsersService {
     return hash;
   };
 
-  createGoogleUser = (info: IGoogle) => {
+  createGoogleUser = async (info: IGoogle) => {
     const { email, name, picture } = info;
+    const role = await this.roleModel
+      .findOne({ name: USER_ROLE })
+      .select('_id');
 
-    return this.userModel.create({
+    const newUser = await this.userModel.create({
       email,
       name,
       avatar: info.picture ?? null,
+      role,
 
       provider: 'google',
     });
+    return newUser._id;
   };
 
   async isEmailExist(email: string) {
@@ -47,8 +55,13 @@ export class UsersService {
 
   async create(dto: CreateUserDto) {
     const hashedPassword = this.getHashPassword(dto.password);
+    const role = await this.roleModel
+      .findOne({ name: USER_ROLE })
+      .select('_id');
+
     let newUser = await this.userModel.create({
       ...dto,
+      role,
       password: hashedPassword,
     });
     // return 'This action adds a new user';
@@ -104,9 +117,11 @@ export class UsersService {
       .populate([{ path: 'role', select: { name: 1 } }]);
   }
   findOneByUsername(username: string) {
-    return this.userModel.findOne({
-      email: username,
-    });
+    return this.userModel
+      .findOne({
+        email: username,
+      })
+      .populate({ path: 'role', select: { name: 1, _id: 1 } });
     // .populate({ path: 'role', select: { name: 1, _id: 1 } });
   }
   isValidPassword(password: string, hashedPassword: string) {
@@ -132,7 +147,9 @@ export class UsersService {
     if (await this.isEmailExist(userData.email)) {
       throw new BadRequestException('Email already exists');
     }
-    // const userRole = await this.roleModel.findOne({ name: USER_ROLE });
+    const userRole = (await this.roleModel
+      .find({ name: USER_ROLE })
+      .select('name')) as any;
 
     const hashedPassword = this.getHashPassword(userData.password);
     const user = await this.userModel.create({
@@ -141,7 +158,7 @@ export class UsersService {
       address: userData.address,
       gender: userData.gender,
       age: userData.age,
-      // role: userRole?._id,
+      role: userRole?._id,
       password: hashedPassword,
     });
     return user;
@@ -166,7 +183,7 @@ export class UsersService {
     // return this.userModel.softDelete({ _id: id });
   }
 
-  updateUserToken = async (refresh_token: string, _id: string) => {
+  updateUserToken = async (refresh_token: string | null, _id: string) => {
     return await this.userModel.updateOne(
       { _id },
       { refreshToken: refresh_token },

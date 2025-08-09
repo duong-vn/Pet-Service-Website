@@ -13,7 +13,8 @@ export class Service {
 
   @Prop()
   price: string;
-
+  @Prop()
+  description: string;
   @Prop({ type: Object })
   createdBy: {
     _id: mongoose.Schema.Types.ObjectId;

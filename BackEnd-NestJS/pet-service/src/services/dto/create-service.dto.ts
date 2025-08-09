@@ -6,6 +6,9 @@ export class CreateServiceDto {
 
   @IsNotEmpty({ message: 'Duration is required' })
   duration: string;
+  @IsNotEmpty({ message: 'Description is required' })
+  description: string;
+
   @IsOptional()
   price: string;
 }

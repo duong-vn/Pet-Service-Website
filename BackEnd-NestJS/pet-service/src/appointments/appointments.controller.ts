@@ -11,7 +11,7 @@ import {
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { User } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 import type { IUser } from 'src/users/users.interface';
 
 @Controller('appointments')
@@ -19,6 +19,7 @@ export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
+  @ResponseMessage('Make an appointment')
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
     @User() user: IUser,
@@ -27,6 +28,7 @@ export class AppointmentsController {
   }
 
   @Get()
+  @ResponseMessage('Get appointments paginate')
   findAll(
     @Query('current') current: string,
     @Query('pageSize') pageSize: string,
