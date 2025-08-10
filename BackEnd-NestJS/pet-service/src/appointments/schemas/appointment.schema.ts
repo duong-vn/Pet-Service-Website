@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document, Types } from 'mongoose';
+import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Service } from 'src/services/schemas/service.schema';
 import { User } from 'src/users/schemas/user.schema';
+export type AppointmentDocument = HydratedDocument<Appointment>;
 
 @Schema({ timestamps: true })
 export class Appointment extends Document {
@@ -16,8 +17,8 @@ export class Appointment extends Document {
   @Prop()
   petWeight: number;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
-  staff: mongoose.Schema.Types.ObjectId;
+  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  // staff: mongoose.Schema.Types.ObjectId;
 
   @Prop()
   date: Date;
@@ -27,6 +28,8 @@ export class Appointment extends Document {
 
   @Prop()
   endTime: String;
+  @Prop()
+  price: number;
 
   @Prop()
   status: string;

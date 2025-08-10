@@ -3,13 +3,14 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { IUser } from 'src/users/users.interface';
 import { InjectModel } from '@nestjs/mongoose';
-import { Appointment } from './schemas/appointment.schema';
+import { Appointment, AppointmentDocument } from './schemas/appointment.schema';
 import { Model } from 'mongoose';
 import aqp from 'api-query-params';
 import { checkMongoId } from 'src/core/service';
 import { FindSlotsDto } from './appointments.controller';
 import { Service } from 'src/services/schemas/service.schema';
 import { find } from 'rxjs';
+import { AppointmentInfoDTO } from './appointment-type';
 export const PENDING_STATUS: string = 'PENDING';
 export const ShopSetting = {
   openingTime: '09:00',
@@ -20,7 +21,8 @@ export const ShopSetting = {
 @Injectable()
 export class AppointmentsService {
   constructor(
-    @InjectModel(Appointment.name) private appointmentModel: Model<Appointment>,
+    @InjectModel(Appointment.name)
+    private appointmentModel: Model<AppointmentDocument>,
     @InjectModel(Service.name) private serviceModel: Model<Service>,
   ) {}
   toMinutes = (hhmm: string) => {
@@ -81,9 +83,24 @@ export class AppointmentsService {
       result,
     };
   }
-  findOne(id: string) {
+  async findOne(id: string): Promise<AppointmentInfoDTO> {
     checkMongoId(id);
-    return this.appointmentModel.findOne({ _id: id });
+    const result = await this.appointmentModel
+      .findOne({ _id: id })
+      .populate({
+        path: 'user',
+        select: { name: 1, email: 1, phone: 1 },
+      })
+      .populate({
+        path: 'service',
+        select: { name: 1, duration: 1, description: 1 },
+      })
+      .lean<AppointmentInfoDTO>()
+      .exec();
+    if (!result) {
+      throw new BadRequestException('Cannot find appointment');
+    }
+    return result;
   }
 
   update(id: string, updateAppointmentDto: UpdateAppointmentDto, user: IUser) {

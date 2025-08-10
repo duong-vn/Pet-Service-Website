@@ -22,9 +22,8 @@
         margin-bottom: 15px;
       }
 
-      p {
+      .outText {
         margin-bottom: 10px;
-        color: #4b3e2e;
       }
 
       ul {
@@ -35,14 +34,18 @@
         width: 90%;
         margin-bottom: 15px;
         list-style: none;
+
+        overflow-wrap: break-word;
       }
 
       li {
-        color: #4b3e2e;
+        color: #c49178;
+        font-weight: bold;
       }
 
       strong {
         color: #d2691e;
+        font-weight: 777;
       }
 
       .footer {
@@ -53,15 +56,22 @@
   </head>
   <body>
     <div class='header'>🐶 Xin chào {{customerName}},</div>
-    <p>Bạn đã đặt lịch hẹn thành công với thông tin như sau:</p>
+    <p class='outText'>Bạn đã đặt lịch hẹn thành công với thông tin như sau:</p>
     <ul>
-      <li><strong>Ngày hẹn:</strong> {{appointmentDate}}</li>
-      <li><strong>Thời lượng:</strong> {{duration}}</li>
-      <li><strong>Số điện thoại:</strong> {{phone}}</li>
-      <li><strong>Thời gian gửi mail:</strong> {{orderedAt}}</li>
+      <li><strong>Dịch vụ: </strong>{{serviceName}} </li>
+      <li><strong>Loại thú cưng: </strong>{{petType}} </li>
+      <li><strong>Cân: </strong>{{petWeight}}kg </li>
+      <li><strong>Liên hệ:</strong> {{phone}} </li>
+      <li><strong>Ngày hẹn:</strong> {{appointmentDate}} </li>
+      <li><strong>Thời gian :</strong> {{duration}} phút </li>
+      <li><strong>Ca :</strong> {{startTime}} - {{endTime}} </li>
+      <li><strong>Giá dự kiến:</strong> {{price}} VND </li>
+      <li><strong>Đặt lúc:</strong> {{orderedAt}} </li>
+
     </ul>
-    <p>Chúng tôi sẽ liên hệ với bạn nếu có bất kỳ thay đổi nào. Cảm ơn bạn đã sử
-      dụng dịch vụ!</p>
+
+    <p class='outText'>Chúng tôi sẽ liên hệ với bạn nếu có bất kỳ thay đổi nào.
+      Cảm ơn bạn đã sử dụng dịch vụ!</p>
 
     <div style='border:1px dotted #FFD19C '></div>
     <p class='footer'>🐾 Trân trọng,<br />Đội ngũ chăm sóc khách hàng</p>

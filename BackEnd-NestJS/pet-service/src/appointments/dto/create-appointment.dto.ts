@@ -25,22 +25,15 @@ export enum PetType {
 export const HH_MM_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 export class CreateAppointmentDto {
-  /**
-   * Nếu lấy user từ access token (req.user._id) thì để @IsOptional() ở đây.
-   * Nếu bạn truyền user id từ client, đổi lại thành @IsNotEmpty() + @IsMongoId().
-   */
-  //   @IsNotEmpty({ message: 'Điền thiếu tên khách' })
-  //   @IsMongoId({ message: 'user phải là ObjectId hợp lệ.' })
-  //   user: mongoose.Schema.Types.ObjectId;
-  //  Khong can user vi da co trong jwt
+  //user id sẽ được kèm theo token
 
   @IsNotEmpty({ message: 'service là bắt buộc.' })
   @IsMongoId({ message: 'service phải là ObjectId hợp lệ.' })
-  service!: mongoose.Schema.Types.ObjectId;
+  service: mongoose.Schema.Types.ObjectId;
 
   @IsNotEmpty({ message: 'petType là bắt buộc.' })
   @IsEnum(PetType, { message: 'petType ngoài định dạng' })
-  petType!: PetType;
+  petType: PetType;
 
   @IsNotEmpty({ message: 'petWeight là bắt buộc.' })
   @Type(() => Number)
@@ -50,9 +43,9 @@ export class CreateAppointmentDto {
   petWeight!: number;
 
   // Nhân viên phụ trách (optional, có thể gán sau khi confirm)
-  @IsOptional()
-  @IsMongoId({ message: 'staff phải là ObjectId hợp lệ.' })
-  staff?: mongoose.Schema.Types.ObjectId;
+  // @IsOptional()
+  // @IsMongoId({ message: 'staff phải là ObjectId hợp lệ.' })
+  // staff?: mongoose.Schema.Types.ObjectId;
 
   @IsNotEmpty({ message: 'date là bắt buộc.' })
   @IsDateString(
@@ -72,6 +65,11 @@ export class CreateAppointmentDto {
     message: 'endTime phải theo định dạng HH:mm (00-23:00-59).',
   })
   endTime!: string;
+
+  @IsNotEmpty({ message: 'Price is required' })
+  @Type(() => Number)
+  @IsNumber()
+  price: number;
 
   @IsOptional()
   @IsString({ message: 'note phải là chuỗi.' })

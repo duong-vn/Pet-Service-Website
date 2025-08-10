@@ -14,5 +14,6 @@ import { Service, ServiceSchema } from 'src/services/schemas/service.schema';
   ],
   controllers: [AppointmentsController],
   providers: [AppointmentsService],
+  exports: [AppointmentsService],
 })
 export class AppointmentsModule {}

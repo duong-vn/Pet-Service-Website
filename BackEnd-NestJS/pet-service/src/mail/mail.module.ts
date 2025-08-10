@@ -9,11 +9,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/schemas/user.schema';
 import { Appointment } from 'src/appointments/schemas/appointment.schema';
 import { AppointmentsModule } from 'src/appointments/appointments.module';
+import { Role, RoleSchema } from 'src/roles/schemas/role.schema';
 
 @Module({
   imports: [
     AppointmentsModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }]),
     MailerModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         transport: {
