@@ -16,6 +16,7 @@ import { Schema } from 'inspector/promises';
 import { access } from 'fs';
 import { RolesService } from 'src/roles/roles.service';
 import { use } from 'passport';
+import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 
 export interface IPayload {
   sub: string;
@@ -208,5 +209,9 @@ export class AuthService {
     } catch (error) {
       throw new BadGatewayException('Something went wrong', error.message);
     }
+  }
+
+  async register(registerUserDto: RegisterUserDto) {
+    return this.userService.register(registerUserDto);
   }
 }

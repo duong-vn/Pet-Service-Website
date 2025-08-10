@@ -14,6 +14,7 @@ import type { Request, Response } from 'express';
 import type { IUser } from 'src/users/users.interface';
 import { use } from 'passport';
 import { LocalAuthGuard } from './local-auth.guard';
+import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -65,5 +66,12 @@ export class AuthController {
   ) {
     const refresh_token = req.cookies['refresh_token'];
     return this.authService.processNewToken(refresh_token, res);
+  }
+
+  @Public()
+  @ResponseMessage('Register')
+  @Post('register')
+  register(@Body() registerUserDto: RegisterUserDto) {
+    return this.authService.register(registerUserDto);
   }
 }

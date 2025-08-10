@@ -131,12 +131,11 @@ export class AppointmentsService {
     if (!service) throw new BadRequestException('Invalid service');
     const duration = Number(service.duration);
 
-    const bookedTime = (await this.appointmentModel
+    const bookedTime = await this.appointmentModel
       .find({ date }, { _id: 0, startTime: 1, endTime: 1 })
-      .sort({ startTime: 1 })) as unknown as {
-      startTime: string;
-      endTime: string;
-    }[];
+      .sort({ startTime: 1 })
+      .lean<{ startTime: string; endTime: string }[]>();
+
     /*"bookedTime": [
             {
                 "startTime": "09:00",
@@ -175,20 +174,20 @@ export class AppointmentsService {
   findAvaiableSlotsAlgorithm(
     bookedTime: { startTime: string; endTime: string }[],
     duration: number,
-  ): string[] {
+  ): { startTime: string; endTime: string }[] {
     const open = this.toMinutes(ShopSetting.openingTime);
     const close = this.toMinutes(ShopSetting.closingTime);
     const step = ShopSetting.slotsStep;
 
-    let slots: string[] = [];
+    let slots: { startTime: string; endTime: string }[] = [];
 
     if (bookedTime.length === 0) {
       for (let start = open; start <= close - duration; start += step) {
-        slots.push(
-          this.minutesToTimeString(start) +
-            '-' +
-            this.minutesToTimeString(start + duration),
-        );
+        slots.push({
+          startTime: this.minutesToTimeString(start),
+
+          endTime: this.minutesToTimeString(start + duration),
+        });
       }
 
       return slots;
@@ -203,11 +202,11 @@ export class AppointmentsService {
     for (const b of busy) {
       if (begin + duration <= b.start) {
         while (begin + duration <= b.start) {
-          slots.push(
-            this.minutesToTimeString(begin) +
-              '-' +
-              this.minutesToTimeString(begin + duration),
-          );
+          slots.push({
+            startTime: this.minutesToTimeString(begin),
+
+            endTime: this.minutesToTimeString(begin + duration),
+          });
           begin += step;
         }
 
@@ -218,7 +217,11 @@ export class AppointmentsService {
     }
 
     while (begin + duration <= close) {
-      slots.push(this.minutesToTimeString(begin));
+      slots.push({
+        startTime: this.minutesToTimeString(begin),
+
+        endTime: this.minutesToTimeString(begin + duration),
+      });
       begin += step;
     }
 

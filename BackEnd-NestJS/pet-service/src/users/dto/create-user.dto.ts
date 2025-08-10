@@ -40,6 +40,9 @@ export class RegisterUserDto {
   email: string;
   @IsNotEmpty({ message: 'Password is required' })
   password: string;
+  @IsNotEmpty({ message: 'Phone number is required' })
+  phone: number;
+
   @IsOptional()
   address: string;
 
@@ -47,8 +50,6 @@ export class RegisterUserDto {
   age: number;
   @IsOptional()
   gender: string;
-  @IsOptional()
-  phone: number;
 
   // @IsNotEmptyObject()
   // @IsObject()

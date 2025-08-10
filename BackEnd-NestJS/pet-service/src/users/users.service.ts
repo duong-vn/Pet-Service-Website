@@ -147,9 +147,7 @@ export class UsersService {
     if (await this.isEmailExist(userData.email)) {
       throw new BadRequestException('Email already exists');
     }
-    const userRole = (await this.roleModel
-      .find({ name: USER_ROLE })
-      .select('name')) as any;
+    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
 
     const hashedPassword = this.getHashPassword(userData.password);
     const user = await this.userModel.create({
@@ -161,7 +159,10 @@ export class UsersService {
       role: userRole?._id,
       password: hashedPassword,
     });
-    return user;
+    return {
+      _id: user._id,
+      createdAt: user.createdAt,
+    };
   }
 
   async remove(id: string, user: IUser) {
