@@ -1,6 +1,7 @@
 "use client";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { FaMoon, FaSun } from "react-icons/fa";
 
 export default function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -16,9 +17,13 @@ export default function ThemeToggle() {
       onClick={() => {
         setTheme(isDark ? "light" : "dark");
       }}
-      className="rounded-2xl p-4 cursor-pointer"
+      className="absolute top-1   cursor-pointer"
     >
-      {isDark ? "Light mode" : "Dark mode"}
+     {theme === "dark" ? (
+        <FaSun className="text-yellow-400"  />
+      ) : (
+        <FaMoon className="text-gray-900"  />
+      )}
     </button>
   );
 }

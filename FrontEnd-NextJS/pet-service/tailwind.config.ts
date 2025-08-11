@@ -9,11 +9,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#4F46E5",
-        secondary: "#06B6D4",
-        accent: "#F59E0B",
-        dark: "#0B1220",
-        light: "#F5F7FB",
+        
+       // Light mode
+       'primary-light': '#D6A99D',
+       'secondary-light': '#FBF3D5',
+       'accent-light': '#D6DAC8',
+       'neutral-light': '#9CAFAA',
+       'background-light':'#F4F1ED',
+
+       // Dark mode
+       'primary-dark': '#161E25',
+       'secondary-dark': '#2C2C2C',
+       'accent-dark': '#3E4A42',
+       'neutral-dark': '#B3BFB9',
+       'background-dark':'#1E1E1E',
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],

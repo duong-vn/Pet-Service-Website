@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background-light dark:bg-background-dark`}
       >
         <ThemeProvider>
           <GoogleOAuthProvider clientId={process.env.CLIENT_ID!}>
