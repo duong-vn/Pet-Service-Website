@@ -12,10 +12,10 @@ export default {
         
        // Light mode
        'primary-light': '#D6A99D',
-       'secondary-light': '#FBF3D5',
-       'accent-light': '#D6DAC8',
+       'secondary-light': '#D6DAC8',
+       'accent-light': '#9CAFAA',
        'neutral-light': '#9CAFAA',
-       'background-light':'#F4F1ED',
+       'background-light':'#FBF3D5',
 
        // Dark mode
        'primary-dark': '#262b37',

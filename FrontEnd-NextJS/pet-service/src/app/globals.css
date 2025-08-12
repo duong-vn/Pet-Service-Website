@@ -2,26 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   --background: #ffffff;
   --foreground: #f7c9c9;
+  --scrollbar-thumb: #9CAFAA;
+  --scrollbar-track: #FBF3D5;
+  --font-family: var(--font-global)
 }
 
-/* @theme inline {
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-} */
+} 
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #2c0202;
-    --foreground: #fff6f6;
-  }
+
+/* Firefox */
+
+ * {
+  scrollbar-width: thin; /* mỏng */ 
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); /* thumb | track */
 }
 
+
+
+
+/* More specific dark mode selector */
+
+/* CSS custom properties for dark mode */
+.dark {
+  --scrollbar-thumb: #3e404a;
+  --scrollbar-track: #1E1E1E;
+}
+ 
+
 body {
-  background-color: rgb(255, 255, 255);
-  font-family: Arial, Helvetica, sans-serif;
+  /* background-color: rgb(255, 255, 255); */
+  font-family: var(--font-global),Arial,  sans-serif, Helvetica ;
+}
+
+.custom-font-bold{
+  
 }
