@@ -18,7 +18,7 @@ export default {
        'background-light':'#F4F1ED',
 
        // Dark mode
-       'primary-dark': '#161E25',
+       'primary-dark': '#262b37',
        'secondary-dark': '#2C2C2C',
        'accent-dark': '#3E4A42',
        'neutral-dark': '#B3BFB9',

@@ -17,12 +17,12 @@ export default function ThemeToggle() {
       onClick={() => {
         setTheme(isDark ? "light" : "dark");
       }}
-      className="absolute top-1   cursor-pointer"
+      className="cursor-pointer "
     >
      {theme === "dark" ? (
-        <FaSun className="text-yellow-400"  />
+        <FaSun className="text-yellow-400 " size={28} />
       ) : (
-        <FaMoon className="text-gray-900"  />
+        <FaMoon className="text-gray-900" size={28} />
       )}
     </button>
   );
