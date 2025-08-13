@@ -20,27 +20,19 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 export function SidebarContextProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      // Lock scroll hoàn chỉnh
-
-      document.body.style.position = "fixed";
-    } else {
-      // Unlock scroll
-
-      document.body.style.position = "";
-    }
-
-    return () => {
-      // Cleanup
-
-      document.body.style.position = "";
-    };
-  }, [isOpen]);
-
-  const toggle = () => setIsOpen(!isOpen);
-  const close = () => setIsOpen(false);
-  const open = () => setIsOpen(true);
+  const toggle = () => {
+    if (isOpen) document.body.style.overflow = "";
+    else document.body.style.overflow = "hidden";
+    setIsOpen(!isOpen);
+  };
+  const close = () => {
+    document.body.style.overflow = ""; // mở lại cuộn
+    setIsOpen(false);
+  };
+  const open = () => {
+    document.body.style.overflow = "hidden"; // khóa cuộn
+    setIsOpen(true);
+  };
 
   const value: SidebarContextType = {
     isOpen,

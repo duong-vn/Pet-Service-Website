@@ -65,15 +65,15 @@ export default function NavBar() {
   return (
     <header
       className={[
-        " w-screen top-0 z-10 pt-3 sticky ",
+        " w-full top-0 z-10 sticky ",
         "transition-transform duration-500 ease-out will-change-transform",
         hidden ? "-translate-y-[calc(100%+1.5rem)] " : "-translate-y-0 ",
       ].join(" ")}
     >
-      <nav className="  container pr-3 lg:mr-5 2xl:mx-auto  max-w-screen-2xl flex  items-center  ">
+      <nav className=" pl-1 container  pt-3  2xl:mx-auto  max-w-screen-2xl flex  items-center  ">
         <div
           className=" p-3 flex flex-1  items-center justify-between rounded-3xl   line-height-1
-             shadow-lg ring-1 ring-black/30 backdrop-blur-2xl dark:bg-secondary-dark bg-secondary-light dark:ring-white/330
+             shadow-lg ring-1 ring-black/30 backdrop-blur-2xl dark:bg-secondary-dark/50 bg-secondary-light/30 dark:ring-white/330
           "
         >
           <Link className="text-3xl font-display " href="/">
