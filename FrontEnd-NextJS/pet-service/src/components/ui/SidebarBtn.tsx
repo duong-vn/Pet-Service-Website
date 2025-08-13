@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function SidebarBtn() {
   return (
     <>
-      <button className="p-2 rounded-md hover:bg-accent-light dark:hover:bg-gray-700">
+      <button className=" p-2 rounded-md hover:bg-accent-light dark:hover:bg-gray-700">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

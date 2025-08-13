@@ -35,12 +35,12 @@ export default function Sidebar() {
       {/* The sidebar */}
       <div
         className={[
-          "fixed bg-secondary-light top-0 right-0 z-50 shadow-2xl dark:bg-secondary-dark back w-50 h-full transform transition-transform  duration-300 ease-in-out ",
+          "fixed bg-secondary-light top-0 right-0 z-50 shadow-xl dark:bg-secondary-dark back w-50 h-full transform transition-transform  duration-300 ease-in-out ",
           isOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
       >
         {/* header */}
-        <div className="flex justify-between border-b border-neutral-light dark:border-neutral-dark p-8 pb-6 ">
+        <div className="flex justify-between border-b-2 shadow-2xl rounded-xl border-background-light dark:border-neutral-dark p-8 pb-6 ">
           <div className="font-display font-bold text-3xl">MENU</div>
           <div
             className="font-display font-bold text-3xl cursor-pointer"
@@ -51,11 +51,11 @@ export default function Sidebar() {
         </div>
         {/* Userpill */}
 
-        <div className="p-8 flex tems-center border-b border-neutral-light dark:border-neutral-dark">
+        <div className="p-8 flex tems-center  border-background-light dark:border-neutral-dark">
           <UserPill />
         </div>
         {/* items  */}
-        <nav className=" border-b border-neutral-light flex flex-col justify-between space-y-2 p-8 dark:border-neutral-dark">
+        <nav className=" border-b-2 border-t-2 rounded-3xl border-background-light flex flex-col justify-between space-y-2 p-8 dark:border-neutral-dark">
           <Link href="/" className="flex  pb-3">
             <FaHome className="w-5 h-5 mr-3" />
             <span>Trang chủ</span>

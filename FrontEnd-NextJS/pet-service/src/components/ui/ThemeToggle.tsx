@@ -11,15 +11,14 @@ export default function ThemeToggle() {
   if (!mounted) return null; // tránh mismatch icon/text
   const isDark = (theme ?? resolvedTheme) === "dark";
   console.log(theme);
-  console.log('resolved theme',resolvedTheme);
+  console.log("resolved theme", resolvedTheme);
   return (
     <button
       onClick={() => {
         setTheme(isDark ? "light" : "dark");
       }}
-      className="cursor-pointer "
     >
-     {theme === "dark" ? (
+      {theme === "dark" ? (
         <FaSun className="text-yellow-400 " size={28} />
       ) : (
         <FaMoon className="text-gray-900" size={28} />

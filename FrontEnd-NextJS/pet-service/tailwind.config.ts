@@ -8,15 +8,15 @@ export default {
     extend: {
       colors: {
         // Light mode
-        "primary-light": "#E3FDFD",
-        "secondary-light": "#CBF1F5",
-        "accent-light": "#A6E3E9",
-        "neutral-light": "#9CAFAA",
-        "background-light": "#E3FDFD",
+        "primary-light": "#DBA39A",
+        "secondary-light": "#FFB4A2",
+        "accent-light": "#FFB4A2",
+        "neutral-light": "#DEF5E5",
+        "background-light": "#F9F9F9",
 
         // Dark mode
-        "primary-dark": "#040D12",
-        "secondary-dark": "#183D3D",
+        "primary-dark": "#183D3D",
+        "secondary-dark": "#5C8374",
         "accent-dark": "#5C8374",
         "neutral-dark": "#93B1A6",
         "background-dark": "#040D12",
@@ -30,7 +30,7 @@ export default {
         "3xl": "1.5rem",
       },
       boxShadow: {
-        "inset-lg": "inset 0 0px 10px rgba(0, 0, 0, 0.1)",
+        "inset-lg": "inset 0 4px 10px rgba(0, 0, 0, 0.1)",
       },
     },
   },
