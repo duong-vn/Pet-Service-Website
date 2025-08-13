@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from 'next/font/local'
-import "./globals.css";
+import "../globals.css";
 // import "./fonts/css/kalam.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import NavBar from "./components/navBar";
-import { ThemeProvider } from "./theme.provider";
+import NavBar from "../../components/layout/NavBar";
+
+import { SidebarContextProvider } from "@/context/SidebarContext";
+import Sidebar from "@/components/layout/SideBar";
+import { ThemeProvider } from "@/providers/theme.provider";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -17,17 +20,13 @@ import { ThemeProvider } from "./theme.provider";
 //   subsets: ["latin"],
 // });
 
-const globalFont = localFont({
-src:'./fonts/Quicksand-Bold.woff2',
-variable:'--font-global',
+// const globalFont = localFont({
+// src:'../fonts/Quicksand-Bold.woff2',
+// variable:'--font-global',
 
 
-})
-const displayFont = localFont({
-  src:'./fonts/Kalam-Bold.woff2',
-  variable:'--font-display'
-  
-  })
+// })
+
 
 export const metadata: Metadata = {
   title: "ZOZO Pet's Service",
@@ -45,15 +44,20 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body
-        className={`${globalFont.variable} ${displayFont.variable} antialiased bg-background-light dark:bg-background-dark p-3 `}
+        className={` font-normal antialiased bg-background-light dark:bg-background-dark p-3 transition-all duration-700 `}
       >
-        <ThemeProvider>
-          <GoogleOAuthProvider clientId={process.env.CLIENT_ID!}>
-            <NavBar />
+       <ThemeProvider>  
+        <SidebarContextProvider >
+          <NavBar />
+          <Sidebar/>
+          </SidebarContextProvider>
+          
 
-            {children}
-          </GoogleOAuthProvider>
-        </ThemeProvider>
+            {children}</ThemeProvider>
+       
+            
+         
+        
       </body>
     </html>
   );

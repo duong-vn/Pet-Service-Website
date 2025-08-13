@@ -1,11 +1,8 @@
 "use client";
-import Image from "next/image";
-import Login from "./components/login";
-import ThemeToggle from "./components/ThemeToggle";
 
 export default function Home() {
   
-  return <div className=" bg-background-light dark:bg-background-dark ">
+  return <div className=" ">
     <div className="flex justify-center items-center h-[2000px]">
       <div className="text-center">
         <h1 className="text-4xl font-bold">Welcome to our website</h1>

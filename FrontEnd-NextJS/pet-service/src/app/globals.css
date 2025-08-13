@@ -1,13 +1,14 @@
+@import '../css/kalam.css';
+@import '../css/quicksand.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --background: #ffffff;
   --foreground: #f7c9c9;
-  --scrollbar-thumb: #9CAFAA;
-  --scrollbar-track: #FBF3D5;
+  --scrollbar-thumb: #3e404a;
+  --scrollbar-track: #E3FDFD;
   --font-family: var(--font-global)
 }
 
@@ -40,9 +41,9 @@
 
 body {
   /* background-color: rgb(255, 255, 255); */
-  font-family: var(--font-global),Arial,  sans-serif, Helvetica ;
+  margin: 0;
+  padding: 0;
+ 
+  overflow-x: hidden;
 }
 
-.custom-font-bold{
-  
-}

@@ -11,22 +11,22 @@ export default {
       colors: {
         
        // Light mode
-       'primary-light': '#D6A99D',
-       'secondary-light': '#D6DAC8',
-       'accent-light': '#9CAFAA',
+       'primary-light': '#E3FDFD',
+       'secondary-light': '#CBF1F5',
+       'accent-light': '#A6E3E9',
        'neutral-light': '#9CAFAA',
-       'background-light':'#FBF3D5',
+       'background-light':'#E3FDFD',
 
        // Dark mode
-       'primary-dark': '#262b37',
-       'secondary-dark': '#2C2C2C',
-       'accent-dark': '#3E4A42',
-       'neutral-dark': '#B3BFB9',
-       'background-dark':'#1E1E1E',
+       'primary-dark': '#040D12',
+       'secondary-dark': '#183D3D',
+       'accent-dark': '#5C8374',
+       'neutral-dark': '#93B1A6',
+       'background-dark':'#040D12',
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        heading: ["Poppins", "ui-sans-serif", "system-ui"],
+        normal: ["Quicksand-Bold", "Kalam-Bold","system-ui", "sans-serif"],
+        display: ["Kalam-Bold", "ui-sans-serif", "system-ui"],
       },
       borderRadius: {
         "2xl": "1rem",

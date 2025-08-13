@@ -1,6 +1,6 @@
 'use client'
 import { useRef } from "react";
-import Login from "../components/login";
+
 import Image from "next/image";
 
 
@@ -15,7 +15,7 @@ export default function UserPill() {
 
  
     return (
-    <div className="flex items-center pr-3 gap-3 ring-1 ring-black/50 dark:ring-white/30  max-w-[400] w-fit p-2 rounded-full transition-all duration-1000 ease-out hover:max-w-fit"> 
+    <div className="flex items-center bg-secondary-light dark:bg-secondary-dark pr-3 gap-3 ring-1 ring-black/50 dark:ring-white/30  max-w-[300]  p-2 rounded-full  hover:max-w-fit"> 
    
         <Image
              src={user.current.avatar}
