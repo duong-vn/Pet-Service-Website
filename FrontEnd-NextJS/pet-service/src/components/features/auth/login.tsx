@@ -1,6 +1,6 @@
 "use client";
 import { GoogleLogin } from "@react-oauth/google";
-import { handleGoogleLogin } from "../apiServices/services";
+import { handleGoogleLogin } from "../../../apiServices/services";
 
 export default function Login() {
   return (

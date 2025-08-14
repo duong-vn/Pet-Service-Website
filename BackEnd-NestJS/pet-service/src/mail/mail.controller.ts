@@ -1,5 +1,9 @@
 import { Controller, Param, Post } from '@nestjs/common';
-import { Public, ResponseMessage } from 'src/decorator/customize';
+import {
+  Public,
+  ResponseMessage,
+  skipCheckPermission,
+} from 'src/decorator/customize';
 import { MailService } from './mail.service';
 
 @Controller('mail')
@@ -17,7 +21,7 @@ export class MailController {
   //   return this.mailService.toClient(id);
   // }
 
-  @Public()
+  @skipCheckPermission()
   @Post('appointment/:id')
   @ResponseMessage('Send an email')
   sendEmail(@Param('id') id: string) {

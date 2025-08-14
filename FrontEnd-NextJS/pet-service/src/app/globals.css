@@ -1,5 +1,6 @@
-@import '../css/kalam.css';
-@import '../css/quicksand.css';
+@import "../css/kalam.css";
+@import "../css/quicksand.css";
+@import "../css/satoshi.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,8 +9,8 @@
   --background: #ffffff;
   --foreground: #f7c9c9;
   --scrollbar-thumb: #3e404a;
-  --scrollbar-track: #E3FDFD;
-  --font-family: var(--font-global)
+  --scrollbar-track: #e3fdfd;
+  --font-family: var(--font-global);
 }
 
 @theme inline {
@@ -17,33 +18,27 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-} 
-
+}
 
 /* Firefox */
 
- * {
-  scrollbar-width: thin; /* mỏng */ 
+* {
+  scrollbar-width: thin; /* mỏng */
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); /* thumb | track */
 }
-
-
-
 
 /* More specific dark mode selector */
 
 /* CSS custom properties for dark mode */
 .dark {
   --scrollbar-thumb: #3e404a;
-  --scrollbar-track: #1E1E1E;
+  --scrollbar-track: #1e1e1e;
 }
- 
 
 body {
   /* background-color: rgb(255, 255, 255); */
   margin: 0;
   padding: 0;
- 
+
   overflow-x: hidden;
 }
-

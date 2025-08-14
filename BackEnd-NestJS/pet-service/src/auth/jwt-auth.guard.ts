@@ -10,7 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { IS_PUBLIC_KEY } from 'src/decorator/customize';
+import { IS_PUBLIC_KEY, IS_PUBLIC_PERMISSION } from 'src/decorator/customize';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -37,12 +37,18 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
-
+    const skipCheckPermission = this.reflector.getAllAndOverride(
+      IS_PUBLIC_PERMISSION,
+      [context.getHandler(), context.getClass()],
+    );
+    if (skipCheckPermission) {
+      return user;
+    }
     const req: Request = context.switchToHttp().getRequest();
     const method = req.method;
     const path = req.route.path as string;
     const { permissions } = user;
-    // console.log('>>method', method, 'path', path, 'permissions', permissions);
+    console.log('>>method', method, 'path', path, 'permissions', permissions);
 
     let isExist = permissions.find(
       (permission) =>

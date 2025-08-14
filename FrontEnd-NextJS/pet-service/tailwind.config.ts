@@ -9,10 +9,10 @@ export default {
       colors: {
         // Light mode
         "primary-light": "#DBA39A",
-        "secondary-light": "#FFB4A2",
+        "secondary-light": "#FCDDB0",
         "accent-light": "#FFB4A2",
-        "neutral-light": "#DEF5E5",
-        "background-light": "#F9F9F9",
+        "neutral-light": "#FEFCF3",
+        "background-light": "#F5EBE0",
 
         // Dark mode
         "primary-dark": "#183D3D",
@@ -24,6 +24,7 @@ export default {
       fontFamily: {
         normal: ["Quicksand-Bold", "Kalam-Bold", "system-ui", "sans-serif"],
         display: ["Kalam-Bold", "ui-sans-serif", "system-ui"],
+        bold: ["Satoshi-Bold", "Quicksand-Bold"],
       },
       borderRadius: {
         "2xl": "1rem",

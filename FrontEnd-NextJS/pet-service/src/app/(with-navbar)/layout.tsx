@@ -9,6 +9,7 @@ import NavBar from "../../components/layout/NavBar";
 import { SidebarContextProvider } from "@/context/SidebarContext";
 import Sidebar from "@/components/layout/SideBar";
 import { ThemeProvider } from "@/providers/theme.provider";
+import Footer from "@/components/layout/Footer";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -51,6 +52,7 @@ export default function RootLayout({
           </SidebarContextProvider>
 
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

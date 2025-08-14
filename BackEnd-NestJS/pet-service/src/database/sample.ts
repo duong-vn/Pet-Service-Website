@@ -223,4 +223,12 @@ export const INIT_PERMISSIONS = [
     module: 'ROLES',
     createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
+  {
+    _id: '689db769b8b0e4b1242cc1eb',
+    name: 'Xóa ảnh trên cloud',
+    apiPath: '/api/cloud/delete',
+    method: 'DELETE',
+    module: 'CLOUD',
+    createdBy: { _id: '68983db643ac6b12fbd53b9e', email: 'isdon243@gmail.com' },
+  },
 ];

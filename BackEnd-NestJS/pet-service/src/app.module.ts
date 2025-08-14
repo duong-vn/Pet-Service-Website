@@ -12,6 +12,7 @@ import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { DatabaseModule } from './database/database.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { CloudModule } from './cloud/cloud.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
     PermissionsModule,
     DatabaseModule,
     AppointmentsModule,
+    CloudModule,
   ],
   controllers: [AppController],
   providers: [AppService],

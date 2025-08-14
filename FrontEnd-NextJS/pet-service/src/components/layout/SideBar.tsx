@@ -40,7 +40,7 @@ export default function Sidebar() {
         ].join(" ")}
       >
         {/* header */}
-        <div className="flex justify-between border-b-2 shadow-2xl rounded-xl border-background-light dark:border-neutral-dark p-8 pb-6 ">
+        <div className="flex justify-between border-b-2 shadow-lg rounded-xl border-background-light dark:border-neutral-dark p-6 px-8  ">
           <div className="font-display font-bold text-3xl">MENU</div>
           <div
             className="font-display font-bold text-3xl cursor-pointer"

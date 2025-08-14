@@ -25,7 +25,7 @@ export default function NavBar() {
   const lastY = useRef(0);
   const iconClass = useRef(
     `transition-all duration-100 
-    hover:m-3 
+    hover:p-3 
     hover:ring
      rounded-3xl
      dark:ring-background-light
@@ -81,11 +81,11 @@ export default function NavBar() {
         <div
           className={[
             "  flex min-w-[250] max-h-[52] items-center justify-between rounded-3xl",
-            "line-height-1 shadow-lg ring-1 ring-black/30 backdrop-blur-2xl",
-            "dark:bg-primary-dark/50  dark:ring-white/30 transition-all duration-400",
+            "line-height-1  backdrop-blur-2xl",
+            " transition-all duration-400",
             scrolling
-              ? " xl:min-w-[400] bg-primary-light/15"
-              : " bg-primary-light xl:min-w-[800] ",
+              ? "  ring-1 shadow-lg  ring-black/30 dark:ring-white/30 xl:min-w-[400] bg-primary-light/15"
+              : " bg-background-light-light dark:bg-primary-dark/50 xl:min-w-[800] ",
           ].join(" ")}
         >
           {/* House icon */}
@@ -174,7 +174,10 @@ export default function NavBar() {
 
         {/* hamburger icon */}
         <div
-          className="mx-2   hover:scale-110  flex  "
+          className={[
+            "mx-2  hover:scale-110",
+            scrolling ? "" : " absolute right-0",
+          ].join(" ")}
           onClick={() => toggle()}
         >
           <SidebarBtn />

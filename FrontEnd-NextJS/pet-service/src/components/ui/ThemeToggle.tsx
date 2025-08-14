@@ -10,8 +10,7 @@ export default function ThemeToggle() {
 
   if (!mounted) return null; // tránh mismatch icon/text
   const isDark = (theme ?? resolvedTheme) === "dark";
-  console.log(theme);
-  console.log("resolved theme", resolvedTheme);
+
   return (
     <button
       onClick={() => {
