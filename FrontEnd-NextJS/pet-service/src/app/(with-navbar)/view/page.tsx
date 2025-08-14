@@ -1,6 +1,10 @@
 "use client";
 
-import { postCloud, postSign } from "@/apiServices/cloud/services";
+import {
+  postCloud,
+  postSign,
+  uploadToCloud,
+} from "@/apiServices/cloud/services";
 import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -8,32 +12,6 @@ import { BiImages } from "react-icons/bi";
 import { FaImages } from "react-icons/fa";
 
 export default function view() {
-  const [preview, setPreview] = useState<string>("");
-  const [isOpenCreate, setIsOpenCreate] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      if (preview) URL.revokeObjectURL(preview);
-    };
-  }, [preview]);
-
-  const tryAxios = async () => {
-    const res = await postSign("images/services");
-    console.log(">>>>> Res", res);
-  };
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-
-      setPreview(url);
-      const sign = await postSign("images/services");
-      console.log(">>> sign", sign);
-      const res = await postCloud(file, sign.data);
-      console.log("res sau khi thu post len cloud", res);
-    }
-    console.log(e);
-  };
   return (
     // <div>
     //   <button className=" rounded-[20px] border-2 hover:bg-primary-light border-black p-2">
@@ -47,18 +25,14 @@ export default function view() {
       >
         <BiImages size={30} /> Upload image
       </label>
-      <input
-        type="file"
-        accept="image/"
-        className="hidden"
-        id="imageUpload"
-        onChange={(e) => handleUpload(e)}
+      <input type="file" accept="image/" className="hidden" id="imageUpload" />
+
+      <Image
+        src="https://res.cloudinary.com/dmgtkwdee/image/upload/v1755185466/images/service/nv7podypfqcolwdyz9jd.webp"
+        alt="hello"
+        height={100}
+        width="100"
       />
-      {preview ? (
-        <Image src={preview} alt="hello" height={100} width="100" />
-      ) : (
-        <div>No preview</div>
-      )}
     </div>
   );
 }

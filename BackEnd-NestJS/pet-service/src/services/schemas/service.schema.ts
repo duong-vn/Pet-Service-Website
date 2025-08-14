@@ -10,6 +10,11 @@ export class Service {
 
   @Prop()
   duration: string; //(minutes)  // ví dụ: 30
+  @Prop()
+  picture: string;
+
+  @Prop()
+  public_id: string;
 
   @Prop()
   price: string;

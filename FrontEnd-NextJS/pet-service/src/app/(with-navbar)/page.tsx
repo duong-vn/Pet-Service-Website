@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-      <div className="mt-5 xl:p-6 w-screen bg-accent-light dark:bg-secondary-dark flex justify-between items-center rounded-3xl shadow-2xl ">
+      <div className="mt-5 xl:p-6 w-screen bg-secondary-light dark:bg-primary-dark flex justify-between items-center rounded-3xl shadow-2xl ">
         <div>
           <Image
             src="/images/icons/cool_dog.webp"
@@ -35,17 +35,16 @@ export default function Home() {
 
         <div className="h-40"></div>
       </div>
+
       {/* card */}
-
-      <div className=" w-[100%] xl:w-[60%]  xl:-mt-24 top-[-90] mx-auto rounded-[70]  bg-neutral-light dark:bg-primary-dark  shadow-2xl">
+      <div className=" w-[100%] xl:w-[60%]  xl:-mt-24 top-[-90] mx-auto rounded-[70]  bg-neutral-light dark:bg-secondary-dark  shadow-2xl">
         {/* content */}
-
-        <div className="  mt-5">
-          <h1 className="text-5xl  text-center  p-5 xl:text-7xl xl:w-[70%] text-primary-dark dark:text-primary-light">
+        <div>
+          <h1 className="text-5xl pt-10  text-center  p-5 xl:text-7xl xl:w-[70%] text-primary-dark dark:text-primary-light">
             Boss đẹp – Sen vui, đến ZOZO thôi!
           </h1>
           <div className=" xl:flex xl:mx-10 border-b-2 border-background-light">
-            <p className="text-lg pb-6 p-3 flex items-center xl:leading-10 xl:relative xl:top-[-90] hover:scale-105 transition-all hover:font-extrabold">
+            <p className="text-lg pb-6 p-3 flex items-center xl:leading-10 xl:relative xl:top-[-90px] hover:scale-105 transition-all hover:font-extrabold">
               Tại đây, bạn có thể dễ dàng lựa chọn các dịch vụ như tắm rửa, tỉa
               lông, cắt móng hay spa cho thú cưng và đặt lịch trực tiếp ngay
               trên website. Chỉ với vài thao tác đơn giản, thú cưng của bạn sẽ
@@ -62,16 +61,6 @@ export default function Home() {
           </div>
           <h2 className="text-3xl xl:text-5xl p-10">
             Các dịch vụ hiện đang có trên hệ thống:
-            <CldImage
-              src="cld-sample-5" // Use this sample image or upload your own via the Media Explorer
-              width="500" // Transform the image: auto-crop to square aspect_ratio
-              height="500"
-              alt=""
-              crop={{
-                type: "auto",
-                source: true,
-              }}
-            />
           </h2>
         </div>
       </div>

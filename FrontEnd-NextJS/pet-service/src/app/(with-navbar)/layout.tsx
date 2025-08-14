@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body
-        className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-all duration-700 `}
+        className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-all  duration-700 `}
       >
         <ThemeProvider>
           <SidebarContextProvider>
@@ -51,7 +51,7 @@ export default function RootLayout({
             <Sidebar />
           </SidebarContextProvider>
 
-          {children}
+          <div className="min-h-screen"> {children} </div>
           <Footer />
         </ThemeProvider>
       </body>

@@ -10,19 +10,19 @@ interface ISign {
   apiKey: string;
   uploadPreset: string;
 }
+interface IResData {
+  public_id: string;
+  secure_url: string;
+}
 
 export const postSign = async (folder: string): Promise<ApiResponse<ISign>> => {
   const res = await axios.post<ApiResponse<ISign>>(
     `${BASE_URL}/api/cloud/sign`,
-    {
-      folder,
-    }
+    { folder }
   );
-  console.log("res trong cloud service", res);
-
   return res.data;
 };
-export const postCloud = async (file: File, sign: ISign) => {
+export const postCloud = async (file: File, sign: ISign): Promise<IResData> => {
   const { timestamp, signature, folder, cloudName, apiKey, uploadPreset } =
     sign;
   const form = new FormData();
@@ -34,5 +34,13 @@ export const postCloud = async (file: File, sign: ISign) => {
   form.append("upload_preset", uploadPreset);
 
   const res = await axios.post(CLOUD_URL, form);
-  return res;
+  return res.data;
+};
+
+export const uploadToCloud = async (
+  folder: string,
+  file: File
+): Promise<IResData> => {
+  const sign = await postSign(folder);
+  return await postCloud(file, sign.data);
 };

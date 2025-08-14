@@ -9,14 +9,14 @@ export default {
       colors: {
         // Light mode
         "primary-light": "#DBA39A",
-        "secondary-light": "#FCDDB0",
-        "accent-light": "#FFB4A2",
+        "secondary-light": "#FFB4A2",
+        "accent-light": "#FCDDB0",
         "neutral-light": "#FEFCF3",
         "background-light": "#F5EBE0",
 
         // Dark mode
-        "primary-dark": "#183D3D",
-        "secondary-dark": "#5C8374",
+        "primary-dark": "#5C8374",
+        "secondary-dark": "#183D3D",
         "accent-dark": "#5C8374",
         "neutral-dark": "#93B1A6",
         "background-dark": "#040D12",
