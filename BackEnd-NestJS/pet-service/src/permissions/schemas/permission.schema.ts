@@ -8,6 +8,8 @@ export class Permission {
   name: string;
 
   @Prop()
+  key: string;
+  @Prop()
   apiPath: string;
 
   @Prop()

@@ -3,6 +3,8 @@ const allowdMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
 export class CreatePermissionDto {
   @IsNotEmpty({ message: 'Permission name is required' })
   name: string;
+  @IsNotEmpty({ message: 'Key is required' })
+  key: string;
   @IsNotEmpty({ message: 'API path is required' })
   apiPath: string;
 

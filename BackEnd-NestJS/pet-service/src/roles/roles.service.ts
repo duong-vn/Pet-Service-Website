@@ -11,6 +11,16 @@ import { ConfigService } from '@nestjs/config';
 import { checkMongoId } from 'src/core/service';
 import { ADMIN_ROLE } from 'src/database/sample';
 
+interface IROLE {
+  _id: any;
+  name: string;
+  permissions: {
+    _id: any;
+    key: string;
+    name: string;
+  }[];
+}
+
 @Injectable()
 export class RolesService {
   constructor(
@@ -72,10 +82,25 @@ export class RolesService {
 
     return this.roleModel.findOne({ _id: id }).populate({
       path: 'permissions',
-      select: { _id: 1, apiPath: 1, name: 1, method: 1, module: 1 },
+      select: { _id: 1, apiPath: 1, key: 1, name: 1, method: 1, module: 1 },
     });
   }
+  async getPermissionsForRole(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadGatewayException('Id is invalid');
+    }
 
+    const role: IROLE | null = (await this.roleModel
+      .findOne({ _id: id })
+      .select(['_id', 'name', 'permissions'])
+      .populate({
+        path: 'permissions',
+        select: { _id: 1, key: 1, name: 1 },
+      })) as unknown as IROLE;
+
+    const permissions = role?.permissions.map((p) => p.key) ?? [];
+    return permissions;
+  }
   async update(id: string, updateRoleDto: UpdateRoleDto, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadGatewayException('Id is invalid');

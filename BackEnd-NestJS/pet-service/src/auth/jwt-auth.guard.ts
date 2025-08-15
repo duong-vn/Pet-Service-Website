@@ -37,30 +37,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
-    const skipCheckPermission = this.reflector.getAllAndOverride(
-      IS_PUBLIC_PERMISSION,
-      [context.getHandler(), context.getClass()],
-    );
-    if (skipCheckPermission) {
-      return user;
-    }
-    const req: Request = context.switchToHttp().getRequest();
-    const method = req.method;
-    const path = req.route.path as string;
-    const { permissions } = user;
-    console.log('>>method', method, 'path', path, 'permissions', permissions);
-
-    let isExist = permissions.find(
-      (permission) =>
-        method === permission.method && path === permission.apiPath,
-    );
-    if (path.startsWith('/api/auth')) isExist = true;
-
-    if (!isExist) {
-      throw new ForbiddenException(
-        'Forbidden: You do not have permission to access this resource',
-      );
-    }
 
     return user;
   }

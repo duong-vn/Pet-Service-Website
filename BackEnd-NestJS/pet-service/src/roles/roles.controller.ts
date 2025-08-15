@@ -7,16 +7,26 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import type { IUser } from 'src/users/users.interface';
+import { PermissionsGuard } from 'src/auth/permissions.guard';
+import { CanGet } from 'src/core/service';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
+
+  @UseGuards(PermissionsGuard)
+  @CanGet('permissions')
+  @Post('test')
+  test(@User() user: IUser) {
+    return this.rolesService.getPermissionsForRole(user.role._id);
+  }
 
   @Post()
   @ResponseMessage('Create role')
