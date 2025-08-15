@@ -48,7 +48,7 @@ export class AuthController {
 
   @Get('get-user')
   test(@User() user: IUser) {
-    return user;
+    return this.authService.getUser(user);
   }
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response, @User() user: IUser) {

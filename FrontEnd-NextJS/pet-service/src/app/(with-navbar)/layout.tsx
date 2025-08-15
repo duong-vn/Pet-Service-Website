@@ -10,6 +10,7 @@ import { SidebarContextProvider } from "@/context/SidebarContext";
 import Sidebar from "@/components/layout/SideBar";
 import { ThemeProvider } from "@/providers/theme.provider";
 import Footer from "@/components/layout/Footer";
+import BootstrapAuth from "@/components/features/auth/BoostrapAuth";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -50,7 +51,7 @@ export default function RootLayout({
             <NavBar />
             <Sidebar />
           </SidebarContextProvider>
-
+          <BootstrapAuth />
           <div className="min-h-screen"> {children} </div>
           <Footer />
         </ThemeProvider>

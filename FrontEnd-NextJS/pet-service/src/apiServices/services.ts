@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosInstance from "../utils/axiosInstance";
+
 export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export interface ApiResponse<T> {

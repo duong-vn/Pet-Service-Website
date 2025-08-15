@@ -5,6 +5,7 @@ import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { handleGoogleLogin } from "@/apiServices/services"; // bạn đã có
+import { setAT } from "@/lib/authToken";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ export default function LoginPage() {
       const credential = credentialResponse?.credential;
       if (!credential) throw new Error("Không nhận được credential từ Google.");
       const { access_token } = (await handleGoogleLogin(credential)).data;
-
+      setAT(access_token);
       // Ví dụ: lưu accessToken vào memory/axios header; refreshToken nên để httpOnly cookie tại backend
       // Nếu backend đã set cookie httpOnly rồi thì không cần làm gì thêm ở FE.
       // Có thể lưu accessToken tạm vào memory hoặc cookie non-httponly (tuỳ chiến lược của bạn).

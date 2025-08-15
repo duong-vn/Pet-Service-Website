@@ -228,4 +228,8 @@ export class AuthService {
   async register(registerUserDto: RegisterUserDto) {
     return this.userService.register(registerUserDto);
   }
+
+  getUser(user: IUser) {
+    return this.userService.findOne(user._id);
+  }
 }
