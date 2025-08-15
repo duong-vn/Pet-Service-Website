@@ -17,6 +17,7 @@ import { access } from 'fs';
 import { RolesService } from 'src/roles/roles.service';
 import { use } from 'passport';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { getHashes } from 'crypto';
 
 export interface IPayload {
   sub: string;
@@ -86,7 +87,12 @@ export class AuthService {
       email,
       role,
     };
-    const refresh_token = await this.createRefreshToken(payload);
+    const payloadRT = {
+      sub: 'Local-login',
+      iss: 'server',
+      _id,
+    };
+    const refresh_token = await this.createRefreshToken(payloadRT);
 
     await this.userService.updateUserToken(refresh_token, _id);
 
@@ -105,10 +111,7 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByUsername(username);
     if (user && user.password) {
-      const isValid = await this.userService.isValidPassword(
-        pass,
-        user.password,
-      );
+      const isValid = await this.userService.isMatchHashed(pass, user.password);
       if (isValid) {
         // console.log('>>>role', role, 'type of role', typeof role);
         const userRole = user.role as any;
@@ -142,8 +145,14 @@ export class AuthService {
     return _id;
   }
 
-  async createRefreshToken(payload: IPayload) {
-    const refresh_token = await this.jwtService.sign(payload, {
+  async createRefreshToken(payload) {
+    const { sub, iss, _id } = payload;
+    const payloadRT = {
+      sub,
+      iss,
+      _id,
+    };
+    const refresh_token = await this.jwtService.sign(payloadRT, {
       privateKey: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: this.configService.get('JWT_REFRESH_EXPIRE'),
     });
@@ -152,17 +161,22 @@ export class AuthService {
   }
   async processNewToken(refresh_token: string, res: Response) {
     try {
-      await this.jwtService.verify(refresh_token, {
+      const verify = await this.jwtService.verify(refresh_token, {
         secret: this.configService.getOrThrow('JWT_REFRESH_TOKEN_SECRET'),
       });
+      const { _id } = verify;
 
-      const user = await this.userService.findUserbyRefreshToken(refresh_token);
+      const user = await this.userService.findOne(_id);
 
       if (!user) {
-        throw new Error('User doesnt exist');
+        throw new UnauthorizedException('User doesnt exist or unathenticated');
+      }
+      const { refreshToken: userRT } = user;
+      if (!(await this.userService.isMatchHashed(refresh_token, userRT))) {
+        throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
 
-      const { _id, name, role, email } = user;
+      const { name, role, email } = user;
       const userRole = role as any as {
         _id: string;
         name: string;

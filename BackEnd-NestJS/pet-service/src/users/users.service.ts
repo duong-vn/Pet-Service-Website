@@ -22,9 +22,9 @@ export class UsersService {
     private configService: ConfigService,
   ) {}
 
-  getHashPassword = (password: string) => {
+  getHash = (plain: string) => {
     const salt = genSaltSync(10);
-    const hash = hashSync(password, salt);
+    const hash = hashSync(plain, salt);
     return hash;
   };
 
@@ -54,7 +54,7 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDto) {
-    const hashedPassword = this.getHashPassword(dto.password);
+    const hashedPassword = this.getHash(dto.password);
     const role = await this.roleModel
       .findOne({ name: USER_ROLE })
       .select('_id');
@@ -103,13 +103,13 @@ export class UsersService {
     };
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     // return `This action returns a #${id} user`;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return 'not found user';
+      throw new BadRequestException('Not found user');
     }
 
-    return this.userModel
+    return await this.userModel
       .findOne({
         _id: id,
       })
@@ -124,8 +124,8 @@ export class UsersService {
       .populate({ path: 'role', select: { name: 1, _id: 1 } });
     // .populate({ path: 'role', select: { name: 1, _id: 1 } });
   }
-  isValidPassword(password: string, hashedPassword: string) {
-    return compareSync(password, hashedPassword);
+  isMatchHashed(plain: string, hashed: string) {
+    return compareSync(plain, hashed);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto, user: IUser) {
@@ -149,7 +149,7 @@ export class UsersService {
     }
     const userRole = await this.roleModel.findOne({ name: USER_ROLE });
 
-    const hashedPassword = this.getHashPassword(userData.password);
+    const hashedPassword = this.getHash(userData.password);
     const user = await this.userModel.create({
       name: userData.name,
       email: userData.email,
@@ -185,15 +185,14 @@ export class UsersService {
   }
 
   updateUserToken = async (refresh_token: string | null, _id: string) => {
-    return await this.userModel.updateOne(
-      { _id },
-      { refreshToken: refresh_token },
-    );
+    let hashedRT = refresh_token;
+    if (refresh_token) hashedRT = await this.getHash(refresh_token);
+    return await this.userModel.updateOne({ _id }, { refreshToken: hashedRT });
   };
 
   findUserbyRefreshToken = (refreshToken: string) => {
     return this.userModel
-      .findOne({ refreshToken: refreshToken })
+      .findOne({ refreshToken })
       .populate({ path: 'role', select: { name: 1 } });
   };
 }

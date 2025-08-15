@@ -8,12 +8,18 @@ export interface ApiResponse<T> {
   statusCode: number;
 }
 
-export const handleGoogleLogin = async (id_token: string) => {
+interface IToken {
+  access_token: string;
+}
+
+export const handleGoogleLogin = async (
+  id_token: string
+): Promise<ApiResponse<IToken>> => {
   const login = await axios.post(
     `${BASE_URL}/api/auth/login/google`,
     { id_token },
     { withCredentials: true }
   );
   console.log(login);
-  return;
+  return login.data;
 };

@@ -16,6 +16,13 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty({ message: 'Email is required' })
   email: string;
+
+  @IsOptional()
+  public_id: string;
+
+  @IsOptional()
+  avatar: string;
+
   @IsNotEmpty({ message: 'Provider is required' })
   @IsIn(providers)
   provider: string;

@@ -17,6 +17,9 @@ export class User {
   @Prop()
   provider: string;
 
+  @Prop()
+  public_id: string;
+
   @Prop({ type: mongoose.Schema.Types.Mixed })
   avatar: string | null;
 
