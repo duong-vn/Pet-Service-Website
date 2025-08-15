@@ -24,8 +24,8 @@ export default function NavBar() {
   const [scrolling, setScrolling] = useState(false);
   const lastY = useRef(0);
   const iconClass = useRef(
-    `transition-all duration-100 
-    hover:p-3 
+    `transition-transform duration-100 
+    
     hover:ring
     rounded-3xl
     dark:ring-background-light
@@ -67,7 +67,7 @@ export default function NavBar() {
   return (
     <header
       className={[
-        " w-full top-0 z-10 sticky  ",
+        " w-full top-0 z-10 sticky mb-5 ",
         "transition-transform duration-500",
         "ease-out will-change-transform ",
         hidden ? "-translate-y-[calc(100%+1.5rem)] " : "-translate-y-0 ",
@@ -77,19 +77,19 @@ export default function NavBar() {
         <div
           className={[
             "flex min-w-[250] max-h-[52] items-center",
-            "justify-between rounded-3xl",
-            "line-height-1  backdrop-blur-2xl",
-            " transition-all duration-400",
+            "justify-between rounded-3xl ",
+            "line-height-1  backdrop-blur-2xl  ",
+            " duration-400",
             scrolling
-              ? " ring-1 shadow-lg  ring-black/30 dark:ring-white/30 xl:min-w-[400] bg-primary-light/15"
-              : " bg-background-light dark:bg-primary-dark/50 xl:min-w-[800] ",
+              ? " ring-1 shadow-lg  ring-black/30 dark:ring-white/30 xl:min-w-[400] bg-primary-light/0"
+              : " bg-primary-light dark:bg-primary-dark/50 xl:min-w-[800] ",
           ].join(" ")}
         >
           {/* House icon */}
           {scrolling ? (
             <div
               className={[
-                "text-3xl m-3  font-display flex ",
+                "text-3xl  p-3 font-display flex ",
                 iconClass.current,
               ].join(" ")}
               onClick={() => window.scrollTo(0, 0)}
@@ -99,7 +99,7 @@ export default function NavBar() {
           ) : (
             <Link
               className={[
-                "text-3xl m-3  font-display flex ",
+                "text-3xl  p-3 font-display flex ",
                 iconClass.current,
               ].join(" ")}
               href="/"
@@ -112,8 +112,8 @@ export default function NavBar() {
           <Link
             href="/services"
             className={[
-              iconClass.current,
-              "p-1 hidden hover:scale-110 ",
+              " hover:ring p-2 rounded-3xl dark:ring-background-light ring-background-dark",
+              " hidden hover:scale-105 ",
               scrolling ? "" : "xl:flex ",
             ].join(" ")}
           >
@@ -136,7 +136,7 @@ export default function NavBar() {
             href="/view "
             className={[
               iconClass.current,
-              "p-2 hidden hover:scale-110 ",
+              "p-1 hidden hover:scale-110 transition-none",
               scrolling ? " " : "xl:flex ",
             ].join(" ")}
           >
@@ -156,7 +156,10 @@ export default function NavBar() {
           </Link>
           {/* theme icon */}
           <div
-            className={["flex cursor-pointer p-2 ", iconClass.current].join("")}
+            className={[
+              iconClass.current,
+              " hover:p-0 flex cursor-pointer m-3 ",
+            ].join("")}
           >
             <ThemeToggle />
           </div>

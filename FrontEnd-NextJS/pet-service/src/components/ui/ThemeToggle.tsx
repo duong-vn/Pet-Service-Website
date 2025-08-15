@@ -16,6 +16,7 @@ export default function ThemeToggle() {
       onClick={() => {
         setTheme(isDark ? "light" : "dark");
       }}
+      className="hover:p-3 transition-all duration-100"
     >
       {theme === "dark" ? (
         <FaSun className="text-yellow-400 " size={28} />

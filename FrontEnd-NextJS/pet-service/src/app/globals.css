@@ -9,7 +9,7 @@
   --background: #ffffff;
   --foreground: #f7c9c9;
   --scrollbar-thumb: #3e404a;
-  --scrollbar-track: #e3fdfd;
+  --scrollbar-track: #f5ebe0;
   --font-family: var(--font-global);
 }
 
@@ -32,7 +32,7 @@
 /* CSS custom properties for dark mode */
 .dark {
   --scrollbar-thumb: #3e404a;
-  --scrollbar-track: #1e1e1e;
+  --scrollbar-track: #040d12;
 }
 
 body {

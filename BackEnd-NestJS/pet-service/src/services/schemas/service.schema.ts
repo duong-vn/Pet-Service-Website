@@ -17,7 +17,10 @@ export class Service {
   public_id: string;
 
   @Prop()
-  price: string;
+  priceStart: number;
+
+  @Prop()
+  priceEnd: number;
   @Prop()
   description: string;
   @Prop({ type: Object })
