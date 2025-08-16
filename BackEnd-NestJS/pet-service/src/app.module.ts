@@ -13,6 +13,10 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { DatabaseModule } from './database/database.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { CloudModule } from './cloud/cloud.module';
+import { PermissionsGuard } from './auth/guards/permissions.guard';
+import { APP_GUARD } from '@nestjs/core';
+
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -31,6 +35,7 @@ import { CloudModule } from './cloud/cloud.module';
     UsersModule,
     ServicesModule,
     MailModule,
+
     RolesModule,
     PermissionsModule,
     DatabaseModule,
@@ -38,6 +43,10 @@ import { CloudModule } from './cloud/cloud.module';
     CloudModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: PermissionsGuard },
+  ],
 })
 export class AppModule {}

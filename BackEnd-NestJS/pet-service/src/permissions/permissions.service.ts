@@ -15,15 +15,15 @@ export class PermissionsService {
     private permissionModel: Model<Permission>,
   ) {}
 
-  isExist = async (apiPath: string, method: string) => {
-    const permission = await this.permissionModel.findOne({ apiPath, method });
+  isExist = async (key: string, module: string) => {
+    const permission = await this.permissionModel.findOne({ key, module });
 
     return permission ? true : false;
   };
 
   async create(createPermissionDto: CreatePermissionDto, user: IUser) {
-    const { apiPath, method } = createPermissionDto;
-    if (await this.isExist(apiPath, method)) {
+    const { key, module } = createPermissionDto;
+    if (await this.isExist(key, module)) {
       throw new BadGatewayException('This permission is already existed');
     }
 
@@ -31,7 +31,6 @@ export class PermissionsService {
       ...createPermissionDto,
       createdBy: {
         _id: user._id,
-        email: user.email,
       },
     });
   }
@@ -85,7 +84,6 @@ export class PermissionsService {
         ...updatePermissionDto,
         updatedBy: {
           _id: user._id,
-          email: user.email,
         },
       },
     );

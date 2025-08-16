@@ -14,26 +14,26 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import type { IUser } from 'src/users/users.interface';
-import { PermissionsGuard } from 'src/auth/permissions.guard';
-import { CanGet } from 'src/core/service';
+import { PermissionsGuard } from 'src/auth/guards/permissions.guard';
+import { CanDelete, CanGet, CanPatch, CanPost } from 'src/core/service';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
-  @UseGuards(PermissionsGuard)
-  @CanGet('permissions')
+  @Public()
   @Post('test')
-  test(@User() user: IUser) {
-    return this.rolesService.getPermissionsForRole(user.role._id);
+  test() {
+    return this.rolesService.getPermissionsForRole('689f6e674d5811bd20a1bbab');
   }
 
+  @CanPost('roles')
   @Post()
   @ResponseMessage('Create role')
   create(@Body() createRoleDto: CreateRoleDto, @User() user: IUser) {
     return this.rolesService.create(createRoleDto, user);
   }
-
+  @CanGet('roles')
   @Get()
   @ResponseMessage('Get roles paginate')
   findAll(
@@ -43,13 +43,13 @@ export class RolesController {
   ) {
     return this.rolesService.findAll(+current, +pageSize, qs);
   }
-
+  @CanGet('roles/:id')
   @Get(':id')
   @ResponseMessage('Get role by Id')
   findOne(@Param('id') id: string) {
     return this.rolesService.findOne(id);
   }
-
+  @CanPatch('roles')
   @Patch(':id')
   @ResponseMessage('Patch a role')
   update(
@@ -59,7 +59,7 @@ export class RolesController {
   ) {
     return this.rolesService.update(id, updateRoleDto, user);
   }
-
+  @CanDelete('roles')
   @Delete(':id')
   @ResponseMessage('Delete a role')
   remove(@Param('id') id: string, @User() user: IUser) {

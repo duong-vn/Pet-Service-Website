@@ -22,22 +22,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: IPayload) {
-    const { _id, name, email, role } = payload;
-    if (!_id || !name || !email || !role) {
+    const { _id, name, role } = payload;
+    if (!_id || !name || !role) {
       throw new UnauthorizedException('Error while validating');
     }
     //req.user
 
-    const userRole = role as unknown as { _id: string; name: string };
-    const temp = await this.roleService.findOne(userRole._id);
-    const permissions = temp?.toObject().permissions ?? [];
-
     return {
       _id,
       name,
-      email,
       role,
-      permissions,
     };
   }
 }

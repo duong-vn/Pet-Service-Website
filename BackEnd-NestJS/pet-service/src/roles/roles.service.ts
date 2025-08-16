@@ -39,7 +39,6 @@ export class RolesService {
       ...createRoleDto,
       createdBy: {
         _id: user._id,
-        email: user.email,
       },
     });
   }
@@ -82,7 +81,7 @@ export class RolesService {
 
     return this.roleModel.findOne({ _id: id }).populate({
       path: 'permissions',
-      select: { _id: 1, apiPath: 1, key: 1, name: 1, method: 1, module: 1 },
+      select: { _id: 1, key: 1, name: 1, module: 1 },
     });
   }
   async getPermissionsForRole(id) {
@@ -116,7 +115,6 @@ export class RolesService {
         ...updateRoleDto,
         updatedBy: {
           _id: user._id,
-          email: user.email,
         },
       },
     );

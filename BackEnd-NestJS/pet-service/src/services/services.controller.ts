@@ -13,11 +13,12 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import type { IUser } from 'src/users/users.interface';
 import { ResponseMessage, User } from 'src/decorator/customize';
+import { CanDelete, CanPatch, CanPost } from 'src/core/service';
 
 @Controller('services')
 export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
-
+  @CanPost('services')
   @Post()
   create(@Body() createServiceDto: CreateServiceDto, @User() user: IUser) {
     return this.servicesService.create(createServiceDto, user);
@@ -38,7 +39,7 @@ export class ServicesController {
   findOne(@Param('id') id: string) {
     return this.servicesService.findOne(id);
   }
-
+  @CanPatch('services')
   @Patch(':id')
   @ResponseMessage('Patch a services')
   update(
@@ -48,7 +49,7 @@ export class ServicesController {
   ) {
     return this.servicesService.update(id, updateServiceDto, user);
   }
-
+  @CanDelete('services')
   @Delete(':id')
   @ResponseMessage('Delete a service')
   remove(@Param('id') id: string) {

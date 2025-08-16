@@ -24,7 +24,7 @@ export interface IPayload {
   iss: string;
   _id: any;
   name: string;
-  email;
+
   role: {
     _id: any;
     name: string;
@@ -55,7 +55,6 @@ export class AuthService {
       _id,
       name,
       role,
-      email,
     };
 
     const refresh_token = await this.createRefreshToken(payload);
@@ -72,19 +71,22 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
-      _id,
-      createdAt,
+      user: {
+        _id,
+        name,
+        role,
+      },
     };
   };
 
   async localLogin(res: Response, user: IUser) {
-    const { _id, email, role, name, permissions } = user;
+    const { _id, role, name } = user;
+
     const payload: IPayload = {
       sub: 'Local-login',
       iss: 'server',
       _id,
       name,
-      email,
       role,
     };
     const payloadRT = {
@@ -104,7 +106,7 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
-      user: { _id, name, email, role, permissions },
+      user: { _id, name, role },
     };
   }
 
@@ -114,14 +116,7 @@ export class AuthService {
       const isValid = await this.userService.isMatchHashed(pass, user.password);
       if (isValid) {
         // console.log('>>>role', role, 'type of role', typeof role);
-        const userRole = user.role as any;
-        const temp = await this.roleService.findOne(userRole._id);
-
-        const objUser = {
-          ...user.toObject(),
-          permissions: temp?.permissions ?? [],
-        };
-        return objUser;
+        return user;
       }
     }
     return null;
@@ -176,12 +171,12 @@ export class AuthService {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
 
-      const { name, role, email } = user;
+      const { name, role } = user;
       const userRole = role as any as {
-        _id: string;
+        _id: any;
         name: string;
       };
-      const temp = await this.roleService.findOne(userRole._id.toString());
+
       const id = _id.toString();
       const payload: IPayload = {
         sub: 'refresh',
@@ -189,7 +184,6 @@ export class AuthService {
         _id: id,
         name,
         role: userRole,
-        email,
       };
 
       this.createRefreshToken(payload);
@@ -206,9 +200,7 @@ export class AuthService {
         user: {
           _id,
           name,
-          email,
           role,
-          permissions: temp?.permissions ?? [],
         },
       };
     } catch (Error) {
@@ -229,7 +221,15 @@ export class AuthService {
     return this.userService.register(registerUserDto);
   }
 
-  getUser(user: IUser) {
-    return this.userService.findOne(user._id);
+  async getUser(user: IUser) {
+    const permissions = await this.roleService.getPermissionsForRole(
+      user.role._id,
+    );
+    const userInfo = (await this.userService.findOne(user._id))?.toObject();
+
+    return {
+      ...userInfo,
+      permissions,
+    };
   }
 }

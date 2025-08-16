@@ -1,14 +1,19 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY, PERMISSIONS_KEY } from 'src/decorator/customize';
-import { PermissionsService } from 'src/permissions/permissions.service';
+
 import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(
     private refl: Reflector,
-    private rolesService: RolesService,
+    private readonly rolesService: RolesService,
   ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {

@@ -8,6 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtStrategy } from './passport/jwt.strategy';
 import { RolesModule } from 'src/roles/roles.module';
 import { LocalStrategy } from './passport/local.strategy';
+import { PermissionsGuard } from './guards/permissions.guard';
 
 @Module({
   imports: [

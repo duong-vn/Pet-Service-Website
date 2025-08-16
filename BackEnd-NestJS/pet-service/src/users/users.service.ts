@@ -12,7 +12,7 @@ import { IGoogle } from 'src/auth/google-auth/google';
 import { checkMongoId } from 'src/core/service';
 import aqp from 'api-query-params';
 import { Role } from 'src/roles/schemas/role.schema';
-import { USER_ROLE } from 'src/database/sample';
+import { ADMIN_ROLE, USER_ROLE } from 'src/database/sample';
 
 @Injectable()
 export class UsersService {
@@ -138,7 +138,24 @@ export class UsersService {
         ...updateUserDto,
         updatedBy: {
           _id: user._id,
-          email: user.email,
+        },
+      },
+    );
+  }
+
+  async updateMySelf(updateUserDto: UpdateUserDto, user: IUser) {
+    let { password } = updateUserDto;
+    if (password) {
+      password = await this.getHash(password);
+      updateUserDto.password = password;
+    }
+    return this.userModel.updateOne(
+      { _id: user._id },
+      {
+        ...updateUserDto,
+
+        updatedBy: {
+          _id: user._id,
         },
       },
     );
@@ -169,19 +186,17 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id))
       throw new BadRequestException('Invalid user id');
     const foundUser = await this.userModel.findOne({ _id: id });
-    // if (foundUser.email === this.configService.get<string>('ADMIN_EMAIL')) {
-    //   throw new BadRequestException('Cannot delete admin');
-    // }
+    if (foundUser?.email === ADMIN_ROLE) {
+      throw new BadRequestException('Cannot delete an admin');
+    }
     await this.userModel.updateOne(
       { _id: id },
       {
         deletedBy: {
           _id: user._id,
-          email: user.email,
         },
-      }, // Update the deletedBy field with the user's ID
+      },
     );
-    // return this.userModel.softDelete({ _id: id });
   }
 
   updateUserToken = async (refresh_token: string | null, _id: string) => {

@@ -12,8 +12,8 @@ import { AuthService } from './auth.service';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import type { Request, Response } from 'express';
 import type { IUser } from 'src/users/users.interface';
-import { use } from 'passport';
-import { LocalAuthGuard } from './local-auth.guard';
+
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 
 @Controller('auth')

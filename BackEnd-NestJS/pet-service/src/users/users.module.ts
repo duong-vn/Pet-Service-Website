@@ -4,6 +4,8 @@ import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { Role, RoleSchema } from 'src/roles/schemas/role.schema';
+import { RolesModule } from 'src/roles/roles.module';
+import { PermissionsGuard } from 'src/auth/guards/permissions.guard';
 
 @Module({
   imports: [

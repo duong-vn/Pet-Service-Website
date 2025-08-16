@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsIn,
@@ -32,10 +33,12 @@ export class CreateUserDto {
 
   @IsOptional()
   address: string;
+
   @IsOptional()
   age: number;
+
   @IsOptional()
-  phone: number;
+  phone: string;
 }
 
 export class RegisterUserDto {

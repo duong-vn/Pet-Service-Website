@@ -1,234 +1,187 @@
-import { ObjectId } from 'mongodb';
-
+import { Types } from 'mongoose';
 export const ADMIN_ROLE = 'admin';
 export const USER_ROLE = 'user';
 export const MANAGER_ROLE = 'manager';
 export const BANNED_ROLE = 'banned';
 
+/** 1) PERMISSIONS */
 export const INIT_PERMISSIONS = [
   // USERS
   {
-    _id: '64b462e7af680384a2c00a01',
-    name: 'Tạo mới user',
-    apiPath: '/api/users',
-    method: 'POST',
+    _id: new Types.ObjectId().toString(),
+    name: 'Cập nhật người dùng',
+    key: 'users:patch',
     module: 'USERS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a02',
-    name: 'Lấy danh sách user (phân trang',
-    apiPath: '/api/users',
-    method: 'GET',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem danh sách người dùng',
+    key: 'users:get',
     module: 'USERS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a03',
-    name: 'Cập nhật thông tin user',
-    apiPath: '/api/users/:id',
-    method: 'PATCH',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem chi tiết người dùng',
+    key: 'users/:id:get',
     module: 'USERS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a04',
-    name: 'Xoá 1 user',
-    apiPath: '/api/users/:id',
-    method: 'DELETE',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xóa người dùng',
+    key: 'users:delete',
     module: 'USERS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
+  },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Tạo người dùng',
+    key: 'users:post',
+    module: 'USERS',
   },
 
   // SERVICES
   {
-    _id: '64b462e7af680384a2c00a05',
-    name: 'Tạo mới dịch vụ',
-    apiPath: '/api/services',
-    method: 'POST',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xóa dịch vụ',
+    key: 'services:delete',
     module: 'SERVICES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a06',
-    name: 'Lấy danh sách dịch vụ (phân trang',
-    apiPath: '/api/services',
-    method: 'GET',
-    module: 'SERVICES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '64b462e7af680384a2c00a07',
+    _id: new Types.ObjectId().toString(),
     name: 'Cập nhật dịch vụ',
-    apiPath: '/api/services/:id',
-    method: 'PATCH',
+    key: 'services:patch',
     module: 'SERVICES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a08',
-    name: 'Xoá dịch vụ',
-    apiPath: '/api/services/:id',
-    method: 'DELETE',
+    _id: new Types.ObjectId().toString(),
+    name: 'Tạo dịch vụ',
+    key: 'services:post',
     module: 'SERVICES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
 
   // ROLES
   {
-    _id: '64b462e7af680384a2c00a09',
-    name: 'Tạo mới role',
-    apiPath: '/api/roles',
-    method: 'POST',
+    _id: new Types.ObjectId().toString(),
+    name: 'Tạo vai trò',
+    key: 'roles:post',
     module: 'ROLES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a0a',
-    name: 'Lấy danh sách role (phân trang',
-    apiPath: '/api/roles',
-    method: 'GET',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem danh sách vai trò',
+    key: 'roles:get',
     module: 'ROLES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a0b',
-    name: 'Cập nhật role',
-    apiPath: '/api/roles/:id',
-    method: 'PATCH',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem chi tiết vai trò',
+    key: 'roles/:id:get',
     module: 'ROLES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a0c',
-    name: 'Xoá role',
-    apiPath: '/api/roles/:id',
-    method: 'DELETE',
+    _id: new Types.ObjectId().toString(),
+    name: 'Cập nhật vai trò',
+    key: 'roles:patch',
     module: 'ROLES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
+  },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Xóa vai trò',
+    key: 'roles:delete',
+    module: 'ROLES',
   },
 
   // PERMISSIONS
   {
-    _id: '64b462e7af680384a2c00a0d',
-    name: 'Tạo mới permission',
-    apiPath: '/api/permissions',
-    method: 'POST',
+    _id: new Types.ObjectId().toString(),
+    name: 'Tạo quyền',
+    key: 'permissions:post',
     module: 'PERMISSIONS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a0e',
-    name: 'Lấy danh sách permission (phân trang',
-    apiPath: '/api/permissions',
-    method: 'GET',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem danh sách quyền',
+    key: 'permissions:get',
     module: 'PERMISSIONS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a0f',
-    name: 'Cập nhật permission',
-    apiPath: '/api/permissions/:id',
-    method: 'PATCH',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem chi tiết quyền',
+    key: 'permissions/:id:get',
     module: 'PERMISSIONS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
   },
   {
-    _id: '64b462e7af680384a2c00a10',
-    name: 'Xoá permission',
-    apiPath: '/api/permissions/:id',
-    method: 'DELETE',
+    _id: new Types.ObjectId().toString(),
+    name: 'Cập nhật quyền',
+    key: 'permissions:patch',
     module: 'PERMISSIONS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
+  },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Xóa quyền',
+    key: 'permissions:delete',
+    module: 'PERMISSIONS',
   },
 
   // APPOINTMENTS
   {
-    _id: '64b462e7af680384a2c00a11',
-    name: 'Tạo mới lịch hẹn',
-    apiPath: '/api/appointments',
-    method: 'POST',
+    _id: new Types.ObjectId().toString(),
+    name: 'Xóa lịch hẹn',
+    key: 'appointments:delete',
     module: 'APPOINTMENTS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
+  },
+] as const;
+
+/** helper: lấy _id theo key */
+const idOf = (key: (typeof INIT_PERMISSIONS)[number]['key']) =>
+  INIT_PERMISSIONS.find((p) => p.key === key)!._id;
+
+/** 2) ROLES (name, description, isActive, permission[]) */
+export const INIT_ROLES = [
+  {
+    _id: new Types.ObjectId('689f6e674d5811bd20a1bbab'),
+    name: ADMIN_ROLE,
+    description: 'Toàn quyền quản trị hệ thống',
+    isActive: true,
+    permissions: INIT_PERMISSIONS.map((p) => p._id), // admin có tất cả
   },
   {
-    _id: '64b462e7af680384a2c00a12',
-    name: 'Lấy danh sách lịch hẹn (phân trang',
-    apiPath: '/api/appointments',
-    method: 'GET',
-    module: 'APPOINTMENTS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
+    _id: new Types.ObjectId('689f6e674d5811bd20a1bbaa'),
+    name: MANAGER_ROLE,
+    description: 'Quản lý nghiệp vụ: dịch vụ, lịch hẹn, người dùng (mức vừa)',
+    isActive: true,
+    permissions: [
+      // USERS: xem + cập nhật (không tạo/xóa)
+      idOf('users:get'),
+      idOf('users/:id:get'),
+      idOf('users:patch'),
+
+      // SERVICES: full CRUD trừ read (bạn chưa định nghĩa GET cho services, nếu có thì thêm)
+      idOf('services:post'),
+      idOf('services:patch'),
+      idOf('services:delete'),
+
+      // ROLES: chỉ xem
+      idOf('roles:get'),
+      idOf('roles/:id:get'),
+
+      // PERMISSIONS: chỉ xem
+      idOf('permissions:get'),
+      idOf('permissions/:id:get'),
+
+      // APPOINTMENTS: có quyền xóa lịch hẹn (duyệt/hủy)
+      idOf('appointments:delete'),
+    ],
   },
   {
-    _id: '64b462e7af680384a2c00a13',
-    name: 'Xoá lịch hẹn',
-    apiPath: '/api/appointments/:id',
-    method: 'DELETE',
-    module: 'APPOINTMENTS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
+    _id: new Types.ObjectId('689f6e674d5811bd20a1bba9'),
+    name: USER_ROLE,
+    description: 'Người dùng thường, tự thao tác phần của mình',
+    isActive: true,
+    permissions: [
+      // Người dùng thường không có đặc quyền admin,
+      // các route self-service nên dựa vào JWT + ownership, không cần permission.
+      // Nếu bạn muốn cho quyền “xem danh sách vai trò/quyền” thì có thể thêm:
+      // idOf("services:post") ... (nhưng thường KHÔNG)
+    ],
   },
-  {
-    _id: '64b462e7af680384a2c00a14',
-    name: 'Cập nhật trạng thái lịch hẹn',
-    apiPath: '/api/appointments/status/:id',
-    method: 'PATCH',
-    module: 'APPOINTMENTS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '64b462e7af680384a2c00a15',
-    name: 'Lấy danh sách slot trống trong ngày',
-    apiPath: '/api/appointments/day-slots',
-    method: 'POST',
-    module: 'APPOINTMENTS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '64b462e7af680384a2c00a16',
-    name: 'Lấy 1 lịch hẹn',
-    apiPath: '/api/appointments/:id',
-    method: 'GET',
-    module: 'APPOINTMENTS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '64b462e7af680384a2c00a26',
-    name: 'Lấy 1 người dùng',
-    apiPath: '/api/users/:id',
-    method: 'GET',
-    module: 'USERS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '64b462e7af680384a2c01a26',
-    name: 'Lấy 1 dịch vụ',
-    apiPath: '/api/services/:id',
-    method: 'GET',
-    module: 'SERVICES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '64b462e7af682384a2c01a26',
-    name: 'Lấy 1 quyền',
-    apiPath: '/api/permissions/:id',
-    method: 'GET',
-    module: 'PERMISSIONS',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '64b462a7af682384a2c01a26',
-    name: 'Lấy 1 quyền',
-    apiPath: '/api/roles/:id',
-    method: 'GET',
-    module: 'ROLES',
-    createdBy: { _id: '68898914c45a19e98c65adfe', email: 'duong@gmail.com' },
-  },
-  {
-    _id: '689db769b8b0e4b1242cc1eb',
-    name: 'Xóa ảnh trên cloud',
-    apiPath: '/api/cloud/delete',
-    method: 'DELETE',
-    module: 'CLOUD',
-    createdBy: { _id: '68983db643ac6b12fbd53b9e', email: 'isdon243@gmail.com' },
-  },
-];
+] as const;
