@@ -186,4 +186,26 @@ export class MailService {
 
     return { message: 'Email sent' };
   }
+
+  async toVerify(costumerPayload: {
+    url: string;
+    name: string;
+    email: string;
+  }) {
+    const { url: verifyUrl, name: userName, email } = costumerPayload;
+    if (!verifyUrl || !userName || !email) {
+      throw new BadGatewayException('No user found or missing infomation');
+    }
+
+    return await this.mailerService.sendMail({
+      to: email,
+      from: '"ZoZo" support@example.com', // override default from
+      subject: 'Dịch vụ ZoZo',
+      template: 'magic_link_template',
+      context: {
+        userName,
+        verifyUrl,
+      },
+    });
+  }
 }

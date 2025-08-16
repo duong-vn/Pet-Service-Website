@@ -6,15 +6,15 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop()
+  @Prop({ reqired: true })
   name: string;
 
-  @Prop()
+  @Prop({ reqired: true })
   email: string;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
   password: string | null;
-  @Prop()
+  @Prop({ reqired: true })
   provider: string;
 
   @Prop()
@@ -35,7 +35,8 @@ export class User {
   role: mongoose.Schema.Types.ObjectId;
   @Prop()
   phone: string;
-
+  @Prop({ type: mongoose.Schema.Types.Mixed })
+  emailVerifiedAt: Date | null;
   @Prop()
   refreshToken: string;
 

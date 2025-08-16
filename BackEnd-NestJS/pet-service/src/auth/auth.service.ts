@@ -1,5 +1,6 @@
 import {
   BadGatewayException,
+  BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { RolesService } from 'src/roles/roles.service';
 import { use } from 'passport';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { getHashes } from 'crypto';
+import { MailService } from 'src/mail/mail.service';
 
 export interface IPayload {
   sub: string;
@@ -38,6 +40,7 @@ export class AuthService {
     private userService: UsersService,
     private roleService: RolesService,
     private configService: ConfigService,
+    private mail: MailService,
     private googleAuthService: GoogleAuthService,
   ) {}
 
@@ -217,8 +220,45 @@ export class AuthService {
     }
   }
 
-  async register(registerUserDto: RegisterUserDto) {
-    return this.userService.register(registerUserDto);
+  createMagicToken(_id: string) {
+    const payload = {
+      sub: 'magic token',
+      iss: 'server',
+      _id,
+    };
+    return this.jwtService.sign(payload, {
+      secret: this.configService.getOrThrow('VERIFY_TOKEN_SECRET'),
+      expiresIn: this.configService.getOrThrow('VERIFY_TOKEN_EXPIRE'),
+    });
+  }
+
+  async register(userData: RegisterUserDto) {
+    // check if user is existed
+    try {
+      const user = await this.userService.isEmailExist(userData.email);
+      // create new user if email doesnt exist and send email
+      if (!user) {
+        const newUser = await this.userService.create(userData);
+        const token = await this.createMagicToken(newUser._id.toString());
+        const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
+        const payload = {
+          url,
+          name: newUser.name,
+          email: newUser.email,
+        };
+
+        await this.mail.toVerify(payload);
+        return;
+      }
+      //if its was created by local throw exception
+      if (user.provider == 'local') {
+        throw new BadRequestException('Email already exists');
+      }
+
+      return await this.userService.mergeAccount(user._id.toString(), userData);
+    } catch (e) {
+      throw new BadRequestException('Something went wrong', e.message);
+    }
   }
 
   async getUser(user: IUser) {

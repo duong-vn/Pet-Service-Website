@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import helmet from 'helmet';
+import { TrimStringsPipe } from './core/trim-string.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -15,6 +16,7 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.useGlobalPipes(
+    new TrimStringsPipe(),
     new ValidationPipe({
       whitelist: true,
     }),

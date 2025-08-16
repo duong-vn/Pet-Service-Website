@@ -50,10 +50,10 @@ export class UsersService {
       email,
     });
 
-    return user ? true : false;
+    return user ? user : false;
   }
 
-  async create(dto: CreateUserDto) {
+  async create(dto: CreateUserDto | RegisterUserDto) {
     const hashedPassword = this.getHash(dto.password);
     const role = await this.roleModel
       .findOne({ name: USER_ROLE })
@@ -63,12 +63,11 @@ export class UsersService {
       ...dto,
       role,
       password: hashedPassword,
+      emailVerifiedAt: null,
+      provider: 'local',
     });
     // return 'This action adds a new user';
-    return {
-      _id: newUser._id,
-      createdAt: newUser.createdAt,
-    };
+    return newUser;
   }
 
   async findAll(currentPage: number, limit: number, qs: any) {
@@ -160,26 +159,14 @@ export class UsersService {
       },
     );
   }
-  async register(userData: RegisterUserDto) {
-    if (await this.isEmailExist(userData.email)) {
-      throw new BadRequestException('Email already exists');
-    }
-    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
 
-    const hashedPassword = this.getHash(userData.password);
-    const user = await this.userModel.create({
-      name: userData.name,
-      email: userData.email,
-      address: userData.address,
-      gender: userData.gender,
-      age: userData.age,
-      role: userRole?._id,
-      password: hashedPassword,
-    });
-    return {
-      _id: user._id,
-      createdAt: user.createdAt,
-    };
+  async mergeAccount(id: string, dto: RegisterUserDto) {
+    checkMongoId(id);
+    const hashedPassword = await this.getHash(dto.password);
+    return await this.userModel.updateOne(
+      { _id: id },
+      { ...dto, password: hashedPassword, provider: 'local' },
+    );
   }
 
   async remove(id: string, user: IUser) {

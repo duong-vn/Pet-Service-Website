@@ -42,5 +42,6 @@ import { Role, RoleSchema } from 'src/roles/schemas/role.schema';
 
   controllers: [MailController],
   providers: [MailService],
+  exports: [MailService],
 })
 export class MailModule {}
