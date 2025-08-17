@@ -163,7 +163,6 @@ export class AuthService {
         secret: this.configService.getOrThrow('JWT_REFRESH_TOKEN_SECRET'),
       });
       const { _id } = verify;
-      console.log(verify);
 
       const user = await this.userService.findOne(_id);
 
@@ -171,7 +170,7 @@ export class AuthService {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
       const { refreshToken: userRT } = user;
-      if (!(await this.userService.isMatchHashed(refresh_token, userRT))) {
+      if (!(await this.userService.isMatchHashed(refresh_token, userRT!))) {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
 
@@ -238,14 +237,27 @@ export class AuthService {
     try {
       const user = await this.userService.isEmailExist(userData.email);
       // create new user if email doesnt exist and send email
-      if (!user || !user.emailVerifiedAt) {
-        const newUser = await this.userService.create(userData);
+      if (!user) {
+        let newUser = await this.userService.create(userData);
         const token = await this.createMagicToken(newUser._id.toString());
         const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
         const payload = {
           url,
           name: newUser.name,
           email: newUser.email,
+        };
+
+        await this.mail.toVerify(payload);
+        return;
+      }
+      if (!user.emailVerifiedAt) {
+        await this.userService.mergeAccount(user._id.toString(), userData);
+        const token = await this.createMagicToken(user._id.toString());
+        const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
+        const payload = {
+          url,
+          name: user.name,
+          email: user.email,
         };
 
         await this.mail.toVerify(payload);
@@ -266,11 +278,27 @@ export class AuthService {
     const permissions = await this.roleService.getPermissionsForRole(
       user.role._id,
     );
-    const userInfo = (await this.userService.findOne(user._id))?.toObject();
+    const userInfo = await this.userService.findOne(user._id);
 
     return {
       ...userInfo,
       permissions,
     };
+  }
+
+  async verifyToken(token: string): Promise<IUser | null> {
+    try {
+      const res = this.jwtService.verify(token, {
+        secret: this.configService.getOrThrow('VERIFY_TOKEN_SECRET'),
+      });
+      const { _id } = res;
+      const date = new Date();
+      await this.userService.verify(_id, new Date());
+      const user = await this.userService.findOne(_id);
+
+      return user;
+    } catch (e) {
+      throw new BadRequestException('Token hết hạn hoặc không hợp lệ');
+    }
   }
 }

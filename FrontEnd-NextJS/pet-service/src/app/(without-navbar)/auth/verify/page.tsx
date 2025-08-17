@@ -1,4 +1,5 @@
 "use client";
+import { verifyToken } from "@/apiServices/auth/services";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -6,13 +7,20 @@ import { useEffect, useState } from "react";
 export default function VerifyEmailPage() {
   const [token, setToken] = useState(false);
   const router = useRouter();
+
+  const verify = async (token: string) => {
+    await verifyToken(token);
+  };
+
   useEffect(() => {
     const hash = window.location.hash.slice(1); // phần sau '#'
+    console.log(hash);
     if (!hash) {
       setToken(false);
       return;
     } else {
       setToken(true);
+      verify(hash);
     }
 
     // Xóa token khỏi URL cho sạch (không reload trang)
@@ -37,11 +45,11 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     );
-  } else {
-    return (
-      <>
-        <LoadingScreen />
-      </>
-    );
   }
+
+  return (
+    <>
+      <LoadingScreen />
+    </>
+  );
 }

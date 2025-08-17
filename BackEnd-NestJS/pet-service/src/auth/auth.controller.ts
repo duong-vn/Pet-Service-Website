@@ -7,6 +7,7 @@ import {
   Res,
   UseGuards,
   HttpCode,
+  BadRequestException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
@@ -64,6 +65,19 @@ export class AuthController {
     const refresh_token = req.cookies['refresh_token'];
 
     return this.authService.processNewToken(refresh_token, res);
+  }
+
+  @Public()
+  @ResponseMessage('Verify successfuly')
+  @HttpCode(200)
+  @Post('verify-token')
+  async verify(
+    @Body('token') token: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = await this.authService.verifyToken(token);
+    if (!user) throw Error('Cannot find user');
+    return this.authService.localLogin(res, user);
   }
 
   @Public()

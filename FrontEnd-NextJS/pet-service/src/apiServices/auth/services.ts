@@ -45,3 +45,14 @@ export const isRegisterable = async (payload: IRegister) => {
   toast.info(`Xin hãy kiểu tra email của bạn để xác nhận thông tin.`);
   return true;
 };
+
+export const verifyToken = async (token: string) => {
+  const res = await api.post("/api/auth/verify-token", { token });
+  console.log(res);
+  if (isResOk(res.status)) {
+    toast.success("Xác nhận thành công");
+    setAT(res.data.data.access_token);
+    return;
+  }
+  toast.error(res.data.message);
+};

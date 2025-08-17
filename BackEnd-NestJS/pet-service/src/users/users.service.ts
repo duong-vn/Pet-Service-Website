@@ -102,7 +102,7 @@ export class UsersService {
     };
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<IUser | null> {
     // return `This action returns a #${id} user`;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Not found user');
@@ -113,7 +113,8 @@ export class UsersService {
         _id: id,
       })
       .select('-password')
-      .populate([{ path: 'role', select: { name: 1 } }]);
+      .populate([{ path: 'role', select: { name: 1 } }])
+      .lean<IUser>();
   }
   findOneByUsername(username: string) {
     return this.userModel
@@ -138,6 +139,17 @@ export class UsersService {
         updatedBy: {
           _id: user._id,
         },
+      },
+    );
+  }
+
+  async verify(id: string, date: Date) {
+    checkMongoId(id);
+
+    return await this.userModel.updateOne(
+      { _id: id },
+      {
+        emailVerifiedAt: date,
       },
     );
   }
