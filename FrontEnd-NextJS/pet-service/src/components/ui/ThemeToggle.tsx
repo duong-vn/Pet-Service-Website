@@ -3,6 +3,10 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
 
+interface IProps {
+  width: string;
+}
+
 export default function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -16,7 +20,9 @@ export default function ThemeToggle() {
       onClick={() => {
         setTheme(isDark ? "light" : "dark");
       }}
-      className="hover:p-3 transition-all duration-100"
+      className={[
+        "p-3 min-w-40 flex transition all duration-100 justify-end group",
+      ].join("")}
     >
       {theme === "dark" ? (
         <FaSun className="text-yellow-400 " size={28} />

@@ -47,7 +47,7 @@ export class AppointmentsService {
         },
       });
     } catch (error) {
-      throw new BadRequestException('Something went wrong', error.message);
+      throw new BadRequestException(error.message);
     }
   }
 

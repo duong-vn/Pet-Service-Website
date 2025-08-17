@@ -25,7 +25,7 @@ export default function NavBar() {
   const lastY = useRef(0);
   const iconClass = useRef(
     `transition-transform duration-100 
-    
+    min-w-40
     hover:ring
     rounded-3xl
     dark:ring-background-light
@@ -99,7 +99,7 @@ export default function NavBar() {
           ) : (
             <Link
               className={[
-                "text-3xl  p-3 font-display flex ",
+                "text-3xl  p-3 font-display flex  ",
                 iconClass.current,
               ].join(" ")}
               href="/"
@@ -112,9 +112,9 @@ export default function NavBar() {
           <Link
             href="/services"
             className={[
-              " hover:ring p-2 rounded-3xl dark:ring-background-light ring-background-dark",
-              " hidden hover:scale-105 ",
-              scrolling ? "" : "xl:flex ",
+              " hover:ring p-1 rounded-3xl dark:ring-background-light ring-background-dark",
+              " hidden hover:scale-105 min-w-40 ",
+              scrolling ? "" : "xl:flex justify-center",
             ].join(" ")}
           >
             <MdHomeRepairService className="w-10 h-10  " />
@@ -125,7 +125,7 @@ export default function NavBar() {
             className={[
               iconClass.current,
               "p-2  hover:scale-110 ",
-              scrolling ? " flex " : " hidden",
+              scrolling ? " flex justify-center" : " hidden",
             ].join(" ")}
           >
             <FaChevronUp className="w-10 h-10  " />
@@ -136,8 +136,8 @@ export default function NavBar() {
             href="/view "
             className={[
               iconClass.current,
-              "p-1 hidden hover:scale-110 transition-none",
-              scrolling ? " " : "xl:flex ",
+              "p-2 hidden hover:scale-110 transition-none",
+              scrolling ? " " : "xl:flex justify-center",
             ].join(" ")}
           >
             {" "}
@@ -149,7 +149,7 @@ export default function NavBar() {
             className={[
               iconClass.current,
               "hidden p-2  hover:scale-110 ",
-              scrolling ? " " : "xl:flex ",
+              scrolling ? " " : "xl:flex justify-center",
             ].join(" ")}
           >
             <FaShoppingCart className="w-7 h-7  " />
@@ -158,9 +158,10 @@ export default function NavBar() {
           <div
             className={[
               iconClass.current,
-              " hover:p-0 flex cursor-pointer m-3 ",
+              "  flex cursor-pointer justify-end ",
             ].join("")}
           >
+            <div></div>
             <ThemeToggle />
           </div>
         </div>

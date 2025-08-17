@@ -7,6 +7,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        //Error
+        error: "#DC2626",
+
         // Light mode
         "primary-light": "#DBA39A",
         "secondary-light": "#FFB4A2",

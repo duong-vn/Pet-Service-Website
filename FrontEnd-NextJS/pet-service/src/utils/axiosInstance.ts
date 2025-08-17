@@ -1,12 +1,16 @@
 import { BASE_URL } from "@/apiServices/services";
 import { getAT, setAT } from "@/lib/authToken";
 import axios from "axios";
+import { toast } from "sonner";
 
 axios.defaults.baseURL = BASE_URL;
 
 export const api = axios.create({
   baseURL: BASE_URL, // proxy tới NestJS
   withCredentials: true, // để cookie RT tự gửi khi /auth/refresh
+  validateStatus: (status) => {
+    return status >= 200 && status < 500 && status != 401;
+  },
 });
 
 api.interceptors.request.use((cfg) => {
@@ -21,6 +25,7 @@ api.interceptors.response.use(
   (r) => r,
   async (err) => {
     const cfg = err.config || {};
+
     if (err?.response?.status === 401 && !cfg._retry) {
       cfg._retry = true;
 

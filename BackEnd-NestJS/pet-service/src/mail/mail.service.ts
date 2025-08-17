@@ -181,7 +181,7 @@ export class MailService {
       await this.toClient(sendEmailPayload);
       await this.toStaff(sendEmailPayload);
     } catch (error) {
-      throw new BadGatewayException('Something went wrong', error.message);
+      throw new BadGatewayException(error.message);
     }
 
     return { message: 'Email sent' };

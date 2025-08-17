@@ -10,7 +10,7 @@ export default function BootstrapAuth() {
     api
       .post("/api/auth/refresh")
       .then((res) => {
-        setAT(res.data.accessToken);
+        setAT(res.data.data.access_token);
       })
       .catch(() => {
         setAT(null);

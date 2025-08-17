@@ -91,7 +91,7 @@ export default function Home() {
               Boss đẹp – Sen vui, đến ZOZO thôi!
             </h1>
 
-            <div className="xl:flex xl:mx-10 border-b-2 border-background-light/40 dark:border-white/10">
+            <div className=" block 2xl:flex xl:mx-10 border-b-2 border-background-light/40 dark:border-white/10">
               <p className="text-xl pb-6 p-3 flex items-center xl:leading-[60px] xl:relative xl:-top-20 ">
                 Tại đây, bạn có thể dễ dàng lựa chọn các dịch vụ như tắm rửa,
                 tỉa lông, cắt móng hay spa cho thú cưng và đặt lịch trực tiếp

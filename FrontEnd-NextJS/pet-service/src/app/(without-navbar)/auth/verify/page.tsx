@@ -1,34 +1,47 @@
 "use client";
+import LoadingScreen from "@/components/ui/LoadingScreen";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function VerifyEmailPage() {
-  const [msg, setMsg] = useState("Đang xác minh…");
-
+  const [token, setToken] = useState(false);
+  const router = useRouter();
   useEffect(() => {
-    const token = window.location.hash.slice(1); // phần sau '#'
-    if (!token) {
-      setMsg("Thiếu token");
+    const hash = window.location.hash.slice(1); // phần sau '#'
+    if (!hash) {
+      setToken(false);
       return;
+    } else {
+      setToken(true);
     }
-    window.alert(token);
+
     // Xóa token khỏi URL cho sạch (không reload trang)
-    history.replaceState({}, "", "/verify-email");
-
-    (async () => {
-      try {
-        // const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/auth/verify', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   credentials: 'include',
-        //   body: JSON.stringify({ token }),
-        // });
-        // const data = await res.json();
-        // setMsg(data.ok ? 'Xác minh thành công!' : (data.message || 'Xác minh thất bại'));
-      } catch {
-        setMsg("Lỗi kết nối máy chủ");
-      }
-    })();
+    history.replaceState({}, "", "verify-email");
   }, []);
-
-  return <main className="mx-auto max-w-md p-6 text-center">{msg}</main>;
+  if (!token) {
+    return (
+      <div className="flex justify-center items-center flex-col text-center h-screen dark:text-primary-light text-secondary-dark">
+        <h1 className="text-5xl">
+          Vui lòng kiểm tra email của bạn để xác nhận.
+        </h1>
+        <div
+          className={[
+            "w-[400] p-5 mt-4 text-2xl",
+            " dark:hover:bg-accent-dark border border-black dark:border-white/70 rounded-xl",
+            " hover:bg-primary-light cursor-pointer",
+            "transition-all duration-100",
+          ].join(" ")}
+          onClick={() => router.replace("/")}
+        >
+          Quay về trang chủ
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <>
+        <LoadingScreen />
+      </>
+    );
+  }
 }

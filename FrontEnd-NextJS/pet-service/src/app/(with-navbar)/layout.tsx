@@ -11,6 +11,7 @@ import Sidebar from "@/components/layout/SideBar";
 import { ThemeProvider } from "@/providers/theme.provider";
 import Footer from "@/components/layout/Footer";
 import BootstrapAuth from "@/components/features/auth/BoostrapAuth";
+import { Toaster } from "sonner";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -36,26 +37,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default function HomeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" suppressHydrationWarning>
-      <body
-        className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-color  duration-700 `}
-      >
-        <ThemeProvider>
-          <SidebarContextProvider>
-            <NavBar />
-            <Sidebar />
-          </SidebarContextProvider>
-          <BootstrapAuth />
-          <div className="min-h-screen"> {children} </div>
-          <Footer />
-        </ThemeProvider>
-      </body>
-    </html>
+    <div
+      className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-color  duration-700 `}
+    >
+      <ThemeProvider>
+        <SidebarContextProvider>
+          <NavBar />
+          <Sidebar />
+        </SidebarContextProvider>
+        <BootstrapAuth />
+        <Toaster richColors position="top-right" />
+        <div className="min-h-screen"> {children} </div>
+        <Footer />
+      </ThemeProvider>
+    </div>
   );
 }

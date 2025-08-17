@@ -163,6 +163,7 @@ export class AuthService {
         secret: this.configService.getOrThrow('JWT_REFRESH_TOKEN_SECRET'),
       });
       const { _id } = verify;
+      console.log(verify);
 
       const user = await this.userService.findOne(_id);
 
@@ -207,7 +208,7 @@ export class AuthService {
         },
       };
     } catch (Error) {
-      throw new BadGatewayException('Something went wrong', Error.message);
+      throw new BadRequestException(Error.message);
     }
   }
   async logout(res: Response, user: IUser) {
@@ -216,7 +217,7 @@ export class AuthService {
       await this.userService.updateUserToken(null, user._id.toString());
       return { message: 'Logout successful' };
     } catch (error) {
-      throw new BadGatewayException('Something went wrong', error.message);
+      throw new BadGatewayException(error.message);
     }
   }
 
@@ -237,7 +238,7 @@ export class AuthService {
     try {
       const user = await this.userService.isEmailExist(userData.email);
       // create new user if email doesnt exist and send email
-      if (!user) {
+      if (!user || !user.emailVerifiedAt) {
         const newUser = await this.userService.create(userData);
         const token = await this.createMagicToken(newUser._id.toString());
         const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
@@ -257,7 +258,7 @@ export class AuthService {
 
       return await this.userService.mergeAccount(user._id.toString(), userData);
     } catch (e) {
-      throw new BadRequestException('Something went wrong', e.message);
+      throw new BadRequestException(e.message);
     }
   }
 

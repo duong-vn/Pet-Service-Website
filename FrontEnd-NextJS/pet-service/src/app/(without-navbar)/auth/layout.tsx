@@ -13,19 +13,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" suppressHydrationWarning>
-      <body className={` font-normal bg-background-light`}>
-        <GoogleOAuthProvider clientId={process.env.CLIENT_ID!}>
-          <Toaster position="top-right" richColors />
-          {children}
-        </GoogleOAuthProvider>
-      </body>
-    </html>
+    <>
+      <GoogleOAuthProvider clientId={process.env.CLIENT_ID!}>
+        {children}
+      </GoogleOAuthProvider>
+    </>
   );
 }

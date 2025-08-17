@@ -1,4 +1,5 @@
 import axios from "axios";
+import { stat } from "fs";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -23,3 +24,11 @@ export const handleGoogleLogin = async (
   console.log(login);
   return login.data;
 };
+
+export function isNumericString(s: string) {
+  return /^\d+$/.test(s); // chỉ 0-9, không khoảng trắng/ký tự khác
+}
+
+export function isResOk(statusCode: number) {
+  return statusCode >= 200 && statusCode < 300;
+}

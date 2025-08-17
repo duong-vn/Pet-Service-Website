@@ -11,11 +11,11 @@ export default function Login({ onSuccess, setErr }: IProp) {
       <GoogleLogin
         onSuccess={onSuccess}
         onError={() => setErr("Google login error. Vui lòng thử lại.")}
-        theme="filled_black" // light | filled_black | outline
+        theme="filled_black"
         shape="circle" // pill | rectangular | circle
         logo_alignment="left" // left | center
-        width="280"
-        useOneTap={false} // bạn có thể bật nếu muốn
+        width="260"
+        useOneTap={true} // bạn có thể bật nếu muốn
       />
     </>
   );
