@@ -16,7 +16,6 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.useGlobalPipes(
-    new TrimStringsPipe(),
     new ValidationPipe({
       whitelist: true,
     }),

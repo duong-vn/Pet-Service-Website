@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <body className={` font-normal bg-background-dark `}>{children}</body>
+      <body className={` font-normal bg-background-light `}>{children}</body>
     </html>
   );
 }

@@ -23,10 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: IPayload) {
     const { _id, name, role } = payload;
-    if (!_id || !name || !role) {
-      throw new UnauthorizedException('Error while validating');
-    }
-    //req.user
 
     return {
       _id,

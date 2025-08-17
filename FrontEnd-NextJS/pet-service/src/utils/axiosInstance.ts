@@ -1,8 +1,11 @@
+import { BASE_URL } from "@/apiServices/services";
 import { getAT, setAT } from "@/lib/authToken";
 import axios from "axios";
 
+axios.defaults.baseURL = BASE_URL;
+
 export const api = axios.create({
-  baseURL: "", // proxy tới NestJS
+  baseURL: BASE_URL, // proxy tới NestJS
   withCredentials: true, // để cookie RT tự gửi khi /auth/refresh
 });
 

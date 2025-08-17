@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "../../globals.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "ZOZO Pet's Service",
@@ -19,8 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <body className={` font-normal bg-background-dark `}>
+      <body className={` font-normal bg-background-light`}>
         <GoogleOAuthProvider clientId={process.env.CLIENT_ID!}>
+          <Toaster position="top-right" richColors />
           {children}
         </GoogleOAuthProvider>
       </body>

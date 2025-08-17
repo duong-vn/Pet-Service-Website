@@ -19,14 +19,8 @@ export default function ServiceCard({
       whileHover={{ scale: 1.02 }}
       className="rounded-3xl overflow-hidden border border-black/10 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur shadow-sm"
     >
-      <div className="relative">
-        <Image
-          src={img}
-          alt={title}
-          width={800}
-          height={560}
-          className="h-44 w-full object-cover"
-        />
+      <div className="relative h-44 w-full">
+        <Image src={img} alt={title} fill className="object-cover" />
         <div className="absolute top-3 left-3 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 text-white text-xs">
           {icon} <span>Nổi bật</span>
         </div>

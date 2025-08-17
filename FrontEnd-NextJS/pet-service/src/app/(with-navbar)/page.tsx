@@ -32,13 +32,14 @@ export default function Home() {
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.5 }}
           whileTap={{ scale: 0.88 }}
+          className="w-auto h-auto"
         >
           <Image
             src="/images/icons/cool_dog.webp"
             alt="cool dog"
             width={300}
             height={300}
-            className="hidden xl:flex object-cover rounded-3xl transition-all hover:drop-shadow-2xl"
+            className="hidden xl:flex object-cover rounded-3xl transition-all hover:drop-shadow-2xl "
           />
         </motion.div>
 
@@ -48,6 +49,7 @@ export default function Home() {
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.5 }}
           whileTap={{ scale: 0.8 }}
+          className="w-auto h-auto"
         >
           <Image
             src="/images/icons/ZOZO-cat.png"
@@ -64,6 +66,7 @@ export default function Home() {
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.5 }}
           whileTap={{ scale: 0.88 }}
+          className="w-auto h-auto"
         >
           <Image
             src="/images/icons/other.webp"
@@ -77,8 +80,9 @@ export default function Home() {
 
       {/* INTRO CARD */}
       <motion.div
-        initial={{ opacity: 0, y: 200 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 400 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ amount: 0.2, once: true }}
         transition={{ duration: 0.5 }}
       >
         <div className="w-full xl:w-[60%] xl:-mt-24 mx-auto rounded-3xl xl:rounded-[70px] bg-neutral-light dark:bg-secondary-dark shadow-2xl">
@@ -134,21 +138,21 @@ export default function Home() {
         <h3 className="text-2xl md:text-3xl font-bold mb-6">Dịch vụ nổi bật</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <ServiceCard
-            img="/images/services/bath.jpg"
+            img="/images/placeholders/meo.webp"
             title="Tắm cơ bản"
             price="120.000đ"
             items={["Gội xả sạch", "Sấy khô", "Vệ sinh tai"]}
             icon={<Bath className="size-5" />}
           />
           <ServiceCard
-            img="/images/services/groom.jpg"
+            img="/images/placeholders/meo.webp"
             title="Tỉa lông tạo kiểu"
             price="250.000đ"
             items={["Tư vấn kiểu", "Tỉa mặt", "Gọn gàng theo giống"]}
             icon={<Scissors className="size-5" />}
           />
           <ServiceCard
-            img="/images/services/spa.jpg"
+            img="/images/placeholders/meo.webp"
             title="Spa thư giãn"
             price="320.000đ"
             items={["Massage", "Ủ dưỡng", "Tinh dầu thơm"]}

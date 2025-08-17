@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { handleGoogleLogin } from "@/apiServices/services"; // bạn đã có
 import { setAT } from "@/lib/authToken";
+import Login from "@/components/features/auth/login";
+import { motion } from "framer-motion";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { localLogin } from "@/apiServices/auth/services";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   const onSuccess = async (credentialResponse: CredentialResponse) => {
@@ -35,34 +42,95 @@ export default function LoginPage() {
     }
   };
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+
+    const res = await localLogin(email, password);
+    console.log(res);
+    setLoading(false);
+    router.push("/appointments");
+  };
+
   return (
-    <main className="min-h-[100dvh] flex items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-3xl border bg-card p-6 shadow-sm">
+    <main className="min-h-[100dvh] flex items-center flex-col justify-center px-4 text-primary-dark">
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        whileHover={{ scale: 1.1 }}
+        transition={{ duration: 0.5 }}
+        whileTap={{ scale: 0.88 }}
+        className="w-auto h-auto"
+      >
+        <Image
+          src="/images/icons/ZOZO-cat.png"
+          alt="ZOZO"
+          width={296}
+          height={296}
+          className="mb-3 animate-pulse"
+        />
+      </motion.div>
+
+      <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark bg-secondary-light p-6 shadow-2xl">
         <div className="flex flex-col items-center">
-          <Image
-            src="/images/icons/ZOZO-cat.png"
-            alt="ZOZO"
-            width={96}
-            height={96}
-            className="mb-3"
-          />
           <h1 className="text-2xl font-bold">Đăng nhập</h1>
-          <p className="mt-1 text-sm text-muted-foreground text-center">
+          <p className="mt-1 text-sm text-muted-foreground text-center text-secondary-dark">
             Sử dụng tài khoản Google để tiếp tục.
           </p>
         </div>
 
         <div className="mt-6 flex justify-center">
-          <GoogleLogin
-            onSuccess={onSuccess}
-            onError={() => setErr("Google login error. Vui lòng thử lại.")}
-            theme="outline" // light | filled_black | outline
-            shape="pill" // pill | rectangular | circle
-            logo_alignment="left" // left | center
-            width="280"
-            useOneTap={false} // bạn có thể bật nếu muốn
-          />
+          <Login onSuccess={onSuccess} setErr={setErr} />
         </div>
+        <div className="text-center pt-4 text-secondary-dark">
+          ----------hoặc----------
+        </div>
+
+        <form className="space-y-2" onSubmit={(event) => handleSubmit(event)}>
+          <label className="flex flex-col ">
+            Email:
+            <input
+              type="email"
+              name="email"
+              required
+              className="rounded-xl mt-1 p-2"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+
+          <label className="flex flex-col">
+            Password:
+            <div className="relative  mt-1  ">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                name="password"
+                className="rounded-xl w-full p-2 font-sans font-semibold "
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <div
+                className="absolute items-center right-2 top-1/2 -translate-y-1/2 "
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <FaRegEye size={20} />
+                ) : (
+                  <FaRegEyeSlash size={20} />
+                )}
+              </div>
+            </div>
+            {!loading && (
+              <button
+                type="submit"
+                className="ring-2 rounded-xl h-10 mt-5 bg-secondary-dark text-primary-light"
+              >
+                Đăng nhập
+              </button>
+            )}
+          </label>
+        </form>
 
         {loading && (
           <p className="mt-4 text-center text-sm text-muted-foreground">
@@ -70,18 +138,6 @@ export default function LoginPage() {
           </p>
         )}
         {err && <p className="mt-3 text-center text-sm text-red-600">{err}</p>}
-
-        <div className="mt-6 text-xs text-center text-muted-foreground">
-          Khi tiếp tục, bạn đồng ý với{" "}
-          <a className="underline underline-offset-4" href="/terms">
-            Điều khoản
-          </a>{" "}
-          &{" "}
-          <a className="underline underline-offset-4" href="/privacy">
-            Chính sách bảo mật
-          </a>
-          .
-        </div>
       </div>
     </main>
   );
