@@ -37,7 +37,7 @@ export class UsersService {
     const newUser = await this.userModel.create({
       email,
       name,
-      avatar: info.picture ?? null,
+      picture: info.picture ?? null,
       role,
 
       provider: 'google',
@@ -46,9 +46,11 @@ export class UsersService {
   };
 
   async isEmailExist(email: string) {
-    const user = await this.userModel.findOne({
-      email,
-    });
+    const user = (
+      await this.userModel.findOne({
+        email,
+      })
+    )?.toObject();
 
     return user ? user : false;
   }
@@ -154,6 +156,18 @@ export class UsersService {
     );
   }
 
+  async updateUserProvider(id: string, provider: string) {
+    checkMongoId(id);
+    const date = new Date();
+    return await this.userModel.updateOne(
+      { _id: id },
+      {
+        emailVerifiedAt: date,
+        provider,
+      },
+    );
+  }
+
   async updateMySelf(updateUserDto: UpdateUserDto, user: IUser) {
     let { password } = updateUserDto;
     if (password) {
@@ -172,13 +186,27 @@ export class UsersService {
     );
   }
 
-  async mergeAccount(id: string, dto: RegisterUserDto) {
+  async mergeAccount(id: string, dto: RegisterUserDto, provider: string) {
     checkMongoId(id);
-    const hashedPassword = await this.getHash(dto.password);
-    return await this.userModel.updateOne(
+    const user = await this.userModel.findOne({ _id: id });
+    const newProvider = user?.provider.concat('-' + provider) ?? user?.provider;
+    await this.userModel.updateOne(
       { _id: id },
-      { ...dto, password: hashedPassword, provider: 'local' },
+      {
+        ...dto,
+        provider: newProvider,
+      },
     );
+    if (provider === 'local') {
+      const hashedPassword = await this.getHash(dto.password);
+      await this.userModel.updateOne(
+        { _id: id },
+        {
+          ...dto,
+          password: hashedPassword,
+        },
+      );
+    }
   }
 
   async remove(id: string, user: IUser) {

@@ -1,7 +1,11 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  GoogleLogin,
+  CredentialResponse,
+  googleLogout,
+} from "@react-oauth/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { handleGoogleLogin } from "@/apiServices/services"; // bạn đã có
@@ -21,10 +25,14 @@ import LoadingScreen from "@/components/ui/LoadingScreen";
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onSuccess = async (credentialResponse: CredentialResponse) => {
     try {
@@ -34,6 +42,7 @@ export default function LoginPage() {
       const credential = credentialResponse?.credential;
       if (!credential) throw new Error("Không nhận được credential từ Google.");
       const { access_token } = (await handleGoogleLogin(credential)).data;
+      googleLogout();
       setAT(access_token);
       // Ví dụ: lưu accessToken vào memory/axios header; refreshToken nên để httpOnly cookie tại backend
       // Nếu backend đã set cookie httpOnly rồi thì không cần làm gì thêm ở FE.
@@ -44,7 +53,6 @@ export default function LoginPage() {
     } catch (e: any) {
       console.error(e);
       setErr(e?.message || "Đăng nhập thất bại, thử lại sau.");
-    } finally {
       setLoading(false);
     }
   };
@@ -54,9 +62,11 @@ export default function LoginPage() {
     setLoading(true);
 
     const res = await localLogin(email, password);
-
-    setLoading(false);
-    if (res) router.push("/appointments");
+    if (res) {
+      router.push("/appointments");
+    } else {
+      setLoading(false);
+    }
   };
   if (loading) {
     return <LoadingScreen />;
@@ -64,7 +74,7 @@ export default function LoginPage() {
 
   return (
     <main>
-      <div className="min-h-[100dvh] flex items-center flex-col pt-10 px-4  text-secondary-dark dark:text-primary-light">
+      <div className="min-h-[100dvh] flex  items-center flex-col pt-10 px-4  text-primary-light">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -82,7 +92,7 @@ export default function LoginPage() {
           />
         </motion.div>
 
-        <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark dark:text-neutral-light bg-secondary-light dark:bg-secondary-dark p-6 shadow-2xl">
+        <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark dark:text-neutral-light bg-secondary-dark p-6 shadow-2xl">
           <div className="flex flex-col items-center">
             <h1 className="text-2xl font-bold">Đăng nhập</h1>
             <p className="mt-1 text-sm text-muted-foreground text-center ">
@@ -90,11 +100,10 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="mt-2 flex justify-center ">
-            <Login onSuccess={onSuccess} setErr={setErr} />
+          <div className="mt-2 flex justify-center z-1 ">
+            {mounted && <Login onSuccess={onSuccess} setErr={setErr} />}
           </div>
           <div className="text-center pt-4 ">----------hoặc----------</div>
-
           <form className="space-y-2" onSubmit={handleSubmit}>
             <label className="flex flex-col ">
               Email:

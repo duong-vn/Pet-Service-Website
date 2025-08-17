@@ -16,6 +16,8 @@ export default function Login({ onSuccess, setErr }: IProp) {
         logo_alignment="left" // left | center
         width="260"
         useOneTap={true} // bạn có thể bật nếu muốn
+        cancel_on_tap_outside
+        nonce={"false"}
       />
     </>
   );

@@ -22,7 +22,7 @@ export class CreateUserDto {
   public_id: string;
 
   @IsOptional()
-  avatar: string;
+  picture: string;
 
   @IsNotEmpty({ message: 'Provider is required' })
   @IsIn(providers)
@@ -60,6 +60,8 @@ export class RegisterUserDto {
   age: number;
   @IsOptional()
   gender: string;
+  @IsOptional()
+  picture: string;
 
   // @IsNotEmptyObject()
   // @IsObject()

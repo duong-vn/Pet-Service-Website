@@ -5,7 +5,7 @@ import { FormEvent, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isNumericString } from "@/apiServices/services"; // bạn đã có
-
+import "./form.css";
 import { motion } from "framer-motion";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { isRegisterable } from "@/apiServices/auth/services";
@@ -67,7 +67,7 @@ export default function LoginPage() {
     );
 
   return (
-    <main className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 text-secondary-dark  dark:text-neutral-light">
+    <main className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 text-neutral-light">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -85,12 +85,15 @@ export default function LoginPage() {
         />
       </motion.div>
 
-      <div className="w-full max-w-md max-h-screen rounded-3xl ring-2 ring-neutral-dark bg-secondary-light dark:text-white dark:bg-secondary-dark p-6 shadow-2xl">
+      <div className="w-full max-w-md max-h-screen rounded-3xl ring-2 ring-neutral-dark  bg-secondary-dark p-6 shadow-2xl">
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold">Đăng Kí</h1>
+          <h1 className="text-2xl font-bold text-primary-light">Đăng Kí</h1>
         </div>
 
-        <form className=" " onSubmit={(event) => handleSubmit(event)}>
+        <form
+          className="text-primary-light"
+          onSubmit={(event) => handleSubmit(event)}
+        >
           <label className="flex flex-col">
             Tên: (username){" "}
             <input

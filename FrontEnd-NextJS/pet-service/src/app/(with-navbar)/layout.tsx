@@ -52,8 +52,9 @@ export default function HomeLayout({
           <Sidebar />
         </SidebarContextProvider>
         <BootstrapAuth />
-        <Toaster richColors position="top-right" />
+
         <div className="min-h-screen"> {children} </div>
+
         <Footer />
       </ThemeProvider>
     </div>

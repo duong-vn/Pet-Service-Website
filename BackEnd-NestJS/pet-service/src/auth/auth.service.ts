@@ -50,7 +50,7 @@ export class AuthService {
     const userId = await this.findOrCreateUser(userInfo);
 
     const user = (await this.userService.findOne(userId.toString())) as any;
-    const { _id, name, email, role, createdAt } = user;
+    const { _id, name, role } = user;
 
     const payload: IPayload = {
       sub: 'token login',
@@ -115,14 +115,19 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByUsername(username);
+    if (!user)
+      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
     if (user && user.password) {
       const isValid = await this.userService.isMatchHashed(pass, user.password);
       if (isValid) {
         // console.log('>>>role', role, 'type of role', typeof role);
         return user;
+      } else {
+        throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
       }
+    } else {
+      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
     }
-    return null;
   }
 
   async verifyGoogle(id_token: string): Promise<IGoogle> {
@@ -135,8 +140,18 @@ export class AuthService {
   }
 
   async findOrCreateUser(userInfo: IGoogle) {
-    let user = await this.userService.findOneByUsername(userInfo.email);
+    let user = (
+      await this.userService.findOneByUsername(userInfo.email)
+    )?.toObject();
     if (user) {
+      if (!user.provider.includes('google')) {
+        const provider = user.provider + '-google';
+        await this.userService.mergeAccount(
+          user._id.toString(),
+          userInfo as any,
+          provider,
+        );
+      }
       return user._id;
     }
     const _id = await this.userService.createGoogleUser(userInfo);
@@ -239,39 +254,38 @@ export class AuthService {
       // create new user if email doesnt exist and send email
       if (!user) {
         let newUser = await this.userService.create(userData);
-        const token = await this.createMagicToken(newUser._id.toString());
-        const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
-        const payload = {
-          url,
-          name: newUser.name,
-          email: newUser.email,
-        };
-
-        await this.mail.toVerify(payload);
-        return;
-      }
-      if (!user.emailVerifiedAt) {
-        await this.userService.mergeAccount(user._id.toString(), userData);
-        const token = await this.createMagicToken(user._id.toString());
-        const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
-        const payload = {
-          url,
-          name: user.name,
-          email: user.email,
-        };
-
-        await this.mail.toVerify(payload);
+        this.sendMagicLink(newUser._id.toString(), newUser.name, newUser.email);
         return;
       }
       //if its was created by local throw exception
-      if (user.provider == 'local') {
+      if (user.provider.includes('local') && user.emailVerifiedAt) {
         throw new BadRequestException('Email already exists');
       }
-
-      return await this.userService.mergeAccount(user._id.toString(), userData);
+      if (!user.provider.includes('local')) {
+        await this.userService.mergeAccount(
+          user._id.toString(),
+          userData,
+          'local',
+        );
+      }
+      await this.sendMagicLink(user._id.toString(), user.name, user.email);
+      return;
     } catch (e) {
       throw new BadRequestException(e.message);
     }
+  }
+
+  async sendMagicLink(id: string, name: string, email: string) {
+    const token = await this.createMagicToken(id);
+    const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
+    const payload = {
+      url,
+      name,
+      email,
+    };
+
+    await this.mail.toVerify(payload);
+    return;
   }
 
   async getUser(user: IUser) {

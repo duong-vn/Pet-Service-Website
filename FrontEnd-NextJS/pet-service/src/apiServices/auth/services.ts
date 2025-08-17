@@ -6,28 +6,26 @@ import { BASE_URL, isResOk } from "../services";
 import { setAT } from "@/lib/authToken";
 
 export const localLogin = async (email: string, password: string) => {
-  try {
-    const res = (
-      await api.post(
-        `/api/auth/login/local`,
-        {
-          username: email,
-          password,
-        },
-        { withCredentials: true }
-      )
-    ).data;
+  const res = await api.post(
+    `/api/auth/login/local`,
+    {
+      username: email,
+      password,
+    },
+    { withCredentials: true }
+  );
+  if (isResOk(res.status)) {
     const data = res.data;
-    const { access_token } = data;
+    const { access_token } = data.data;
 
     setAT(access_token);
     toast.success("Đăng nhập thành công");
     return true;
-  } catch (error) {
-    toast.error("Email hoặc mật khẩu không đúng!");
-    return false;
   }
+  toast.error(res.data.message);
+  return false;
 };
+
 interface IRegister {
   name: string;
   email: string;
@@ -36,7 +34,6 @@ interface IRegister {
 }
 
 export const isRegisterable = async (payload: IRegister) => {
-  const { email } = payload;
   const res = await api.post("/api/auth/register", payload);
   if (!isResOk(res.status)) {
     toast.error(res.data.message);

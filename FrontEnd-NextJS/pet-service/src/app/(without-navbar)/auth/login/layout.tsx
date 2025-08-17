@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
-import "../../globals.css";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Toaster } from "sonner";
+
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import Login from "@/components/features/auth/login";
 
 export const metadata: Metadata = {
   title: "ZOZO Pet's Service",

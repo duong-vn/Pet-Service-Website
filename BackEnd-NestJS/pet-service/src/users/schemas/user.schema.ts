@@ -21,7 +21,7 @@ export class User {
   public_id: string;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
-  avatar: string | null;
+  picture: string | null;
 
   @Prop()
   age: number;

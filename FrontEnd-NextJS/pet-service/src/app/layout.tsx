@@ -20,14 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" suppressHydrationWarning>
-      <body
-        className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-color  duration-700 `}
-      >
-        <ThemeProvider>
-          <Toaster richColors position="top-right" />
-          {children}
-        </ThemeProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={` font-normal antialiased bg-background-dark `}>
+        <Toaster richColors position="top-right" />
+        {children}
       </body>
     </html>
   );

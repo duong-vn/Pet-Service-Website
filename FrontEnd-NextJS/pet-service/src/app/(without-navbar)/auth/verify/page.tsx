@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 
 export default function VerifyEmailPage() {
   const [token, setToken] = useState(false);
+  const [msg, setMsg] = useState(
+    "Vui lòng kiểm tra email của bạn để xác nhận."
+  );
   const router = useRouter();
 
   const verify = async (token: string) => {
@@ -20,7 +23,13 @@ export default function VerifyEmailPage() {
       return;
     } else {
       setToken(true);
-      verify(hash);
+      router.prefetch("/");
+
+      (async () => {
+        const data = await verify(hash);
+      })().then(() => {
+        router.replace("/");
+      });
     }
 
     // Xóa token khỏi URL cho sạch (không reload trang)
@@ -29,9 +38,7 @@ export default function VerifyEmailPage() {
   if (!token) {
     return (
       <div className="flex justify-center items-center flex-col text-center h-screen dark:text-primary-light text-secondary-dark">
-        <h1 className="text-5xl">
-          Vui lòng kiểm tra email của bạn để xác nhận.
-        </h1>
+        <h1 className="text-5xl">{msg}</h1>
         <div
           className={[
             "w-[400] p-5 mt-4 text-2xl",
