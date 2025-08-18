@@ -1,4 +1,4 @@
-let _at: string | null = "ok";
+let _at: string | null = null;
 export const setAT = (t: string | null) => {
   _at = t;
 };

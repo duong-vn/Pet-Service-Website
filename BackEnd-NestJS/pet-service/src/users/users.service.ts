@@ -37,7 +37,7 @@ export class UsersService {
     const newUser = await this.userModel.create({
       email,
       name,
-      picture: info.picture ?? null,
+      picture: picture ?? null,
       role,
 
       provider: 'google',
@@ -103,8 +103,7 @@ export class UsersService {
       result,
     };
   }
-
-  async findOne(id: string): Promise<IUser | null> {
+  async findOneWithRT(id: string): Promise<IUser | null> {
     // return `This action returns a #${id} user`;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Not found user');
@@ -115,6 +114,20 @@ export class UsersService {
         _id: id,
       })
       .select('-password')
+      .populate([{ path: 'role', select: { name: 1 } }])
+      .lean<IUser>();
+  }
+  async findOne(id: string): Promise<IUser | null> {
+    // return `This action returns a #${id} user`;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Not found user');
+    }
+
+    return await this.userModel
+      .findOne({
+        _id: id,
+      })
+      .select(['-password', '-refreshToken'])
       .populate([{ path: 'role', select: { name: 1 } }])
       .lean<IUser>();
   }

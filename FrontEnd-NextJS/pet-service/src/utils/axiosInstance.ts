@@ -32,7 +32,7 @@ api.interceptors.response.use(
       refreshing ??= (async () => {
         try {
           const { data: resData } = await axios.post(
-            "/api/auth/refresh",
+            `/api/auth/refresh`,
             null,
             {
               withCredentials: true,
@@ -43,6 +43,7 @@ api.interceptors.response.use(
           setAT(accessToken);
           return accessToken as string;
         } catch {
+          if (getAT()) toast.error("Phiên đăng nhập đã hết hạn");
           setAT(null);
           return null;
         } finally {
@@ -55,6 +56,8 @@ api.interceptors.response.use(
         cfg.headers.Authorization = `Bearer ${newAT}`;
         return api(cfg); // retry đúng 1 lần
       }
+    } else if (err?.response?.status === 401 && cfg._retry) {
+      toast.error("Phiên đăng nhập đã hết hạn");
     }
     return Promise.reject(err);
   }

@@ -166,7 +166,7 @@ export class AuthService {
       _id,
     };
     const refresh_token = await this.jwtService.sign(payloadRT, {
-      privateKey: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: this.configService.get('JWT_REFRESH_EXPIRE'),
     });
 
@@ -179,7 +179,7 @@ export class AuthService {
       });
       const { _id } = verify;
 
-      const user = await this.userService.findOne(_id);
+      const user = await this.userService.findOneWithRT(_id);
 
       if (!user) {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
@@ -221,8 +221,10 @@ export class AuthService {
           role,
         },
       };
-    } catch (Error) {
-      throw new BadRequestException(Error.message);
+    } catch (error) {
+      res.clearCookie('refresh_token');
+      console.log('deleted lols');
+      throw new UnauthorizedException('deleted lols' + error.message);
     }
   }
   async logout(res: Response, user: IUser) {

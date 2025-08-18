@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={` font-normal antialiased bg-background-dark `}>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-left" />
         {children}
       </body>
     </html>

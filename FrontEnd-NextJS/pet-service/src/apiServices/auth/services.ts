@@ -4,6 +4,8 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { BASE_URL, isResOk } from "../services";
 import { setAT } from "@/lib/authToken";
+import { useAppDispatch } from "@/hooks/redux-hooks";
+import { clearAuth } from "@/lib/authSlice";
 
 export const localLogin = async (email: string, password: string) => {
   const res = await api.post(
@@ -52,4 +54,20 @@ export const verifyToken = async (token: string) => {
     return;
   }
   toast.error(res.data.message);
+};
+
+export const logout = async () => {
+  // try {
+  const res = await api.post("/api/auth/logout");
+
+  if (isResOk(res.status)) {
+    toast.success("Đã đăng xuất");
+
+    setAT(null);
+    return { message: "Đăng xuất thành công" };
+  }
+  // } catch (error) {
+  //   toast.error("Có lỗi xảy ra khi đăng xuất");
+  //   return null;
+  // }
 };

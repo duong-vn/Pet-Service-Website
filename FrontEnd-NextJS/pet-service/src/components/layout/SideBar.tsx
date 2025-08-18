@@ -13,14 +13,40 @@ import {
 } from "react-icons/fa";
 import { FaCalendarDays } from "react-icons/fa6";
 import { MdHomeRepairService } from "react-icons/md";
-import { useRef } from "react";
+
+import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
+import { logout } from "@/apiServices/auth/services";
+import { clearAuth } from "@/lib/authSlice";
+import { useState } from "react";
+import LoadingScreen from "../ui/LoadingScreen";
+import { setTimeout } from "timers/promises";
+import { delay } from "@/apiServices/services";
 
 export default function Sidebar() {
   const { isOpen, close } = useSidebar();
+  const authenticated = useAppSelector((s) => s.auth.authenticated);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const handleLogout = async () => {
+    setLoading(true);
+    const res = await logout();
+    if (res) dispatch(clearAuth());
+    delay(1000);
+    setLoading(false);
+  };
 
   const handleClose = () => {
     close();
   };
+  if (loading) {
+    return (
+      <>
+        <LoadingScreen />
+      </>
+    );
+  }
+
   return (
     <>
       {/* OVLERLAY */}
@@ -35,49 +61,69 @@ export default function Sidebar() {
       {/* The sidebar */}
       <div
         className={[
-          "fixed bg-secondary-light top-0 right-0 z-50 shadow-xl dark:bg-secondary-dark back w-50 h-full transform transition-transform  duration-300 ease-in-out ",
+          "fixed bg-secondary-light top-0 right-0 z-50 min-w-40 md:min-w-60 shadow-xl dark:bg-secondary-dark back  h-full transform transition-transform  duration-300 ease-in-out ",
           isOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
       >
         {/* header */}
         <div className="flex justify-between border-b-2 shadow-lg rounded-xl border-background-light dark:border-neutral-dark p-6 px-8  ">
-          <div className="font-display font-bold text-3xl">MENU</div>
+          <div className="font-display font-bold text-3xl hover:scale-150 transition-transform">
+            MENU
+          </div>
           <div
-            className="font-display font-bold text-3xl cursor-pointer"
+            className="font-display font-bold text-3xl cursor-pointer hover:scale-150 transition-transform "
             onClick={handleClose}
           >
             X
           </div>
         </div>
-        {/* Userpill */}
 
-        <div className="p-8 flex tems-center  border-background-light dark:border-neutral-dark">
+        {/* Userpill */}
+        <div className="p-6 flex items-center  border-background-light dark:border-neutral-dark">
           <UserPill />
         </div>
+
         {/* items  */}
-        <nav className=" border-b-2 border-t-2 rounded-3xl border-background-light flex flex-col justify-between space-y-2 p-8 dark:border-neutral-dark">
-          <Link href="/" className="flex  pb-3">
-            <FaHome className="w-5 h-5 mr-3" />
+        <nav className=" border-b-2 border-t-2 rounded-3xl border-background-light flex flex-col justify-between   dark:border-neutral-dark">
+          <Link
+            href="/"
+            className="flex group transition-transform hover:translate-x-2 items-center p-8 py-5 dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl"
+          >
+            <FaHome className="w-5 h-5 mr-3 " />
             <span>Trang chủ</span>
           </Link>
-          <Link href="/" className="flex  py-3">
+          <Link
+            href="/services"
+            className="flex pl-8 py-5 transition-transform hover:translate-x-2 items-center dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl"
+          >
             <MdHomeRepairService className="w-5 h-5 mr-3" />
             <span>Dịch vụ</span>
           </Link>
-          <Link href="/" className="flex  py-3">
+          <Link
+            href="/appointments"
+            className="flex  pl-8 py-5 transition-transform hover:translate-x-2 items-center dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl "
+          >
             <FaCalendarDays className="w-5 h-5 mr-3" />
             <span>Đặt lịch</span>
           </Link>
-          <Link href="/shop" className="flex  pt-3">
+          <Link
+            href="/shop"
+            className="flex  p-8 py-5 transition-transform hover:translate-x-2 items-center dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl"
+          >
             <FaShoppingCart className="w-5 h-5 mr-3 " />
             <span className="font-medium">Cửa hàng</span>
           </Link>
         </nav>
         <div>
-          <div className="p-8 flex items-center">
-            <FaSignOutAlt className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform text-red-600" />
-            <span className="text-red-600">Đăng xuất</span>
-          </div>
+          {authenticated && (
+            <div
+              onClick={handleLogout}
+              className="mb-3 mt-1 p-5 flex transition-transform hover:translate-x-2 items-center text-red-600 hover:animate-pulse dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl"
+            >
+              <FaSignOutAlt className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform " />
+              <span>Đăng xuất</span>
+            </div>
+          )}
         </div>
       </div>
     </>

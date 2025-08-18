@@ -32,3 +32,5 @@ export function isNumericString(s: string) {
 export function isResOk(statusCode: number) {
   return statusCode >= 200 && statusCode < 300;
 }
+export const delay = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));

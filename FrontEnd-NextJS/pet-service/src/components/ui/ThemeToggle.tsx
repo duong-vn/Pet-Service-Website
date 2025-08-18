@@ -8,7 +8,7 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return null; // tránh mismatch icon/text
+  if (!mounted) return null;
   const isDark = (theme ?? resolvedTheme) === "dark";
 
   return (
@@ -17,7 +17,7 @@ export default function ThemeToggle() {
         setTheme(isDark ? "light" : "dark");
       }}
       className={[
-        "p-3 min-w-40 flex transition all duration-100 justify-end group",
+        "p-3 xl:min-w-40 flex transition all duration-100 justify-end group",
       ].join("")}
     >
       {theme === "dark" ? (

@@ -12,6 +12,7 @@ import { ThemeProvider } from "@/providers/theme.provider";
 import Footer from "@/components/layout/Footer";
 import BootstrapAuth from "@/components/features/auth/BoostrapAuth";
 import { Toaster } from "sonner";
+import { ReduxProvider } from "@/providers/Redux.provider";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -44,19 +45,21 @@ export default function HomeLayout({
 }>) {
   return (
     <div
-      className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-color  duration-700 `}
+      className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-all  duration-700 `}
     >
-      <ThemeProvider>
-        <SidebarContextProvider>
-          <NavBar />
-          <Sidebar />
-        </SidebarContextProvider>
-        <BootstrapAuth />
+      <ReduxProvider>
+        <ThemeProvider>
+          <SidebarContextProvider>
+            <NavBar />
+            <Sidebar />
+          </SidebarContextProvider>
+          <BootstrapAuth />
 
-        <div className="min-h-screen"> {children} </div>
+          <div className="min-h-screen"> {children} </div>
 
-        <Footer />
-      </ThemeProvider>
+          <Footer />
+        </ThemeProvider>
+      </ReduxProvider>
     </div>
   );
 }
