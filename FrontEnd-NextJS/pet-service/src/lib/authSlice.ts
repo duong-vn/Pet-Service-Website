@@ -58,5 +58,5 @@ export const simpleInfoSelector = createSelector(
   })
 );
 
-export const can = (state: AuthState, perm: Permission) =>
-  !!state.user?.permissions?.includes(perm);
+export const can = (permissions: Permission[] | undefined, perm: Permission) =>
+  !!permissions?.includes(perm);

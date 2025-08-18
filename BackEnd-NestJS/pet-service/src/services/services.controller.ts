@@ -13,7 +13,7 @@ import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import type { IUser } from 'src/users/users.interface';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { CanDelete, CanPatch, CanPost } from 'src/core/service';
 
 @Controller('services')
@@ -28,6 +28,7 @@ export class ServicesController {
     return this.servicesService.create(createServiceDto, user);
   }
 
+  @Public()
   @Get()
   @HttpCode(200)
   @ResponseMessage('Get services paginate')
@@ -38,7 +39,7 @@ export class ServicesController {
   ) {
     return this.servicesService.findAll(+current, +pageSize, qs);
   }
-
+  @Public()
   @Get(':id')
   @HttpCode(200)
   @ResponseMessage('Get service by id')

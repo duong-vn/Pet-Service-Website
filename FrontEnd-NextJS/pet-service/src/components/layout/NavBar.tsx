@@ -131,7 +131,7 @@ export default function NavBar() {
               scrolling ? " flex justify-center" : " hidden",
             ].join(" ")}
           >
-            <BiHide className="w-10 h-10  " />
+            <BiHide className="w-8 h-8  " />
           </div>
 
           {/* calendar icon */}

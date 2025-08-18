@@ -20,13 +20,6 @@ import { CanDelete, CanGet, CanPatch, CanPost } from 'src/core/service';
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
-  @Public()
-  @Post('test')
-  @HttpCode(200)
-  test() {
-    return this.rolesService.getPermissionsForRole('689f6e674d5811bd20a1bbab');
-  }
-
   @CanPost('roles')
   @Post()
   @HttpCode(201)
