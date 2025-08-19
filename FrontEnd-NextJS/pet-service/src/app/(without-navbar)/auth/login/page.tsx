@@ -21,18 +21,12 @@ export default function LoginPage() {
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    setLoading(true);
-    setMounted(true);
-    setLoading(false);
-  }, []);
 
   const onSuccess = async (credentialResponse: CredentialResponse) => {
     try {
@@ -101,7 +95,7 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-2 flex justify-center">
-              {mounted && <Login onSuccess={onSuccess} setErr={setErr} />}
+              <Login onSuccess={onSuccess} setErr={setErr} />
             </div>
 
             <div className="text-center pt-4">----------hoặc----------</div>
