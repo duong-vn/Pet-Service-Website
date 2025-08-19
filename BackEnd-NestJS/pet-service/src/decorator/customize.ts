@@ -17,3 +17,7 @@ export const ResponseMessage = (message: string) =>
 export const IS_PUBLIC_PERMISSION = 'isPublicPermission';
 export const skipCheckPermission = () =>
   SetMetadata(IS_PUBLIC_PERMISSION, true);
+
+export const PERMISSIONS_KEY = 'permissions';
+export const Permissions = (...perms: string[]) =>
+  SetMetadata(PERMISSIONS_KEY, perms);

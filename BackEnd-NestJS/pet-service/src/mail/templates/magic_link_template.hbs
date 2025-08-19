@@ -1,0 +1,232 @@
+<html lang='vi'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width,initial-scale=1' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Xác minh email </title>
+
+    <!-- Preheader (ẩn) -->
+    <style>
+      .preheader {
+        color: transparent;
+        display: none !important;
+        height: 0;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        mso-hide: all;
+        visibility: hidden;
+        width: 0;
+      }
+      /* Mobile tweaks */
+      @media only screen and (max-width: 600px) {
+        .container {
+          width: 100% !important;
+        }
+        .content {
+          padding: 20px !important;
+        }
+        .btn {
+          width: 100% !important;
+        }
+        .hero-title {
+          font-size: 22px !important;
+        }
+        .hero-sub {
+          font-size: 14px !important;
+        }
+      }
+    </style>
+  </head>
+  <body
+    style="margin:0; padding:0; background:#FFF7ED; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';"
+  >
+
+    <!-- Wrapper -->
+    <table
+      role='presentation'
+      cellpadding='0'
+      cellspacing='0'
+      border='0'
+      width='100%'
+      style='background:#FFF7ED;'
+    >
+      <tr>
+        <td align='center' style='padding: 24px 12px;'>
+          <!-- Container -->
+          <table
+            role='presentation'
+            cellpadding='0'
+            cellspacing='0'
+            border='0'
+            width='600'
+            class='container'
+            style='width:600px; max-width:100%; background:#FFFFFF; border-radius:16px; overflow:hidden; box-shadow:0 8px 24px rgba(255,106,0,0.12);'
+          >
+            <!-- Header -->
+
+            <!-- Body -->
+            <tr>
+              <td class='content' style='padding:32px;'>
+                <table
+                  role='presentation'
+                  cellpadding='0'
+                  cellspacing='0'
+                  border='0'
+                  width='100%'
+                >
+                  <tr>
+                    <td style='text-align:center;'>
+                      <div
+                        class='hero-title'
+                        style='font-size:24px; line-height:1.35; color:#7C2D12; font-weight:800;'
+                      >
+                        Xác minh email của bạn 🐶🐱
+                      </div>
+                      <div
+                        class='hero-sub'
+                        style='margin-top:8px; font-size:16px; color:#A16207;'
+                      >
+                        Chào
+                        {{userName}}, chỉ còn một bước nữa để hoàn tất đăng ký
+                        trên
+                      </div>
+                      <strong
+                        class='hero-sub'
+                        style='padding-top:10px; font-size:16px; color:#A16207;'
+                      >ZOZO's Pet Services
+                      </strong>.
+                    </td>
+                  </tr>
+
+                  <!-- Card cute -->
+                  <tr>
+                    <td style='padding-top:24px;'>
+                      <table
+                        role='presentation'
+                        cellpadding='0'
+                        cellspacing='0'
+                        border='0'
+                        width='100%'
+                        style='border:1px dashed #FDBA74; border-radius:12px; background:#FFF1E6;'
+                      >
+                        <tr>
+                          <td style='padding:20px;'>
+                            <table
+                              role='presentation'
+                              cellpadding='0'
+                              cellspacing='0'
+                              border='0'
+                              width='100%'
+                            >
+                              <tr>
+                                <td
+                                  width='52'
+                                  valign='top'
+                                  align='center'
+                                  style='padding-right:12px;'
+                                >
+                                  <!-- Emoji fallback nếu ảnh bị chặn -->
+                                  <div
+                                    style='font-size:32px; line-height:1;'
+                                  >🐾</div>
+                                </td>
+                                <td
+                                  valign='middle'
+                                  style='color:#7C2D12; font-size:15px; line-height:1.6;'
+                                >
+                                  Nhấn nút bên dưới để xác minh email. Liên kết
+                                  sẽ hết hạn sau một thời gian ngắn vì lý do bảo
+                                  mật.
+                                  <br />
+                                  Nếu bạn không tạo tài khoản, hãy bỏ qua email
+                                  này.
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+
+                        <!-- Button (bulletproof) -->
+                        <!-- Button (bulletproof) -->
+                        <tr>
+                          <td align='center' style='padding: 0 20px 20px;'>
+                            <!--[if mso]>
+    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+      href="{{{verifyUrl}}}" style="height:48px;v-text-anchor:middle;width:300px;" arcsize="12%" stroke="f" fillcolor="#F97316">
+      <w:anchorlock/>
+      <center style="color:#FFFFFF;font-family:Segoe UI, Arial,sans-serif;font-size:16px;font-weight:bold;">
+        Xác minh email
+      </center>
+    </v:roundrect>
+    <![endif]-->
+                            <!--[if !mso]><!-- -->
+                            <a
+                              href='{{{verifyUrl}}}'
+                              class='btn'
+                              style='background:#F97316; color:#FFFFFF; display:inline-block; text-decoration:none; font-weight:700; font-size:16px; line-height:48px; height:48px; padding:0 28px; border-radius:10px; box-shadow:0 6px 0 #EA580C;'
+                              target='_blank'
+                              rel='noopener'
+                            >
+                              Xác minh email
+                            </a>
+                            <!--<![endif]-->
+
+                            <div
+                              style='font-size:12px; color:#9A3412; margin-top:10px;'
+                            >
+                              Mẹo: Nếu nút không bấm được, hãy copy link bên
+                              dưới và dán vào trình duyệt.
+                            </div>
+
+                            <div
+                              style='word-break:break-all; font-size:12px; color:#B45309; background:#FFFBEB; border:1px solid #FDE68A; padding:10px; border-radius:8px; margin-top:8px;'
+                            >
+                              <a
+                                href='{{{verifyUrl}}}'
+                                style='color:#B45309; text-decoration:underline;'
+                                target='_blank'
+                                rel='noopener'
+                              >
+                                {{verifyUrl}}
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Footer help -->
+                  <tr>
+                    <td
+                      style='padding-top:24px; text-align:center; color:#9A3412; font-size:12px;'
+                    >
+                      Cần hỗ trợ? Liên hệ
+                      <a
+                        style='color:#C2410C; font-weight:600; text-decoration:none;'
+                      >vutrunghieu121@gmail.com</a>
+                    </td>
+
+                  </tr>
+                  <tr>
+                    <td
+                      style='padding-top:10px; text-align:center; color:#9A3412; font-size:12px;'
+                    >
+                      hoặc số điện thoại: 📞0886.535.580
+                    </td>
+
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+          </table>
+          <!-- /Container -->
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

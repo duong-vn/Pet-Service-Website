@@ -12,7 +12,7 @@ import { IGoogle } from 'src/auth/google-auth/google';
 import { checkMongoId } from 'src/core/service';
 import aqp from 'api-query-params';
 import { Role } from 'src/roles/schemas/role.schema';
-import { USER_ROLE } from 'src/database/sample';
+import { ADMIN_ROLE, USER_ROLE } from 'src/database/sample';
 
 @Injectable()
 export class UsersService {
@@ -22,9 +22,9 @@ export class UsersService {
     private configService: ConfigService,
   ) {}
 
-  getHashPassword = (password: string) => {
+  getHash = (plain: string) => {
     const salt = genSaltSync(10);
-    const hash = hashSync(password, salt);
+    const hash = hashSync(plain, salt);
     return hash;
   };
 
@@ -37,7 +37,7 @@ export class UsersService {
     const newUser = await this.userModel.create({
       email,
       name,
-      avatar: info.picture ?? null,
+      picture: picture ?? null,
       role,
 
       provider: 'google',
@@ -46,15 +46,17 @@ export class UsersService {
   };
 
   async isEmailExist(email: string) {
-    const user = await this.userModel.findOne({
-      email,
-    });
+    const user = (
+      await this.userModel.findOne({
+        email,
+      })
+    )?.toObject();
 
-    return user ? true : false;
+    return user ? user : false;
   }
 
-  async create(dto: CreateUserDto) {
-    const hashedPassword = this.getHashPassword(dto.password);
+  async create(dto: CreateUserDto | RegisterUserDto) {
+    const hashedPassword = this.getHash(dto.password);
     const role = await this.roleModel
       .findOne({ name: USER_ROLE })
       .select('_id');
@@ -63,12 +65,11 @@ export class UsersService {
       ...dto,
       role,
       password: hashedPassword,
+      emailVerifiedAt: null,
+      provider: 'local',
     });
     // return 'This action adds a new user';
-    return {
-      _id: newUser._id,
-      createdAt: newUser.createdAt,
-    };
+    return newUser;
   }
 
   async findAll(currentPage: number, limit: number, qs: any) {
@@ -102,19 +103,33 @@ export class UsersService {
       result,
     };
   }
-
-  findOne(id: string) {
+  async findOneWithRT(id: string): Promise<IUser | null> {
     // return `This action returns a #${id} user`;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return 'not found user';
+      throw new BadRequestException('Not found user');
     }
 
-    return this.userModel
+    return await this.userModel
       .findOne({
         _id: id,
       })
       .select('-password')
-      .populate([{ path: 'role', select: { name: 1 } }]);
+      .populate([{ path: 'role', select: { name: 1 } }])
+      .lean<IUser>();
+  }
+  async findOne(id: string): Promise<IUser | null> {
+    // return `This action returns a #${id} user`;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Not found user');
+    }
+
+    return await this.userModel
+      .findOne({
+        _id: id,
+      })
+      .select(['-password', '-refreshToken'])
+      .populate([{ path: 'role', select: { name: 1 } }])
+      .lean<IUser>();
   }
   findOneByUsername(username: string) {
     return this.userModel
@@ -124,8 +139,8 @@ export class UsersService {
       .populate({ path: 'role', select: { name: 1, _id: 1 } });
     // .populate({ path: 'role', select: { name: 1, _id: 1 } });
   }
-  isValidPassword(password: string, hashedPassword: string) {
-    return compareSync(password, hashedPassword);
+  isMatchHashed(plain: string, hashed: string) {
+    return compareSync(plain, hashed);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto, user: IUser) {
@@ -138,62 +153,101 @@ export class UsersService {
         ...updateUserDto,
         updatedBy: {
           _id: user._id,
-          email: user.email,
         },
       },
     );
   }
-  async register(userData: RegisterUserDto) {
-    if (await this.isEmailExist(userData.email)) {
-      throw new BadRequestException('Email already exists');
-    }
-    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
 
-    const hashedPassword = this.getHashPassword(userData.password);
-    const user = await this.userModel.create({
-      name: userData.name,
-      email: userData.email,
-      address: userData.address,
-      gender: userData.gender,
-      age: userData.age,
-      role: userRole?._id,
-      password: hashedPassword,
-    });
-    return {
-      _id: user._id,
-      createdAt: user.createdAt,
-    };
+  async verify(id: string, date: Date) {
+    checkMongoId(id);
+
+    return await this.userModel.updateOne(
+      { _id: id },
+      {
+        emailVerifiedAt: date,
+      },
+    );
+  }
+
+  async updateUserProvider(id: string, provider: string) {
+    checkMongoId(id);
+    const date = new Date();
+    return await this.userModel.updateOne(
+      { _id: id },
+      {
+        emailVerifiedAt: date,
+        provider,
+      },
+    );
+  }
+
+  async updateMySelf(updateUserDto: UpdateUserDto, user: IUser) {
+    let { password } = updateUserDto;
+    if (password) {
+      password = await this.getHash(password);
+      updateUserDto.password = password;
+    }
+    return this.userModel.updateOne(
+      { _id: user._id },
+      {
+        ...updateUserDto,
+
+        updatedBy: {
+          _id: user._id,
+        },
+      },
+    );
+  }
+
+  async mergeAccount(id: string, dto: RegisterUserDto, provider: string) {
+    checkMongoId(id);
+    const user = await this.userModel.findOne({ _id: id });
+    const newProvider = user?.provider.concat('-' + provider) ?? user?.provider;
+    await this.userModel.updateOne(
+      { _id: id },
+      {
+        ...dto,
+        provider: newProvider,
+      },
+    );
+    if (provider === 'local') {
+      const hashedPassword = await this.getHash(dto.password);
+      await this.userModel.updateOne(
+        { _id: id },
+        {
+          ...dto,
+          password: hashedPassword,
+        },
+      );
+    }
   }
 
   async remove(id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id))
       throw new BadRequestException('Invalid user id');
     const foundUser = await this.userModel.findOne({ _id: id });
-    // if (foundUser.email === this.configService.get<string>('ADMIN_EMAIL')) {
-    //   throw new BadRequestException('Cannot delete admin');
-    // }
+    if (foundUser?.email === ADMIN_ROLE) {
+      throw new BadRequestException('Cannot delete an admin');
+    }
     await this.userModel.updateOne(
       { _id: id },
       {
         deletedBy: {
           _id: user._id,
-          email: user.email,
         },
-      }, // Update the deletedBy field with the user's ID
+      },
     );
-    // return this.userModel.softDelete({ _id: id });
   }
 
   updateUserToken = async (refresh_token: string | null, _id: string) => {
-    return await this.userModel.updateOne(
-      { _id },
-      { refreshToken: refresh_token },
-    );
+    let hashedRT = refresh_token;
+    if (refresh_token) hashedRT = await this.getHash(refresh_token);
+    return await this.userModel.updateOne({ _id }, { refreshToken: hashedRT });
   };
 
   findUserbyRefreshToken = (refreshToken: string) => {
     return this.userModel
-      .findOne({ refreshToken: refreshToken })
+      .findOne({ refreshToken })
       .populate({ path: 'role', select: { name: 1 } });
   };
 }

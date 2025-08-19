@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -22,20 +22,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: IPayload) {
-    const { _id, name, email, role } = payload;
-
-    //req.user
-
-    const userRole = role as unknown as { _id: string; name: string };
-    const temp = await this.roleService.findOne(userRole._id);
-    const permissions = temp?.toObject().permissions ?? [];
+    const { _id, name, role } = payload;
 
     return {
       _id,
       name,
-      email,
       role,
-      permissions,
     };
   }
 }

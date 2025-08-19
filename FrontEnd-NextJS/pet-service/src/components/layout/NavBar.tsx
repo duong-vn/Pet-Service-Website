@@ -17,15 +17,18 @@ import {
 import { GiDogHouse } from "react-icons/gi";
 import { FaCalendarDays } from "react-icons/fa6";
 import { MdHomeRepairService } from "react-icons/md";
+import { useAppSelector } from "@/hooks/redux-hooks";
+import { BiHide } from "react-icons/bi";
 
 export default function NavBar() {
   const { toggle } = useSidebar();
   const [hidden, setHidden] = useState(false);
   const [scrolling, setScrolling] = useState(false);
   const lastY = useRef(0);
+  const authenticated = useAppSelector((s) => s.auth.authenticated);
   const iconClass = useRef(
     `transition-transform duration-100 
-    
+     xl:min-w-40
     hover:ring
     rounded-3xl
     dark:ring-background-light
@@ -68,18 +71,18 @@ export default function NavBar() {
     <header
       className={[
         " w-full top-0 z-10 sticky mb-5 ",
-        "transition-transform duration-500",
+        "transition-trasnform duration-500",
         "ease-out will-change-transform ",
-        hidden ? "-translate-y-[calc(100%+1.5rem)] " : "-translate-y-0 ",
+        hidden ? "-translate-y-[calc(100%+1.5rem)]" : "-translate-y-0  ",
       ].join(" ")}
     >
-      <nav className=" pl-1 container  pt-3  2xl:mx-auto  max-w-screen-2xl flex justify-center items-center  ">
+      <nav className=" container  pt-3  mx-auto  max-w-screen-2xl flex justify-center items-center  ">
         <div
           className={[
             "flex min-w-[250] max-h-[52] items-center",
             "justify-between rounded-3xl ",
             "line-height-1  backdrop-blur-2xl  ",
-            " duration-400",
+            " duration-400 ",
             scrolling
               ? " ring-1 shadow-lg  ring-black/30 dark:ring-white/30 xl:min-w-[400] bg-primary-light/0"
               : " bg-primary-light dark:bg-primary-dark/50 xl:min-w-[800] ",
@@ -94,12 +97,12 @@ export default function NavBar() {
               ].join(" ")}
               onClick={() => window.scrollTo(0, 0)}
             >
-              <GiDogHouse />
+              <FaChevronUp />
             </div>
           ) : (
             <Link
               className={[
-                "text-3xl  p-3 font-display flex ",
+                "text-3xl  p-3 font-display flex  ",
                 iconClass.current,
               ].join(" ")}
               href="/"
@@ -112,9 +115,9 @@ export default function NavBar() {
           <Link
             href="/services"
             className={[
-              " hover:ring p-2 rounded-3xl dark:ring-background-light ring-background-dark",
-              " hidden hover:scale-105 ",
-              scrolling ? "" : "xl:flex ",
+              " hover:ring p-1 rounded-3xl dark:ring-background-light ring-background-dark",
+              " hidden hover:scale-105 min-w-40 ",
+              scrolling ? "" : "xl:flex justify-center",
             ].join(" ")}
           >
             <MdHomeRepairService className="w-10 h-10  " />
@@ -125,10 +128,10 @@ export default function NavBar() {
             className={[
               iconClass.current,
               "p-2  hover:scale-110 ",
-              scrolling ? " flex " : " hidden",
+              scrolling ? " flex justify-center" : " hidden",
             ].join(" ")}
           >
-            <FaChevronUp className="w-10 h-10  " />
+            <BiHide className="w-8 h-8  " />
           </div>
 
           {/* calendar icon */}
@@ -136,8 +139,8 @@ export default function NavBar() {
             href="/view "
             className={[
               iconClass.current,
-              "p-1 hidden hover:scale-110 transition-none",
-              scrolling ? " " : "xl:flex ",
+              "p-2 hidden hover:scale-110 transition-none",
+              scrolling ? " " : "xl:flex justify-center",
             ].join(" ")}
           >
             {" "}
@@ -149,7 +152,7 @@ export default function NavBar() {
             className={[
               iconClass.current,
               "hidden p-2  hover:scale-110 ",
-              scrolling ? " " : "xl:flex ",
+              scrolling ? " " : "xl:flex justify-center",
             ].join(" ")}
           >
             <FaShoppingCart className="w-7 h-7  " />
@@ -158,9 +161,10 @@ export default function NavBar() {
           <div
             className={[
               iconClass.current,
-              " hover:p-0 flex cursor-pointer m-3 ",
+              "  flex cursor-pointer justify-end ",
             ].join("")}
           >
+            <div></div>
             <ThemeToggle />
           </div>
         </div>
@@ -169,7 +173,8 @@ export default function NavBar() {
         <div
           className={[
             "mx-2  hover:scale-110",
-            scrolling ? "" : " absolute right-0",
+            scrolling ? " absolute right-0" : " absolute right-0",
+            !authenticated && "animate-pulse",
           ].join(" ")}
           onClick={() => toggle()}
         >

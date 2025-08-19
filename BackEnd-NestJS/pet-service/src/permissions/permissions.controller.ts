@@ -7,18 +7,22 @@ import {
   Param,
   Delete,
   Query,
+  HttpCode,
 } from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import type { IUser } from 'src/users/users.interface';
 import { ResponseMessage, User } from 'src/decorator/customize';
+import { CanDelete, CanGet, CanPatch, CanPost } from 'src/core/service';
 
 @Controller('permissions')
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
+  @CanPost('permissions')
   @Post()
+  @HttpCode(201)
   @ResponseMessage('Create a permission')
   create(
     @Body() createPermissionDto: CreatePermissionDto,
@@ -27,7 +31,9 @@ export class PermissionsController {
     return this.permissionsService.create(createPermissionDto, user);
   }
 
+  @CanGet('permissions')
   @Get()
+  @HttpCode(200)
   @ResponseMessage('Get a permission paginate')
   findAll(
     @Query('current') current: string,
@@ -37,13 +43,17 @@ export class PermissionsController {
     return this.permissionsService.findAll(+current, +pageSize, qs);
   }
 
+  @CanGet('permissions/:id')
   @Get(':id')
+  @HttpCode(200)
   @ResponseMessage('Get a permission by id')
   findOne(@Param('id') id: string) {
     return this.permissionsService.findOne(id);
   }
 
+  @CanPatch('permissions')
   @Patch(':id')
+  @HttpCode(200)
   @ResponseMessage('Patch a permission')
   update(
     @Param('id') id: string,
@@ -53,7 +63,9 @@ export class PermissionsController {
     return this.permissionsService.update(id, updatePermissionDto, user);
   }
 
+  @CanDelete('permissions')
   @Delete(':id')
+  @HttpCode(200)
   @ResponseMessage('Delete a permission')
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.permissionsService.remove(id, user);

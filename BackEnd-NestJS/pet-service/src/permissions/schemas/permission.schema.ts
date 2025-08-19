@@ -8,10 +8,7 @@ export class Permission {
   name: string;
 
   @Prop()
-  apiPath: string;
-
-  @Prop()
-  method: string; // GET | POST | PUT | DELETE | PATCH
+  key: string;
 
   @Prop()
   module: string; // e.g., 'users', 'resumes', etc.

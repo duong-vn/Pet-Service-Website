@@ -1,91 +1,63 @@
-// utils/axiosInstance.ts
-import axios, { AxiosError } from "axios";
+import { getAT, setAT } from "@/lib/authToken";
+import axios from "axios";
+import { toast } from "sonner";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+axios.defaults.baseURL = BASE_URL;
 
-let isRefreshing = false;
-let failedQueue: any[] = [];
-
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-
-  failedQueue = [];
-};
-
-const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  withCredentials: true, // nếu gửi refreshToken qua cookie
+export const api = axios.create({
+  baseURL: BASE_URL, // proxy tới NestJS
+  withCredentials: true, // để cookie RT tự gửi khi /auth/refresh
+  validateStatus: (status) => {
+    return status >= 200 && status < 500 && status != 401;
+  },
 });
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token =
-      typeof window !== "undefined"
-        ? localStorage.getItem("access_token")
-        : null;
-    if (token && config.headers) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+api.interceptors.request.use((cfg) => {
+  const at = getAT();
+  if (at) cfg.headers.Authorization = `Bearer ${at}`;
+  return cfg;
+});
 
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest: any = error.config;
+let refreshing: Promise<string | null> | null = null;
 
-    // Nếu lỗi là 401 và chưa từng retry
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        // Nếu đang refresh thì chờ
-        return new Promise(function (resolve, reject) {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
-            return axiosInstance(originalRequest);
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
+api.interceptors.response.use(
+  (r) => r,
+  async (err) => {
+    const cfg = err.config || {};
+
+    if (err?.response?.status === 401 && !cfg._retry) {
+      cfg._retry = true;
+
+      refreshing ??= (async () => {
+        try {
+          const { data: resData } = await axios.post(
+            `/api/auth/refresh`,
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+
+          const accessToken = resData.data.access_token;
+          setAT(accessToken);
+          return accessToken as string;
+        } catch {
+          if (getAT()) toast.error("Phiên đăng nhập đã hết hạn");
+          setAT(null);
+          return null;
+        } finally {
+          refreshing = null;
+        }
+      })();
+
+      const newAT = await refreshing;
+      if (newAT) {
+        cfg.headers.Authorization = `Bearer ${newAT}`;
+        return api(cfg); // retry đúng 1 lần
       }
-
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
-          {},
-          { withCredentials: true } // Nếu gửi refreshToken qua cookie
-        );
-
-        const newAccessToken = res.data.access_token;
-        localStorage.setItem("access_token", newAccessToken);
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
-        processQueue(null, newAccessToken);
-        return axiosInstance(originalRequest);
-      } catch (err) {
-        processQueue(err, null);
-        // Optional: Logout nếu refresh token invalid
-        localStorage.removeItem("access_token");
-        window.location.href = "/login"; // redirect đến login
-        return Promise.reject(err);
-      } finally {
-        isRefreshing = false;
-      }
+    } else if (err?.response?.status === 401 && cfg._retry) {
+      toast.error("Phiên đăng nhập đã hết hạn");
     }
-
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 );
-
-export default axiosInstance;

@@ -8,7 +8,7 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return null; // tránh mismatch icon/text
+  if (!mounted) return null;
   const isDark = (theme ?? resolvedTheme) === "dark";
 
   return (
@@ -16,7 +16,9 @@ export default function ThemeToggle() {
       onClick={() => {
         setTheme(isDark ? "light" : "dark");
       }}
-      className="hover:p-3 transition-all duration-100"
+      className={[
+        "p-3 xl:min-w-40 flex transition all duration-100 justify-end group",
+      ].join("")}
     >
       {theme === "dark" ? (
         <FaSun className="text-yellow-400 " size={28} />

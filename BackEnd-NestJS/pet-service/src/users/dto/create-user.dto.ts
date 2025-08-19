@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsIn,
@@ -16,6 +17,13 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty({ message: 'Email is required' })
   email: string;
+
+  @IsOptional()
+  public_id: string;
+
+  @IsOptional()
+  picture: string;
+
   @IsNotEmpty({ message: 'Provider is required' })
   @IsIn(providers)
   provider: string;
@@ -25,10 +33,12 @@ export class CreateUserDto {
 
   @IsOptional()
   address: string;
+
   @IsOptional()
   age: number;
+
   @IsOptional()
-  phone: number;
+  phone: string;
 }
 
 export class RegisterUserDto {
@@ -50,6 +60,8 @@ export class RegisterUserDto {
   age: number;
   @IsOptional()
   gender: string;
+  @IsOptional()
+  picture: string;
 
   // @IsNotEmptyObject()
   // @IsObject()

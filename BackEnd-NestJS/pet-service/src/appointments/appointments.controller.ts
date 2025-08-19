@@ -7,18 +7,21 @@ import {
   Param,
   Delete,
   Query,
+  HttpCode,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import type { IUser } from 'src/users/users.interface';
+import { CanDelete } from 'src/core/service';
 
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
+  @HttpCode(201)
   @ResponseMessage('Make an appointment')
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
@@ -28,6 +31,7 @@ export class AppointmentsController {
   }
 
   @Get()
+  @HttpCode(200)
   @ResponseMessage('Get appointments paginate')
   findAll(
     @Query('current') current: string,
@@ -38,11 +42,13 @@ export class AppointmentsController {
   }
 
   @Get(':id')
+  @HttpCode(200)
   findOne(@Param('id') id: string) {
     return this.appointmentsService.findOne(id);
   }
 
   @Patch('status/:id')
+  @HttpCode(200)
   update(
     @Param('id') id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
@@ -50,13 +56,15 @@ export class AppointmentsController {
   ) {
     return this.appointmentsService.update(id, updateAppointmentDto, user);
   }
-
+  @CanDelete('appointments')
   @Delete(':id')
+  @HttpCode(200)
   remove(@Param('id') id: string) {
     return this.appointmentsService.remove(id);
   }
 
   @Post('day-slots')
+  @HttpCode(200)
   slots(@Body() findSlotsDto: FindSlotsDto) {
     return this.appointmentsService.findSlots(findSlotsDto);
   }

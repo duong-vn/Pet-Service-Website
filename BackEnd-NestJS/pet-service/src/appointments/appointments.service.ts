@@ -44,11 +44,10 @@ export class AppointmentsService {
         status: PENDING_STATUS,
         createdBy: {
           _id: user._id,
-          email: user.email,
         },
       });
     } catch (error) {
-      throw new BadRequestException('Something went wrong', error.message);
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -111,7 +110,6 @@ export class AppointmentsService {
         ...updateAppointmentDto,
         updatedBy: {
           _id: user._id,
-          email: user.email,
         },
       },
     );

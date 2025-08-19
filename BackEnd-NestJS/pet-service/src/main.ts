@@ -5,8 +5,9 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { TransformInterceptor } from './core/transform.interceptor';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import helmet from 'helmet';
+import { TrimStringsPipe } from './core/trim-string.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -21,7 +22,7 @@ async function bootstrap() {
   );
   app.setGlobalPrefix('api');
   app.use(cookieParser());
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
+
   //config cors
   app.enableCors({
     origin: true,

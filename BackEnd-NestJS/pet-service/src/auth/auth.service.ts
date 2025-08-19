@@ -1,5 +1,6 @@
 import {
   BadGatewayException,
+  BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -17,13 +18,15 @@ import { access } from 'fs';
 import { RolesService } from 'src/roles/roles.service';
 import { use } from 'passport';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { getHashes } from 'crypto';
+import { MailService } from 'src/mail/mail.service';
 
 export interface IPayload {
   sub: string;
   iss: string;
   _id: any;
   name: string;
-  email;
+
   role: {
     _id: any;
     name: string;
@@ -37,6 +40,7 @@ export class AuthService {
     private userService: UsersService,
     private roleService: RolesService,
     private configService: ConfigService,
+    private mail: MailService,
     private googleAuthService: GoogleAuthService,
   ) {}
 
@@ -46,7 +50,7 @@ export class AuthService {
     const userId = await this.findOrCreateUser(userInfo);
 
     const user = (await this.userService.findOne(userId.toString())) as any;
-    const { _id, name, email, role, createdAt } = user;
+    const { _id, name, role } = user;
 
     const payload: IPayload = {
       sub: 'token login',
@@ -54,7 +58,6 @@ export class AuthService {
       _id,
       name,
       role,
-      email,
     };
 
     const refresh_token = await this.createRefreshToken(payload);
@@ -71,22 +74,30 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
-      _id,
-      createdAt,
+      user: {
+        _id,
+        name,
+        role,
+      },
     };
   };
 
   async localLogin(res: Response, user: IUser) {
-    const { _id, email, role, name, permissions } = user;
+    const { _id, role, name } = user;
+
     const payload: IPayload = {
       sub: 'Local-login',
       iss: 'server',
       _id,
       name,
-      email,
       role,
     };
-    const refresh_token = await this.createRefreshToken(payload);
+    const payloadRT = {
+      sub: 'Local-login',
+      iss: 'server',
+      _id,
+    };
+    const refresh_token = await this.createRefreshToken(payloadRT);
 
     await this.userService.updateUserToken(refresh_token, _id);
 
@@ -98,30 +109,25 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
-      user: { _id, name, email, role, permissions },
+      user: { _id, name, role },
     };
   }
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByUsername(username);
+    if (!user)
+      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
     if (user && user.password) {
-      const isValid = await this.userService.isValidPassword(
-        pass,
-        user.password,
-      );
+      const isValid = await this.userService.isMatchHashed(pass, user.password);
       if (isValid) {
         // console.log('>>>role', role, 'type of role', typeof role);
-        const userRole = user.role as any;
-        const temp = await this.roleService.findOne(userRole._id);
-
-        const objUser = {
-          ...user.toObject(),
-          permissions: temp?.permissions ?? [],
-        };
-        return objUser;
+        return user;
+      } else {
+        throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
       }
+    } else {
+      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
     }
-    return null;
   }
 
   async verifyGoogle(id_token: string): Promise<IGoogle> {
@@ -134,17 +140,33 @@ export class AuthService {
   }
 
   async findOrCreateUser(userInfo: IGoogle) {
-    let user = await this.userService.findOneByUsername(userInfo.email);
+    let user = (
+      await this.userService.findOneByUsername(userInfo.email)
+    )?.toObject();
     if (user) {
+      if (!user.provider.includes('google')) {
+        const provider = user.provider + '-google';
+        await this.userService.mergeAccount(
+          user._id.toString(),
+          userInfo as any,
+          provider,
+        );
+      }
       return user._id;
     }
     const _id = await this.userService.createGoogleUser(userInfo);
     return _id;
   }
 
-  async createRefreshToken(payload: IPayload) {
-    const refresh_token = await this.jwtService.sign(payload, {
-      privateKey: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+  async createRefreshToken(payload) {
+    const { sub, iss, _id } = payload;
+    const payloadRT = {
+      sub,
+      iss,
+      _id,
+    };
+    const refresh_token = await this.jwtService.sign(payloadRT, {
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: this.configService.get('JWT_REFRESH_EXPIRE'),
     });
 
@@ -152,22 +174,27 @@ export class AuthService {
   }
   async processNewToken(refresh_token: string, res: Response) {
     try {
-      await this.jwtService.verify(refresh_token, {
+      const verify = await this.jwtService.verify(refresh_token, {
         secret: this.configService.getOrThrow('JWT_REFRESH_TOKEN_SECRET'),
       });
+      const { _id } = verify;
 
-      const user = await this.userService.findUserbyRefreshToken(refresh_token);
+      const user = await this.userService.findOneWithRT(_id);
 
       if (!user) {
-        throw new Error('User doesnt exist');
+        throw new UnauthorizedException('User doesnt exist or unathenticated');
+      }
+      const { refreshToken: userRT } = user;
+      if (!(await this.userService.isMatchHashed(refresh_token, userRT!))) {
+        throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
 
-      const { _id, name, role, email } = user;
+      const { name, role } = user;
       const userRole = role as any as {
-        _id: string;
+        _id: any;
         name: string;
       };
-      const temp = await this.roleService.findOne(userRole._id.toString());
+
       const id = _id.toString();
       const payload: IPayload = {
         sub: 'refresh',
@@ -175,7 +202,6 @@ export class AuthService {
         _id: id,
         name,
         role: userRole,
-        email,
       };
 
       this.createRefreshToken(payload);
@@ -192,13 +218,13 @@ export class AuthService {
         user: {
           _id,
           name,
-          email,
           role,
-          permissions: temp?.permissions ?? [],
         },
       };
-    } catch (Error) {
-      throw new BadGatewayException('Something went wrong', Error.message);
+    } catch (error) {
+      res.clearCookie('refresh_token');
+      console.log('deleted lols');
+      throw new UnauthorizedException('deleted lols' + error.message);
     }
   }
   async logout(res: Response, user: IUser) {
@@ -207,11 +233,88 @@ export class AuthService {
       await this.userService.updateUserToken(null, user._id.toString());
       return { message: 'Logout successful' };
     } catch (error) {
-      throw new BadGatewayException('Something went wrong', error.message);
+      throw new BadGatewayException(error.message);
     }
   }
 
-  async register(registerUserDto: RegisterUserDto) {
-    return this.userService.register(registerUserDto);
+  createMagicToken(_id: string) {
+    const payload = {
+      sub: 'magic token',
+      iss: 'server',
+      _id,
+    };
+    return this.jwtService.sign(payload, {
+      secret: this.configService.getOrThrow('VERIFY_TOKEN_SECRET'),
+      expiresIn: this.configService.getOrThrow('VERIFY_TOKEN_EXPIRE'),
+    });
+  }
+
+  async register(userData: RegisterUserDto) {
+    // check if user is existed
+    try {
+      const user = await this.userService.isEmailExist(userData.email);
+      // create new user if email doesnt exist and send email
+      if (!user) {
+        let newUser = await this.userService.create(userData);
+        this.sendMagicLink(newUser._id.toString(), newUser.name, newUser.email);
+        return;
+      }
+      //if its was created by local throw exception
+      if (user.provider.includes('local') && user.emailVerifiedAt) {
+        throw new BadRequestException('Email already exists');
+      }
+      if (!user.provider.includes('local')) {
+        await this.userService.mergeAccount(
+          user._id.toString(),
+          userData,
+          'local',
+        );
+      }
+      await this.sendMagicLink(user._id.toString(), user.name, user.email);
+      return;
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  async sendMagicLink(id: string, name: string, email: string) {
+    const token = await this.createMagicToken(id);
+    const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/verify#${token}`;
+    const payload = {
+      url,
+      name,
+      email,
+    };
+
+    await this.mail.toVerify(payload);
+    return;
+  }
+
+  async getUser(user: IUser) {
+    const permissions = await this.roleService.getPermissionsForRole(
+      user.role._id,
+    );
+    const userInfo = await this.userService.findOne(user._id);
+
+    return {
+      ...userInfo,
+      permissions,
+    };
+  }
+
+  async verifyToken(token: string): Promise<IUser | null> {
+    try {
+      const res = this.jwtService.verify(token, {
+        secret: this.configService.getOrThrow('VERIFY_TOKEN_SECRET'),
+      });
+      const { _id } = res;
+      const date = new Date();
+      await this.userService.verify(_id, new Date());
+      const user = await this.userService.findOne(_id);
+
+      return user;
+    } catch (e) {
+      throw new BadRequestException('Token hết hạn hoặc không hợp lệ');
+    }
   }
 }
