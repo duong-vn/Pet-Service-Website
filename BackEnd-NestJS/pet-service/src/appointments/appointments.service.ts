@@ -16,6 +16,7 @@ export const ShopSetting = {
   openingTime: '09:00',
   closingTime: '17:00',
   slotsStep: 30,
+  openDuration: 480,
 };
 
 @Injectable()
@@ -128,7 +129,18 @@ export class AppointmentsService {
       .select('duration');
     if (!service) throw new BadRequestException('Invalid service');
     const duration = Number(service.duration);
+    const fullDay = () => {
+      const open = this.toMinutes(ShopSetting.openingTime);
+      const close = this.toMinutes(ShopSetting.closingTime);
+      const slots: string[] = [];
 
+      for (let i = open; i <= close; i += ShopSetting.slotsStep) {
+        slots.push(this.minutesToTimeString(i));
+      }
+      return slots;
+    };
+
+    if (duration >= 480) return fullDay();
     const bookedTime = await this.appointmentModel
       .find({ date }, { _id: 0, startTime: 1, endTime: 1 })
       .sort({ startTime: 1 })
@@ -172,20 +184,16 @@ export class AppointmentsService {
   findAvaiableSlotsAlgorithm(
     bookedTime: { startTime: string; endTime: string }[],
     duration: number,
-  ): { startTime: string; endTime: string }[] {
+  ): string[] {
     const open = this.toMinutes(ShopSetting.openingTime);
     const close = this.toMinutes(ShopSetting.closingTime);
     const step = ShopSetting.slotsStep;
 
-    let slots: { startTime: string; endTime: string }[] = [];
+    let slots: string[] = [];
 
     if (bookedTime.length === 0) {
       for (let start = open; start <= close - duration; start += step) {
-        slots.push({
-          startTime: this.minutesToTimeString(start),
-
-          endTime: this.minutesToTimeString(start + duration),
-        });
+        slots.push(this.minutesToTimeString(start));
       }
 
       return slots;
@@ -200,26 +208,18 @@ export class AppointmentsService {
     for (const b of busy) {
       if (begin + duration <= b.start) {
         while (begin + duration <= b.start) {
-          slots.push({
-            startTime: this.minutesToTimeString(begin),
-
-            endTime: this.minutesToTimeString(begin + duration),
-          });
+          slots.push(this.minutesToTimeString(begin));
           begin += step;
         }
 
         begin = Math.max(b.end, begin + duration);
       } else {
-        begin = b.end;
+        begin = Math.max(begin, b.end);
       }
     }
 
     while (begin + duration <= close) {
-      slots.push({
-        startTime: this.minutesToTimeString(begin),
-
-        endTime: this.minutesToTimeString(begin + duration),
-      });
+      slots.push(this.minutesToTimeString(begin));
       begin += step;
     }
 

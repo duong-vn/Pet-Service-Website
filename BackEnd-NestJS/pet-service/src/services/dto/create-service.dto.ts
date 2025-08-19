@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsMongoId, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateServiceDto {
   @IsNotEmpty({ message: 'Name is required' })
@@ -8,7 +15,9 @@ export class CreateServiceDto {
   @IsNotEmpty({ message: 'Duration is required' })
   duration: string;
   @IsNotEmpty({ message: 'Description is required' })
-  description: string;
+  @IsArray()
+  @IsString({ each: true })
+  description: string[];
 
   @IsNotEmpty({ message: 'Picture is required' })
   picture: string;

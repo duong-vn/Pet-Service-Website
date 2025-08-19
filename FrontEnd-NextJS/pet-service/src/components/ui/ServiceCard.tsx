@@ -32,6 +32,15 @@ export default function ServiceCard({
             {price}
           </span>
         </div>
+        {items.length > 0 && (
+          <ul className="mt-3 space-y-1 text-sm opacity-80">
+            {items.map((it) => (
+              <li key={it} className="flex items-center gap-2">
+                <CheckCircle className="size-4 opacity-70" /> {it}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="mt-4 flex items-center justify-between">
           <a

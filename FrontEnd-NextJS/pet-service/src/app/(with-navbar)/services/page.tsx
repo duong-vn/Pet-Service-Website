@@ -143,37 +143,8 @@ export default function ServicesUI() {
       </motion.div>
 
       {/* Bảng giá */}
-      <section className="mx-auto mt-5 w-[92%] max-w-6xl rounded-3xl border border-background-dark shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4">
-          <h2 className="text-2xl font-semibold">Bảng giá dịch vụ</h2>
-          <span className="text-sm opacity-70">Đã bao gồm VAT</span>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="min-w-full border-t">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-800">
-              <tr className="text-sm">
-                <th className="px-6 py-3">Dịch vụ</th>
-                <th className="px-6 py-3">Mô tả</th>
-                <th className="px-6 py-3">Giá</th>
-                <th className="px-6 py-3">Thời lượng</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {PRICE_LIST.map((item, idx) => (
-                <tr
-                  key={idx}
-                  className="hover:bg-neutral-50 dark:hover:bg-neutral-900"
-                >
-                  <td className="px-6 py-4 font-medium">{item.name}</td>
-                  <td className="px-6 py-4">{item.desc}</td>
-                  <td className="px-6 py-4">{item.price}</td>
-                  <td className="px-6 py-4">{item.duration}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <section className="mx-auto mt-5 max-w-screen xl:w-[90%] rounded-3xl border border-background-dark shadow-2xl">
+        Hello
       </section>
 
       {/* Modal tạo dịch vụ */}

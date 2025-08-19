@@ -35,7 +35,7 @@ export default function Home() {
 
       {/* INTRO CARD */}
       <IntroCard />
-      <h2 className="mx-auto mt-10 max-w-6xl text-3xl xl:text-5xl px-4 py-10 text-primary-dark dark:text-primary-light">
+      <h2 className="mx-auto mt-10 max-w-6xl text-3xl xl:text-5xl px-4 py-10 ">
         Các dịch vụ trong hệ thống:
       </h2>
       {/* benefit */}
@@ -160,9 +160,9 @@ export default function Home() {
         <div className="divide-y divide-black/10 dark:divide-white/10 rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden">
           {FAQS.map((f, i) => (
             <button
-              key={i}
+              key={f.q}
               onClick={() => setOpenFaq((o) => (o === i ? null : i))}
-              className="w-full text-left px-4 py-4 bg-background-light/40 dark:bg-black/20 hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center justify-between"
+              className="w-full text-left px-4 py-4 bg-background-light/40 dark:bg-black/20 hover:bg-black/5 dark:hover:bg-white/5  flex items-center justify-between"
               aria-expanded={openFaq === i}
             >
               <span className="font-medium">{f.q}</span>
