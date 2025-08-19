@@ -47,19 +47,16 @@ export default function HomeLayout({
     <div
       className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-all  duration-700 `}
     >
-      <ReduxProvider>
-        <ThemeProvider>
-          <SidebarContextProvider>
-            <NavBar />
-            <Sidebar />
-          </SidebarContextProvider>
-          <BootstrapAuth />
+      <ThemeProvider>
+        <SidebarContextProvider>
+          <NavBar />
+          <Sidebar />
+        </SidebarContextProvider>
 
-          <div className="min-h-screen"> {children} </div>
+        <div className="min-h-screen"> {children} </div>
 
-          <Footer />
-        </ThemeProvider>
-      </ReduxProvider>
+        <Footer />
+      </ThemeProvider>
     </div>
   );
 }

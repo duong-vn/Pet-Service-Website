@@ -1,7 +1,6 @@
+import { IUser } from "@/lib/authSlice";
+import { api, BASE_URL } from "@/utils/axiosInstance";
 import axios from "axios";
-import { stat } from "fs";
-
-export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export interface ApiResponse<T> {
   data: T;
@@ -12,6 +11,13 @@ export interface ApiResponse<T> {
 interface IToken {
   access_token: string;
 }
+export const getUser = async () => {
+  const res = await api.get("/api/auth/get-user");
+  const user: IUser = res.data.data;
+
+  console.log("bootstrap user", user);
+  return user;
+};
 
 export const handleGoogleLogin = async (
   id_token: string

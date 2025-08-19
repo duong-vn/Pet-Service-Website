@@ -1,8 +1,7 @@
-import { BASE_URL } from "@/apiServices/services";
 import { getAT, setAT } from "@/lib/authToken";
 import axios from "axios";
 import { toast } from "sonner";
-
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 axios.defaults.baseURL = BASE_URL;
 
 export const api = axios.create({

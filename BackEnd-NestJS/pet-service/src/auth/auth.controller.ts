@@ -17,6 +17,11 @@ import type { IUser } from 'src/users/users.interface';
 
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import {
+  Throttle,
+  ThrottlerException,
+  ThrottlerGuard,
+} from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -56,7 +61,7 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: Response, @User() user: IUser) {
     return this.authService.logout(res, user);
   }
-
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Public()
   @ResponseMessage('Get refresh token')
   @Post('refresh')

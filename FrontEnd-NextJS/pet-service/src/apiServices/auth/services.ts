@@ -2,7 +2,8 @@ import { api } from "@/utils/axiosInstance";
 import axios, { AxiosError } from "axios";
 
 import { toast } from "sonner";
-import { BASE_URL, isResOk } from "../services";
+import { isResOk } from "../services";
+import { BASE_URL } from "@/utils/axiosInstance";
 import { setAT } from "@/lib/authToken";
 import { useAppDispatch } from "@/hooks/redux-hooks";
 import { clearAuth } from "@/lib/authSlice";

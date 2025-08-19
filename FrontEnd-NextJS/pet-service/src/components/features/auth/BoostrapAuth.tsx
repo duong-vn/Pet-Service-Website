@@ -6,6 +6,7 @@ import { api } from "@/utils/axiosInstance";
 import { toast } from "sonner";
 import { useAppDispatch } from "@/hooks/redux-hooks";
 import { IUser, setAuth, clearAuth } from "@/lib/authSlice";
+import { getUser } from "@/apiServices/services";
 
 export default function BootstrapAuth() {
   const dispatch = useAppDispatch();
@@ -31,7 +32,6 @@ export default function BootstrapAuth() {
 
         const res = await api.post("/api/auth/refresh");
         setAT(res.data.data.access_token);
-
         await tryGetUser();
       } catch (e: any) {
         const hadAT = !!getAT();

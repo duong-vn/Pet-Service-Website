@@ -18,6 +18,11 @@ import { useState } from "react";
 
 import BenefitCard from "@/components/ui/BenefitCard";
 import ServiceCard from "@/components/ui/ServiceCard";
+import HeroCard from "@/components/layout/HeroCard";
+import IntroCard from "@/components/layout/IntroCard";
+import StepsAppointment from "@/components/layout/StepsAppointment";
+import Link from "next/link";
+import CTA from "@/components/ui/CTA";
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -25,90 +30,11 @@ export default function Home() {
   return (
     <>
       {/* HERO */}
-      <div className="transition-color duration-700 xl:p-6 w-screen bg-gradient-to-b from-primary-light  to-background-light dark:from-primary-dark  dark:to-background-dark dark:bg-primary-dark flex justify-between items-center rounded-3xl overflow-hidden">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.5 }}
-          whileTap={{ scale: 0.88 }}
-          className="w-auto h-auto"
-        >
-          <Image
-            src="/images/icons/cool_dog.webp"
-            alt="cool dog"
-            width={300}
-            height={300}
-            className="hidden xl:flex object-cover rounded-3xl transition-all hover:drop-shadow-2xl "
-          />
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.5 }}
-          whileTap={{ scale: 0.8 }}
-          className="w-auto h-auto"
-        >
-          <Image
-            src="/images/icons/ZOZO-cat.png"
-            alt="zozo cat"
-            width={900}
-            height={900}
-            className="mx-auto transition-all z-50 hover:drop-shadow-2xl"
-          />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.5 }}
-          whileTap={{ scale: 0.88 }}
-          className="w-auto h-auto"
-        >
-          <Image
-            src="/images/icons/other.webp"
-            alt="other"
-            width={300}
-            height={300}
-            className="object-cover hidden xl:flex rounded-3xl transition-all hover:shadow-2xl"
-          />
-        </motion.div>
-      </div>
+      <HeroCard />
 
       {/* INTRO CARD */}
-      <motion.div
-        initial={{ opacity: 0, y: 400 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ amount: 0.2, once: true }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="w-full xl:w-[60%] xl:-mt-24 mx-auto rounded-3xl xl:rounded-[70px] bg-neutral-light dark:bg-secondary-dark shadow-2xl">
-          <div>
-            <h1 className="text-5xl text-center xl:text-start p-10 xl:text-7xl xl:w-[70%] text-primary-dark dark:text-primary-light">
-              Boss đẹp – Sen vui, đến ZOZO thôi!
-            </h1>
-
-            <div className=" block 2xl:flex xl:mx-10 border-b-2 border-background-light/40 dark:border-white/10">
-              <p className="text-xl pb-6 p-3 flex items-center xl:leading-[60px] xl:relative xl:-top-20 ">
-                Tại đây, bạn có thể dễ dàng lựa chọn các dịch vụ như tắm rửa,
-                tỉa lông, cắt móng hay spa cho thú cưng và đặt lịch trực tiếp
-                ngay trên website. Chỉ với vài thao tác đơn giản, thú cưng của
-                bạn sẽ được chăm sóc tận tình bởi đội ngũ chuyên nghiệp.
-              </p>
-              <Image
-                src="/images/ui/dog_showering.webp"
-                alt="dog showering"
-                height={600}
-                width={600}
-                className="shadow-2xl mx-auto mb-6 rounded-3xl xl:rounded-full xl:relative xl:-top-20"
-              />
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      <IntroCard />
       <h2 className="mx-auto mt-10 max-w-6xl text-3xl xl:text-5xl px-4 py-10 text-primary-dark dark:text-primary-light">
         Các dịch vụ trong hệ thống:
       </h2>
@@ -162,17 +88,7 @@ export default function Home() {
       </section>
 
       {/* BOOKING STEPS */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <h3 className="text-2xl md:text-3xl font-bold mb-8">
-          Quy trình đặt lịch
-        </h3>
-        <div className="grid md:grid-cols-4 gap-6">
-          <Step n={1} title="Chọn dịch vụ" desc="Tắm, tỉa lông, spa…" />
-          <Step n={2} title="Chọn thời gian" desc="Khung giờ trống phù hợp" />
-          <Step n={3} title="Nhập thông tin" desc="Tên boss & liên hệ" />
-          <Step n={4} title="Xác nhận" desc="Nhận thông báo qua email" />
-        </div>
-      </section>
+      <StepsAppointment />
 
       {/* PRICING STRIP */}
       <section className="bg-gradient-to-r from-primary-light/20 via-transparent to-primary-dark/20 dark:from-primary-dark/30 dark:via-black dark:to-primary-light/20 py-12">
@@ -181,18 +97,42 @@ export default function Home() {
             Bảng giá nhanh
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <PriceRow name="Tắm siêu tốc (30')" price="90.000đ" />
-            <PriceRow name="Tắm cơ bản (45')" price="120.000đ" />
-            <PriceRow name="Tỉa lông cơ bản (60')" price="200.000đ" />
-            <PriceRow name="Tỉa lông tạo kiểu (75')" price="250.000đ" />
-            <PriceRow name="Spa thư giãn (90')" price="320.000đ" />
-            <PriceRow name="Combo Tắm + Tỉa (120')" price="360.000đ" />
+            <PriceRow
+              name="Tắm siêu tốc (30')"
+              priceStart="90.000đ"
+              priceEnd="90.000đ"
+            />
+            <PriceRow
+              name="Tắm cơ bản (45')"
+              priceStart="120.000đ"
+              priceEnd="90.000đ"
+            />
+            <PriceRow
+              name="Tỉa lông cơ bản (60')"
+              priceStart="200.000đ"
+              priceEnd="90.000đ"
+            />
+            <PriceRow
+              name="Tỉa lông tạo kiểu (75')"
+              priceStart="250.000đ"
+              priceEnd="90.000đ"
+            />
+            <PriceRow
+              name="Spa thư giãn (90')"
+              priceStart="320.000đ"
+              priceEnd="90.000đ"
+            />
+            <PriceRow
+              name="Combo Tắm + Tỉa (120')"
+              priceStart="360.000đ"
+              priceEnd="90.000đ"
+            />
           </div>
         </div>
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
+      {/* <section className="max-w-6xl mx-auto px-4 py-16">
         <h3 className="text-2xl md:text-3xl font-bold mb-8">
           Khách hàng nói gì?
         </h3>
@@ -210,7 +150,7 @@ export default function Home() {
             text="Spa thư giãn xịn, bé đỡ stress, lông mượt lên rõ."
           />
         </div>
-      </section>
+      </section> */}
 
       {/* FAQ */}
       <section className="max-w-3xl mx-auto px-4 py-16">
@@ -251,84 +191,30 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-      >
-        <section className="max-w-6xl mx-auto px-4 py-16">
-          <div className="rounded-3xl bg-gradient-to-tr from-primary-light to-primary-dark dark:from-primary-dark dark:to-primary-light text-white p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-6">
-            <div className="flex-1">
-              <h3 className="text-3xl md:text-4xl font-bold mb-2">
-                Sẵn sàng cho một chiếc boss thơm tho?
-              </h3>
-              <p className="opacity-90">
-                Đặt lịch chỉ trong vài chạm – chọn dịch vụ phù hợp và khung giờ
-                bạn muốn.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <a
-                href="/services"
-                className="rounded-2xl bg-white/90 text-primary-dark px-5 py-3 font-semibold hover:bg-white transition"
-              >
-                Đặt lịch ngay
-              </a>
-              <a
-                href="tel:+8400000000"
-                className="rounded-2xl bg-black/20 text-white px-5 py-3 font-semibold hover:bg-black/30 transition flex items-center gap-2"
-              >
-                <Phone className="size-4" /> Gọi nhanh
-              </a>
-            </div>
-          </div>
-        </section>
-      </motion.div>
+      <CTA />
     </>
   );
 }
 
-function Step({ n, title, desc }: { n: number; title: string; desc: string }) {
-  return (
-    <div className="rounded-2xl border border-black/10 dark:border-white/10 p-5 bg-white/70 dark:bg-white/5 backdrop-blur">
-      <div className="size-8 rounded-full bg-primary-dark dark:bg-primary-light text-white dark:text-black flex items-center justify-center font-semibold mb-3">
-        {n}
-      </div>
-      <div className="font-semibold">{title}</div>
-      <div className="text-sm opacity-80">{desc}</div>
-    </div>
-  );
-}
-
-function PriceRow({ name, price }: { name: string; price: string }) {
+function PriceRow({
+  name,
+  priceStart,
+  priceEnd,
+}: {
+  name: string;
+  priceStart: string;
+  priceEnd: string;
+}) {
   return (
     <div className="flex items-center justify-between rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur px-4 py-3">
       <div className="flex items-center gap-2">
         <Calendar className="size-4 opacity-70" />
         <span>{name}</span>
       </div>
-      <div className="font-semibold">{price}</div>
-    </div>
-  );
-}
-
-function Testi({ name, text }: { name: string; text: string }) {
-  return (
-    <motion.div
-      whileHover={{ y: -3 }}
-      className="rounded-2xl border border-black/10 dark:border-white/10 p-5 bg-white/70 dark:bg-white/5 backdrop-blur"
-    >
-      <div className="flex items-center gap-2 mb-2">
-        <Star className="size-4 fill-yellow-400 text-yellow-400" />
-        <Star className="size-4 fill-yellow-400 text-yellow-400" />
-        <Star className="size-4 fill-yellow-400 text-yellow-400" />
-        <Star className="size-4 fill-yellow-400 text-yellow-400" />
-        <Star className="size-4 fill-yellow-400 text-yellow-400" />
+      <div className="font-semibold">
+        {priceStart} - {priceEnd}
       </div>
-      <p className="text-sm opacity-90">{text}</p>
-      <div className="mt-3 text-sm font-medium opacity-80">— {name}</div>
-    </motion.div>
+    </div>
   );
 }
 

@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { CredentialResponse, googleLogout } from "@react-oauth/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { handleGoogleLogin } from "@/apiServices/services";
+import { getUser, handleGoogleLogin } from "@/apiServices/services";
 import { setAT } from "@/lib/authToken";
 import Login from "@/components/features/auth/login";
 import { motion } from "framer-motion";
@@ -15,7 +15,10 @@ import Link from "next/link";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import { FaArrowRight } from "react-icons/fa";
 import "../register/form.css";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
+import { setAuth } from "@/lib/authSlice";
 export default function LoginPage() {
+  const authenticated = useAppSelector((s) => s.auth.authenticated);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -23,9 +26,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    setLoading(true);
     setMounted(true);
+    setLoading(false);
   }, []);
 
   const onSuccess = async (credentialResponse: CredentialResponse) => {
@@ -41,7 +47,9 @@ export default function LoginPage() {
       setAT(access_token);
 
       toast.success("Đăng nhập thành công!");
-      router.push("/appointments");
+      const user = await getUser();
+      dispatch(setAuth(user));
+      router.replace("/appointments");
     } catch (e: any) {
       console.error(e);
       setErr(e?.message || "Đăng nhập thất bại, thử lại sau.");
@@ -55,6 +63,8 @@ export default function LoginPage() {
 
     const res = await localLogin(email, password);
     if (res) {
+      const user = await getUser();
+      dispatch(setAuth(user));
       router.push("/appointments");
     } else {
       setLoading(false);
@@ -62,91 +72,94 @@ export default function LoginPage() {
   };
 
   if (loading) return <LoadingScreen />;
+  if (!authenticated) {
+    return (
+      <main>
+        <div className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 text-primary-light">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.5 }}
+            whileTap={{ scale: 0.88 }}
+          >
+            <Image
+              src="/images/icons/ZOZO-cat.png"
+              alt="ZOZO"
+              width={296}
+              height={296}
+              className="mb-3 animate-pulse"
+            />
+          </motion.div>
 
-  return (
-    <main>
-      <div className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 text-primary-light">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.5 }}
-          whileTap={{ scale: 0.88 }}
-        >
-          <Image
-            src="/images/icons/ZOZO-cat.png"
-            alt="ZOZO"
-            width={296}
-            height={296}
-            className="mb-3 animate-pulse"
-          />
-        </motion.div>
+          <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark dark:text-neutral-light bg-secondary-dark p-6 shadow-2xl">
+            <div className="flex flex-col items-center">
+              <h1 className="text-2xl font-bold">Đăng nhập</h1>
+              <p className="mt-1 text-sm text-muted-foreground text-center">
+                Sử dụng tài khoản Google để tiếp tục.
+              </p>
+            </div>
 
-        <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark dark:text-neutral-light bg-secondary-dark p-6 shadow-2xl">
-          <div className="flex flex-col items-center">
-            <h1 className="text-2xl font-bold">Đăng nhập</h1>
-            <p className="mt-1 text-sm text-muted-foreground text-center">
-              Sử dụng tài khoản Google để tiếp tục.
-            </p>
-          </div>
+            <div className="mt-2 flex justify-center">
+              {mounted && <Login onSuccess={onSuccess} setErr={setErr} />}
+            </div>
 
-          <div className="mt-2 flex justify-center">
-            {mounted && <Login onSuccess={onSuccess} setErr={setErr} />}
-          </div>
+            <div className="text-center pt-4">----------hoặc----------</div>
 
-          <div className="text-center pt-4">----------hoặc----------</div>
-
-          <form className="space-y-2" onSubmit={handleSubmit}>
-            <label className="flex flex-col">
-              Email:
-              <input
-                type="email"
-                required
-                className="rounded-xl mt-1 p-2 dark:text-neutral-light"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </label>
-
-            <label className="flex flex-col">
-              Password:
-              <div className="relative mt-1">
+            <form className="space-y-2" onSubmit={handleSubmit}>
+              <label className="flex flex-col">
+                Email:
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="email"
                   required
-                  className="rounded-xl w-full p-2 font-sans font-semibold"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded-xl mt-1 p-2 "
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
-                <div
-                  className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <FaRegEye size={20} />
-                  ) : (
-                    <FaRegEyeSlash size={20} />
-                  )}
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="ring-2 rounded-xl h-10 mt-5 ring-black/40 dark:ring-white/30 bg-secondary-dark text-primary-light hover:bg-primary-dark"
-              >
-                Đăng nhập
-              </button>
-            </label>
-          </form>
-        </div>
+              </label>
 
-        <Link
-          href="/auth/register"
-          className="flex items-center justify-end text-sm mt-5 hover:underline text-neutral-light"
-        >
-          <FaArrowRight size={20} className="mx-2" />
-          Bạn chưa có tài khoản? Đăng kí tại đây
-        </Link>
-      </div>
-    </main>
-  );
+              <label className="flex flex-col">
+                Password:
+                <div className="relative mt-1">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    className="rounded-xl w-full p-2 font-sans font-semibold"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <div
+                    className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <FaRegEye size={20} />
+                    ) : (
+                      <FaRegEyeSlash size={20} />
+                    )}
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="ring-2 rounded-xl h-10 mt-5 ring-black/40 dark:ring-white/30 bg-secondary-dark text-primary-light hover:bg-primary-dark"
+                >
+                  Đăng nhập
+                </button>
+              </label>
+            </form>
+          </div>
+
+          <Link
+            href="/auth/register"
+            className="flex items-center justify-end text-sm mt-5 hover:underline text-neutral-light"
+          >
+            <FaArrowRight size={20} className="mx-2" />
+            Bạn chưa có tài khoản? Đăng kí tại đây
+          </Link>
+        </div>
+      </main>
+    );
+  } else {
+    router.replace("/");
+  }
 }

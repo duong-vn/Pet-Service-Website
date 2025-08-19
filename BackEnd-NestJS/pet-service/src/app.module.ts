@@ -17,9 +17,18 @@ import { PermissionsGuard } from './auth/guards/permissions.guard';
 import { APP_GUARD } from '@nestjs/core';
 
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -47,6 +56,11 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     AppService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: PermissionsGuard },
+
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
