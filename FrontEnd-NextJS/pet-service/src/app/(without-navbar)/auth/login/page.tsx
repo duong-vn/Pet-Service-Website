@@ -86,7 +86,7 @@ export default function LoginPage() {
             />
           </motion.div>
 
-          <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark dark:text-neutral-light bg-secondary-dark p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark  dark:text-neutral-light bg-secondary-dark p-6 shadow-2xl">
             <div className="flex flex-col items-center">
               <h1 className="text-2xl font-bold">Đăng nhập</h1>
               <p className="mt-1 text-sm text-muted-foreground text-center">

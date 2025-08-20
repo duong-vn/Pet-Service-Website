@@ -12,13 +12,14 @@ export interface IService {
   name: string;
   duration: number;
   description?: string;
+  pet: PetType;
 }
 
 export interface AppointmentInfoDTO {
   _id: string;
   user: ICostumer;
   service: IService;
-  petType: PetType;
+
   petWeight: number;
   date: Date;
   startTime: string;

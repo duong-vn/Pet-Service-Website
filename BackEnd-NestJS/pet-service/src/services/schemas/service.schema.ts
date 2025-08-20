@@ -1,7 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { IsEnum } from 'class-validator';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { PetType } from 'src/appointments/dto/create-appointment.dto';
 import { User } from 'src/users/schemas/user.schema';
 
+export enum ServiceType {
+  BATH = 'BATH',
+  HOTEL = 'HOTEL',
+  SPA = 'SPA',
+  OTHER = 'OTHER',
+}
 export type ServiceDocument = HydratedDocument<Service>;
 @Schema({ timestamps: true })
 export class Service {
@@ -9,12 +17,17 @@ export class Service {
   name: string; //(e.g., Tắm chó, Cắt móng)
 
   @Prop()
-  duration: string; //(minutes)  // ví dụ: 30
+  duration: number; //(minutes)  // ví dụ: 30
   @Prop()
   picture: string;
 
   @Prop()
   public_id: string;
+  @Prop()
+  type: ServiceType; // BATH, HOTEL, SPA, OTHER
+
+  @Prop()
+  pet: PetType; // DOG, CAT, OTHER
 
   @Prop()
   priceStart: number;

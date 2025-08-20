@@ -20,7 +20,7 @@ import { User } from 'src/users/schemas/user.schema';
 export interface ISendEmailPayload {
   costumer: ICostumer;
   serviceName: string;
-  petType: PetType;
+  pet: PetType;
   petWeight: number;
   date: string;
   status: string;
@@ -45,8 +45,8 @@ export class MailService {
     const {
       costumer,
       serviceName,
-      petType,
       petWeight,
+      pet,
       date,
       duration,
       startTime,
@@ -67,7 +67,7 @@ export class MailService {
       context: {
         customerName: name,
         serviceName,
-        petType,
+        petType: pet,
         petWeight,
         phone,
         appointmentDate: date,
@@ -84,7 +84,7 @@ export class MailService {
     const {
       costumer,
       serviceName,
-      petType,
+      pet,
       petWeight,
       date,
       status,
@@ -107,7 +107,7 @@ export class MailService {
       template: 'staff_order_notification_template',
       context: {
         serviceName,
-        petType,
+        petType: pet,
         petWeight,
         customerName: costumer.name,
         phone: costumer.phone,
@@ -148,7 +148,6 @@ export class MailService {
     const {
       user,
       service,
-      petType,
       petWeight,
       date,
       startTime,
@@ -162,7 +161,7 @@ export class MailService {
     const sendEmailPayload: ISendEmailPayload = {
       costumer: user,
       serviceName: service.name,
-      petType,
+      pet: service.pet,
       petWeight,
       date: date.toISOString().split('T')[0],
       status,

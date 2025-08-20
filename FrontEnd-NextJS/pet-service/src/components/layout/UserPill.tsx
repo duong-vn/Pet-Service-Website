@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
-import { RootState } from "@/store";
+import { RootState } from "@/store/store";
 import { simpleInfoSelector } from "@/lib/authSlice";
 import { FaPencilAlt } from "react-icons/fa";
 
@@ -52,7 +52,7 @@ export default function UserPill() {
           height={48}
           className="rounded-full object-cover  "
         />
-        <div className="absolute top-0 border-1 bg-background-dark rounded-full  opacity-0 group-hover:opacity-100  transition-opacity  w-12 h-12 ">
+        <div className="absolute top-0 border-1 bg-background-dark/50 rounded-full  opacity-0 group-hover:opacity-100  transition-opacity  w-12 h-12 ">
           <FaPencilAlt className="opacity-100 cursor-pointer  text-white  absolute top-1/2 -translate-y-1/2 right-1/2 translate-x-1/2 " />
         </div>
       </div>

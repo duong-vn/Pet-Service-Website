@@ -7,9 +7,6 @@ axios.defaults.baseURL = BASE_URL;
 export const api = axios.create({
   baseURL: BASE_URL, // proxy tới NestJS
   withCredentials: true, // để cookie RT tự gửi khi /auth/refresh
-  validateStatus: (status) => {
-    return status >= 200 && status < 500 && status != 401;
-  },
 });
 
 api.interceptors.request.use((cfg) => {

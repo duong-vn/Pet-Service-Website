@@ -30,7 +30,7 @@ export class MailController {
   //   });
   // }
 
-  @Post('appointment/:id')
+  @Post('appointments/:id')
   @HttpCode(200)
   @ResponseMessage('Send an email')
   sendEmail(@Param('id') id: string) {

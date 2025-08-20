@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 
-import { ThemeProvider } from "@/providers/theme.provider";
-
 import { Toaster } from "sonner";
 import { ReduxProvider } from "@/providers/Redux.provider";
 import BootstrapAuth from "@/components/features/auth/BoostrapAuth";
@@ -27,6 +25,7 @@ export default function RootLayout({
         <ReduxProvider>
           <Toaster richColors position="top-left" />
           {children}
+
           <BootstrapAuth />
         </ReduxProvider>
       </body>
