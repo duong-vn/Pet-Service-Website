@@ -8,6 +8,7 @@ export enum ServiceType {
   BATH = 'BATH',
   HOTEL = 'HOTEL',
   SPA = 'SPA',
+  GROOMING = 'GROOMING',
   OTHER = 'OTHER',
 }
 export type ServiceDocument = HydratedDocument<Service>;

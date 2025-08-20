@@ -223,8 +223,8 @@ export class AuthService {
       };
     } catch (error) {
       res.clearCookie('refresh_token');
-      console.log('deleted lols');
-      throw new UnauthorizedException('deleted lols' + error.message);
+      console.log('deleted lols 1');
+      throw new UnauthorizedException('deleted lols 2' + error.message);
     }
   }
   async logout(res: Response, user: IUser) {

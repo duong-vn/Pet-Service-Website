@@ -14,7 +14,7 @@ import {
   Star,
   ChevronDown,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import BenefitCard from "@/components/ui/BenefitCard";
 import ServiceCard from "@/components/ui/ServiceCard";
@@ -23,10 +23,18 @@ import IntroCard from "@/components/layout/IntroCard";
 import StepsAppointment from "@/components/layout/StepsAppointment";
 import Link from "next/link";
 import CTA from "@/components/ui/CTA";
+import { useServices } from "@/hooks/services-hook";
+import { api } from "@/utils/axiosInstance";
+import { handleError } from "@/apiServices/services";
 
 export default function Home() {
+  const { data: listServices, isLoading, isError, error } = useServices(1, 20);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  console.log("listServices", listServices);
 
+  if (isError) {
+    handleError(error);
+  }
   return (
     <>
       {/* HERO */}

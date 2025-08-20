@@ -42,5 +42,9 @@ export function isResOk(statusCode: number) {
 export const delay = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 export const handleError = (error: any) => {
-  toast.error(error.response.data.message);
+  const msg = Array.isArray(error.response.data.message)
+    ? error.response.data.message.join(", ")
+    : error.response.data.message || "Đã có lỗi xảy ra, thử lại sau.";
+  toast.error(msg);
+  console.error("API Error:", msg);
 };

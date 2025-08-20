@@ -27,8 +27,8 @@ export default function HomeLayout({
     <div
       className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-all  duration-700 `}
     >
-      <ThemeProvider>
-        <ReactQueryProvider>
+      <ReactQueryProvider>
+        <ThemeProvider>
           {" "}
           <SidebarContextProvider>
             <NavBar />
@@ -36,8 +36,8 @@ export default function HomeLayout({
           </SidebarContextProvider>
           <div className="min-h-screen"> {children}</div>
           <Footer />
-        </ReactQueryProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </ReactQueryProvider>
     </div>
   );
 }

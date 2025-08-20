@@ -4,7 +4,7 @@ type Modal =
   | { type: null }
   | { type: "image"; src: string }
   | { type: "create-modal" }
-  | { type: "update-modal" };
+  | { type: "update-modal"; id: string };
 
 export function useModal() {
   const [modal, setModal] = useState<Modal>({ type: null });
