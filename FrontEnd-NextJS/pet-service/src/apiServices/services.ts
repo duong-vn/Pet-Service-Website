@@ -3,6 +3,16 @@ import { api, BASE_URL } from "@/utils/axiosInstance";
 import axios from "axios";
 import { toast } from "sonner";
 
+export interface IService {
+  id: string;
+  name: string;
+  description: string[];
+  duration: number; // in minutes
+  price: number;
+  picture: string;
+  public_id: string;
+}
+
 export interface ApiResponse<T> {
   data: T;
   message: string;
@@ -12,8 +22,8 @@ export interface ApiResponse<T> {
 interface IToken {
   access_token: string;
 }
-export const getUser = async () => {
-  const res = await api.get("/api/auth/get-user");
+export const getUser = async (): Promise<IUser> => {
+  const res = await api.get<ApiResponse<IUser>>("/api/auth/get-user");
   const user: IUser = res.data.data;
 
   console.log("bootstrap user", user);

@@ -9,7 +9,7 @@ import {
   IsString,
 } from 'class-validator';
 import { PetType } from 'src/appointments/dto/create-appointment.dto';
-import { ServiceType } from '../schemas/service.schema';
+import { ServiceType, Variant } from '../schemas/service.schema';
 
 export class CreateServiceDto {
   @IsNotEmpty({ message: 'Name is required' })
@@ -28,6 +28,12 @@ export class CreateServiceDto {
   })
   @Transform((name) => name.value.toUpperCase())
   type: ServiceType;
+
+  @IsEnum(Variant, {
+    message: 'Variant must be one of the following: STANDARD, PRO, PROMAX',
+  })
+  @Transform((name) => name.value.toUpperCase())
+  variant: Variant;
 
   @IsNotEmpty({ message: 'Pet type is required' })
   @IsEnum(PetType, {

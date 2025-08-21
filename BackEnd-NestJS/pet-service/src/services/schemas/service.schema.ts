@@ -11,6 +11,11 @@ export enum ServiceType {
   GROOMING = 'GROOMING',
   OTHER = 'OTHER',
 }
+export enum Variant {
+  STANDARD = 'STANDARD',
+  PRO = 'PRO',
+  PROMAX = 'PROMAX',
+}
 export type ServiceDocument = HydratedDocument<Service>;
 @Schema({ timestamps: true })
 export class Service {
@@ -21,6 +26,8 @@ export class Service {
   duration: number; //(minutes)  // ví dụ: 30
   @Prop()
   picture: string;
+  @Prop()
+  variant: Variant;
 
   @Prop()
   public_id: string;
