@@ -49,6 +49,8 @@ export class CreateAppointmentDto {
     { message: 'date phải ở dạng ISO (YYYY-MM-DD hoặc ISO full).' },
   )
   date!: string;
+  @IsOptional()
+  duration: number; // in minutes, optional, can be calculated based on service duration
 
   @IsNotEmpty({ message: 'startTime là bắt buộc.' })
   @Matches(HH_MM_REGEX, {

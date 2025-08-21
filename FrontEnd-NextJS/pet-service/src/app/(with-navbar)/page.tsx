@@ -71,18 +71,36 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-4 ">
         <h3 className="text-2xl md:text-3xl font-bold mb-6">Dịch vụ nổi bật</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ServiceCard
+          {/* { (['BATH', 'GROOMING','HOTEL'] as const ).map((type) => {
+            const service = listServices.find((item)=> item.type === type);
+            return(
+              <ServiceCard
             img="/images/placeholders/meo.webp"
             title="Tắm cơ bản"
             price="120.000đ"
             items={["Gội xả sạch", "Sấy khô", "Vệ sinh tai"]}
             icon={<Bath className="size-5" />}
           />
+            )
+
+          }
+          )} */}
+          <ServiceCard
+            img="/images/placeholders/meo.webp"
+            title="Tắm cơ bản"
+            price="120.000đ"
+            items={["Gội xả sạch", "Massage", "Dưỡng lông"]}
+            icon={<Bath className="size-5" />}
+          />
           <ServiceCard
             img="/images/placeholders/meo.webp"
             title="Tỉa lông tạo kiểu"
             price="250.000đ"
-            items={["Tư vấn kiểu", "Tỉa mặt", "Gọn gàng theo giống"]}
+            items={[
+              "Tắm, Cắt, mài móng, vệ sinh tai",
+              "Cạo bàn chân,lông bụng",
+              "Massage, sấy khô, dưỡng lông",
+            ]}
             icon={<Scissors className="size-5" />}
           />
           <ServiceCard

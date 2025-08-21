@@ -93,7 +93,7 @@ export class AppointmentsService {
       })
       .populate({
         path: 'service',
-        select: { name: 1, duration: 1, pet: 1, description: 1 },
+        select: { name: 1, duration: 1, type: 1, pet: 1, description: 1 },
       })
       .lean<AppointmentInfoDTO>()
       .exec();

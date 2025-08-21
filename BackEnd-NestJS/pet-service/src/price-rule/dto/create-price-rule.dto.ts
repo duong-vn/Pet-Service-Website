@@ -9,11 +9,6 @@ export class CreatePriceRuleDto {
   @IsMongoId({ message: 'Service ID must be a valid MongoDB ObjectId.' })
   service: mongoose.Schema.Types.ObjectId; // Reference to the service ID
 
-  @IsNotEmpty({ message: 'Variant is required.' })
-  @IsEnum(Variant, {
-    message: 'Variant must be one of the following: STANDARD, PRO, PROMAX',
-  })
-  variant: Variant;
   @IsNotEmpty({ message: 'Minimum weight is required.' })
   minWeight: number; // Minimum weight for the price rule
   @IsNotEmpty({ message: 'Maximum weight is required.' })

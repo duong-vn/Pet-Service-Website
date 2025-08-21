@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import { find } from 'rxjs';
 import {
   AppointmentInfoDTO,
   ICostumer,
@@ -15,6 +16,7 @@ import { PetType } from 'src/appointments/dto/create-appointment.dto';
 import { checkMongoId } from 'src/core/service';
 import { ADMIN_ROLE, MANAGER_ROLE } from 'src/database/sample';
 import { Role } from 'src/roles/schemas/role.schema';
+import { ServiceType } from 'src/services/schemas/service.schema';
 import { User } from 'src/users/schemas/user.schema';
 
 export interface ISendEmailPayload {
@@ -24,7 +26,7 @@ export interface ISendEmailPayload {
   petWeight: number;
   date: string;
   status: string;
-  duration: number;
+  duration: string;
   startTime: string;
   endTime: string;
   price: string;
@@ -58,7 +60,7 @@ export class MailService {
       throw new BadGatewayException('No user found or missing infomation');
     }
     const { email, name, phone } = costumer;
-    const priceString = price.toLocaleString();
+
     return await this.mailerService.sendMail({
       to: email,
       from: '"ZoZo" support@example.com', // override default from
@@ -74,7 +76,7 @@ export class MailService {
         duration,
         startTime,
         endTime,
-        price: priceString,
+        price,
         orderedAt,
       },
     });
@@ -99,7 +101,7 @@ export class MailService {
       throw new BadGatewayException('No user found or missing infomation');
     }
     const staffsEmail = await this.getStaffs();
-    const priceString = price.toLocaleString();
+
     return await this.mailerService.sendMail({
       bcc: staffsEmail,
       from: '"Zozo" support@example.com', // override default from
@@ -111,7 +113,7 @@ export class MailService {
         petWeight,
         customerName: costumer.name,
         phone: costumer.phone,
-        price: priceString,
+        price,
         status,
         appointmentDate: date,
         duration,
@@ -153,10 +155,17 @@ export class MailService {
       startTime,
       status,
       price,
+      duration,
       endTime,
       createdAt,
       note,
     } = appointmentInfo;
+    const finalDuration =
+      service.type === ServiceType.HOTEL
+        ? Math.ceil(duration / 1440) + ' ' + 'ngày'
+        : service.duration + ' phút';
+
+    console.log('localstring', price.toLocaleString('vi-VN'));
 
     const sendEmailPayload: ISendEmailPayload = {
       costumer: user,
@@ -165,10 +174,10 @@ export class MailService {
       petWeight,
       date: date.toISOString().split('T')[0],
       status,
-      duration: service.duration,
+      duration: finalDuration,
       startTime,
       endTime,
-      price: price.toLocaleString(),
+      price: Number(price).toLocaleString('vi-VN'),
       note: note,
       orderedAt: createdAt
         .toLocaleString('sv-SE', {

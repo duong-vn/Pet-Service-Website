@@ -26,6 +26,8 @@ export class Appointment extends Document {
   startTime: String;
 
   @Prop()
+  duration: number; // in minutes
+  @Prop()
   endTime: String;
   @Prop()
   price: number;

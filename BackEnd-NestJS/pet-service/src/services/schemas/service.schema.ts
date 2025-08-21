@@ -26,15 +26,15 @@ export class Service {
   duration: number; //(minutes)  // ví dụ: 30
   @Prop()
   picture: string;
-  @Prop()
+  @Prop({ enum: Variant })
   variant: Variant;
 
   @Prop()
   public_id: string;
-  @Prop()
+  @Prop({ enum: ServiceType })
   type: ServiceType; // BATH, HOTEL, SPA, OTHER
 
-  @Prop()
+  @Prop({ enum: PetType })
   pet: PetType; // DOG, CAT, OTHER
 
   @Prop()

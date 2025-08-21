@@ -3,7 +3,7 @@ import { CreatePriceRuleDto } from './dto/create-price-rule.dto';
 import { UpdatePriceRuleDto } from './dto/update-price-rule.dto';
 import { IUser } from 'src/users/users.interface';
 import { PriceRule } from './schemas/price-rule.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Role } from 'src/roles/schemas/role.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import aqp from 'api-query-params';
@@ -90,6 +90,7 @@ export class PriceRuleService {
 
   async calcPrice(id: string, petWeight: number) {
     checkMongoId(id);
+
     const priceRule = (
       await this.priceModel.find({
         service: id,
@@ -98,6 +99,6 @@ export class PriceRuleService {
         isActive: true,
       })
     )[0];
-    return priceRule?.price ?? 'liên hệ';
+    return priceRule?.price ?? 'Chưa có giá cho cân nặng này';
   }
 }

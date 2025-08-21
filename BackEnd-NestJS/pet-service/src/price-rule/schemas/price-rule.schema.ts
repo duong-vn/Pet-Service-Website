@@ -9,8 +9,7 @@ export class PriceRule {
   name: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Service.name })
   service: mongoose.Schema.Types.ObjectId; // Reference to the service
-  @Prop()
-  variant: Variant; // Variant of the service (e.g., STANDARD, PRO, PROMAX)
+
   @Prop()
   minWeight: number; // Minimum weight for the price rule
   @Prop()

@@ -16,7 +16,7 @@ import { CanDelete, CanGet, CanPatch, CanPost } from 'src/core/service';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import type { IUser } from 'src/users/users.interface';
 
-@Controller('price-rule')
+@Controller('price-rules')
 export class PriceRuleController {
   constructor(private readonly priceRuleService: PriceRuleService) {}
   @CanPost('price-rules')
@@ -67,7 +67,7 @@ export class PriceRuleController {
   @Public()
   @Post('calc/:id')
   @HttpCode(200)
-  @ResponseMessage('Get price rules by Id')
+  @ResponseMessage('Get price by serviceId and pet weight')
   calc(@Param('id') id: string, @Body('petWeight') petWeight: number) {
     return this.priceRuleService.calcPrice(id, petWeight);
   }
