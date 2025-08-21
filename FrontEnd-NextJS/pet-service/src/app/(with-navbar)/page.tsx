@@ -26,6 +26,8 @@ import CTA from "@/components/ui/CTA";
 import { useServices } from "@/hooks/services-hook";
 import { api } from "@/utils/axiosInstance";
 import { handleError } from "@/apiServices/services";
+import { IService, ServiceType } from "@/types/back-end";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function Home() {
   const { data: listServices, isLoading, isError, error } = useServices(1, 20);
@@ -34,6 +36,22 @@ export default function Home() {
 
   if (isError) {
     handleError(error);
+  }
+  const iconOf = (t: ServiceType) => {
+    switch (t) {
+      case ServiceType.BATH:
+        return <Bath className="size-5" />;
+      case ServiceType.GROOMING:
+        return <Scissors className="size-5" />;
+      case ServiceType.HOTEL:
+        return <Star className="size-5" />;
+      default:
+        return <Sparkles className="size-5" />;
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingScreen />;
   }
   return (
     <>
@@ -71,45 +89,32 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-4 ">
         <h3 className="text-2xl md:text-3xl font-bold mb-6">Dịch vụ nổi bật</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* { (['BATH', 'GROOMING','HOTEL'] as const ).map((type) => {
-            const service = listServices.find((item)=> item.type === type);
-            return(
-              <ServiceCard
-            img="/images/placeholders/meo.webp"
-            title="Tắm cơ bản"
-            price="120.000đ"
-            items={["Gội xả sạch", "Sấy khô", "Vệ sinh tai"]}
-            icon={<Bath className="size-5" />}
-          />
-            )
-
-          }
-          )} */}
-          <ServiceCard
-            img="/images/placeholders/meo.webp"
-            title="Tắm cơ bản"
-            price="120.000đ"
-            items={["Gội xả sạch", "Massage", "Dưỡng lông"]}
-            icon={<Bath className="size-5" />}
-          />
-          <ServiceCard
-            img="/images/placeholders/meo.webp"
-            title="Tỉa lông tạo kiểu"
-            price="250.000đ"
-            items={[
-              "Tắm, Cắt, mài móng, vệ sinh tai",
-              "Cạo bàn chân,lông bụng",
-              "Massage, sấy khô, dưỡng lông",
-            ]}
-            icon={<Scissors className="size-5" />}
-          />
-          <ServiceCard
-            img="/images/placeholders/meo.webp"
-            title="Spa thư giãn"
-            price="320.000đ"
-            items={["Massage", "Ủ dưỡng", "Tinh dầu thơm"]}
-            icon={<Sparkles className="size-5" />}
-          />
+          {listServices &&
+            listServices.result &&
+            (
+              [
+                ServiceType.BATH,
+                ServiceType.GROOMING,
+                ServiceType.HOTEL,
+                ServiceType.OTHER,
+              ] as const
+            ).map((type: ServiceType) => {
+              const services = listServices.result;
+              const service = services.find(
+                (item: IService) => item.type == type
+              );
+              if (!service) return null;
+              return (
+                <ServiceCard
+                  img={service.picture}
+                  title={service.name}
+                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
+                  priceEnd={service.priceEnd.toLocaleString() + "đ"}
+                  items={service.description}
+                  icon={iconOf(service.type)}
+                />
+              );
+            })}
         </div>
       </section>
 

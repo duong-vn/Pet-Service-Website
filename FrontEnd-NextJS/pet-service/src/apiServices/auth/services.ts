@@ -78,7 +78,8 @@ export const verifyToken = async (token: string) => {
 
     toast.success("Xác nhận thành công");
     setAT(res.data.data.access_token);
-    return;
+
+    return res.data;
   } catch (error) {
     handleError(error);
   }
@@ -99,5 +100,28 @@ export const logout = async () => {
   } catch (error: any) {
     handleError(error);
     return null;
+  }
+};
+
+export const isVerified = async (token: string) => {
+  try {
+    const res = await api.post("/api/auth/verify-forget-password", { token });
+
+    toast.success("Xác thực thành công");
+    return res.data.data;
+  } catch (error: any) {
+    handleError(error);
+    return false;
+  }
+};
+
+export const resetPassword = async (token: string, password: string) => {
+  try {
+    const res = await api.post("/api/auth/reset-password", { token, password });
+    toast.success("Đặt lại mật khẩu thành công");
+    return true;
+  } catch (error: any) {
+    handleError(error);
+    return false;
   }
 };

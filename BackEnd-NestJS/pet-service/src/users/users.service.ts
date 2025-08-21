@@ -103,7 +103,7 @@ export class UsersService {
       result,
     };
   }
-  async findOneWithRT(id: string): Promise<IUser | null> {
+  async findOneWithRT(id: string) {
     // return `This action returns a #${id} user`;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Not found user');
@@ -114,8 +114,7 @@ export class UsersService {
         _id: id,
       })
       .select('-password')
-      .populate([{ path: 'role', select: { name: 1 } }])
-      .lean<IUser>();
+      .populate([{ path: 'role', select: { name: 1 } }]);
   }
   async findOne(id: string): Promise<IUser | null> {
     // return `This action returns a #${id} user`;

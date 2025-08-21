@@ -17,7 +17,6 @@ export default function VerifyEmailPage() {
 
   useEffect(() => {
     const hash = window.location.hash.slice(1); // phần sau '#'
-    console.log(hash);
     if (!hash) {
       setToken(false);
       return;

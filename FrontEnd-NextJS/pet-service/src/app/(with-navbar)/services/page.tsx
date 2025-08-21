@@ -1,56 +1,62 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { can } from "@/lib/authSlice";
 import { PERMISSIONS } from "@/types/permissions";
-import { X } from "lucide-react";
-import Link from "next/link";
-import Portal from "@/components/layout/Portal";
+import { X, Bath, Scissors, Sparkles, Star } from "lucide-react";
+
 import PreviewImage from "@/components/layout/PreviewImage";
 import { useModal } from "@/hooks/modal-hooks";
+import { useServices } from "@/hooks/services-hook";
+
+import ServiceCard from "@/components/ui/ServiceCard";
+import LoadingScreen from "@/components/ui/LoadingScreen";
+import { handleError } from "@/apiServices/services";
+import { IService, PetType, ServiceType } from "@/types/back-end";
 
 const src2 = "/images/ui/bang_gia_tam.jpg";
 const src1 = "/images/ui/bang_gia_khach_san.jpg";
-type PriceItem = {
-  name: string;
-  desc: string;
-  price: string;
-  duration: string;
-};
-
-const PRICE_LIST: PriceItem[] = [
-  {
-    name: "Tắm cơ bản",
-    desc: "Vệ sinh, sấy khô",
-    price: "150.000đ",
-    duration: "30–45’",
-  },
-  {
-    name: "Cắt tỉa lông",
-    desc: "Styling theo giống",
-    price: "250.000đ",
-    duration: "60–90’",
-  },
-  {
-    name: "Spa dưỡng lông",
-    desc: "Ủ dưỡng, chải mượt",
-    price: "300.000đ",
-    duration: "60’",
-  },
-  {
-    name: "Khám nhanh",
-    desc: "Kiểm tra tổng quát",
-    price: "200.000đ",
-    duration: "20–30’",
-  },
-];
 
 export default function ServicesUI() {
   const { modal, open, close, isOpen } = useModal();
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
+  const { data: listServices, isLoading, isError, error } = useServices(1, 20);
+
+  const [petFilter, setPetFilter] = useState<{ [k in PetType]?: boolean }>({});
+  const [typeFilter, setTypeFilter] = useState<{
+    [k in ServiceType]?: boolean;
+  }>({});
+
+  useEffect(() => {
+    if (isError) handleError(error);
+  }, [isError, error]);
+
+  const filteredServices = useMemo(() => {
+    const data = listServices?.result ?? [];
+    const hasPet = Object.values(petFilter).some(Boolean);
+    const hasType = Object.values(typeFilter).some(Boolean);
+    return data.filter((s: IService) => {
+      const okPet = hasPet ? !!petFilter[s.pet] : true;
+      const okType = hasType ? !!typeFilter[s.type] : true;
+      return okPet && okType;
+    });
+  }, [listServices, petFilter, typeFilter]);
+
+  const iconOf = (t: ServiceType) => {
+    switch (t) {
+      case ServiceType.BATH:
+        return <Bath className="size-5" />;
+      case ServiceType.GROOMING:
+        return <Scissors className="size-5" />;
+      case ServiceType.HOTEL:
+        return <Star className="size-5" />;
+      default:
+        return <Sparkles className="size-5" />;
+    }
+  };
 
   // lock scroll khi mở modal
 
@@ -142,9 +148,97 @@ export default function ServicesUI() {
         )}
       </motion.div>
 
-      {/* Bảng giá */}
-      <section className="mx-auto mt-5 max-w-screen xl:w-[90%] rounded-3xl border border-background-dark shadow-2xl">
-        Hello
+      {/* Bộ lọc + danh sách dịch vụ */}
+      <section className="mx-auto mt-8 w-[92%] max-w-6xl">
+        <div className="rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur p-4">
+          <h3 className="text-lg font-semibold mb-3">Bộ lọc</h3>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div>
+              <p className="text-sm opacity-80 mb-2">Thú cưng</p>
+              <div className="flex flex-wrap gap-4">
+                <label className="inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!petFilter[PetType.DOG]}
+                    onChange={(e) =>
+                      setPetFilter((f) => ({
+                        ...f,
+                        [PetType.DOG]: e.target.checked,
+                      }))
+                    }
+                    className="size-4"
+                  />
+                  <span>Chó</span>
+                </label>
+                <label className="inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!petFilter[PetType.CAT]}
+                    onChange={(e) =>
+                      setPetFilter((f) => ({
+                        ...f,
+                        [PetType.CAT]: e.target.checked,
+                      }))
+                    }
+                    className="size-4"
+                  />
+                  <span>Mèo</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm opacity-80 mb-2">Loại dịch vụ</p>
+              <div className="flex flex-wrap gap-4">
+                {[
+                  ServiceType.BATH,
+                  ServiceType.GROOMING,
+                  ServiceType.HOTEL,
+                  ServiceType.OTHER,
+                ].map((t) => (
+                  <label
+                    key={t}
+                    className="inline-flex items-center gap-2 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={!!typeFilter[t]}
+                      onChange={(e) =>
+                        setTypeFilter((f) => ({ ...f, [t]: e.target.checked }))
+                      }
+                      className="size-4"
+                    />
+                    <span>
+                      {t === ServiceType.BATH && "Tắm"}
+                      {t === ServiceType.GROOMING && "Tỉa lông"}
+                      {t === ServiceType.HOTEL && "Khách sạn"}
+                      {t === ServiceType.OTHER && "Khác"}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          {isLoading ? (
+            <LoadingScreen />
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredServices.map((service: IService) => (
+                <ServiceCard
+                  key={service.id}
+                  img={service.picture}
+                  title={service.name}
+                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
+                  priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
+                  items={service.description}
+                  icon={iconOf(service.type)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
       {/* Modal tạo dịch vụ */}

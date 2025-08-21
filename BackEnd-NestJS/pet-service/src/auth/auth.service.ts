@@ -116,17 +116,21 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByUsername(username);
     if (!user)
-      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
+      throw new BadRequestException('Sai thông tin emaill hoặc mật khẩu');
+    if (!user.emailVerifiedAt)
+      throw new BadRequestException(
+        'Email chưa được xác thực, hãy đăng kí lại để xác thực!',
+      );
     if (user && user.password) {
       const isValid = await this.userService.isMatchHashed(pass, user.password);
       if (isValid) {
         // console.log('>>>role', role, 'type of role', typeof role);
         return user;
       } else {
-        throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
+        throw new BadRequestException('Sai thông tin email hoặc mật khẩuu');
       }
     } else {
-      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
+      throw new BadRequestException('Sai thông tin email hoặcc mật khẩu');
     }
   }
 
@@ -144,6 +148,9 @@ export class AuthService {
       await this.userService.findOneByUsername(userInfo.email)
     )?.toObject();
     if (user) {
+      if (!user.emailVerifiedAt) {
+        await this.userService.verify(user._id.toString(), new Date());
+      }
       if (!user.provider.includes('google')) {
         const provider = user.provider + '-google';
         await this.userService.mergeAccount(
@@ -184,16 +191,31 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
+
       const { refreshToken: userRT } = user;
       if (!(await this.userService.isMatchHashed(refresh_token, userRT!))) {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
 
-      const { name, role } = user;
+      const {
+        name,
+        role,
+        email,
+        age,
+        gender,
+        address,
+        phone,
+        provider,
+        picture,
+        emailVerifiedAt,
+      } = user;
       const userRole = role as any as {
         _id: any;
         name: string;
       };
+      const permissions = await this.roleService.getPermissionsForRole(
+        userRole._id.toString(),
+      );
 
       const id = _id.toString();
       const payload: IPayload = {
@@ -219,6 +241,15 @@ export class AuthService {
           _id,
           name,
           role,
+          email,
+          age,
+          gender,
+          address,
+          phone,
+          provider,
+          picture,
+          emailVerifiedAt,
+          permissions,
         },
       };
     } catch (error) {
@@ -317,4 +348,40 @@ export class AuthService {
       throw new BadRequestException('Token hết hạn hoặc không hợp lệ');
     }
   }
+
+  forgetPassword = async (email) => {
+    const user = await this.userService.findOneByUsername(email);
+    if (!user) {
+      throw new BadRequestException('Email không tồn tại');
+    }
+    const token = await this.createMagicToken(user._id.toString());
+    const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/forget-password#${token}`;
+    const payload = {
+      url,
+      name: user.name,
+      email: user.email,
+    };
+
+    try {
+      await this.mail.toForgetPassword(payload);
+      return { message: 'Vui lòng kiểm tra email để đặt lại mật khẩu' };
+    } catch (error) {
+      throw new BadGatewayException(
+        'Không thể gửi email, vui lòng thử lại sau',
+      );
+    }
+  };
+
+  resetPassword = async (id: string, password: string) => {
+    const hashedPassword = await this.userService.getHash(password);
+    const updatedUser = await this.userService.update(
+      id,
+      { password: hashedPassword },
+      { _id: id } as IUser,
+    );
+    if (!updatedUser) {
+      throw new BadGatewayException('Không thể cập nhật mật khẩu');
+    }
+    return;
+  };
 }

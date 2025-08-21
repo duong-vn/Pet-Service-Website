@@ -1,17 +1,9 @@
 import { IUser } from "@/lib/authSlice";
+import { PetType, ServiceType, Variant } from "@/types/back-end";
+
 import { api, BASE_URL } from "@/utils/axiosInstance";
 import axios from "axios";
 import { toast } from "sonner";
-
-export interface IService {
-  id: string;
-  name: string;
-  description: string[];
-  duration: number; // in minutes
-  price: number;
-  picture: string;
-  public_id: string;
-}
 
 export interface ApiResponse<T> {
   data: T;
@@ -52,7 +44,7 @@ export function isResOk(statusCode: number) {
 export const delay = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 export const handleError = (error: any) => {
-  const msg = Array.isArray(error.response.data.message)
+  const msg = Array.isArray(error.response?.data.message)
     ? error.response.data.message.join(", ")
     : error.response.data.message || "Đã có lỗi xảy ra, thử lại sau.";
   toast.error(msg);

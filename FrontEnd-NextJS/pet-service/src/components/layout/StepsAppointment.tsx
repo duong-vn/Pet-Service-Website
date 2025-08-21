@@ -9,8 +9,8 @@ export default function StepsAppointment() {
       <div className="grid md:grid-cols-4 gap-6">
         <Step n={1} title="Chọn dịch vụ" desc="Tắm, tỉa lông, spa…" />
         <Step n={2} title="Chọn thời gian" desc="Khung giờ trống phù hợp" />
-        <Step n={3} title="Nhập thông tin" desc="Tên boss & liên hệ" />
-        <Step n={4} title="Xác nhận" desc="Nhận thông báo qua email" />
+        <Step n={3} title="Nhập thông tin" desc="Cân nặng boss & liên hệ" />
+        <Step n={4} title="Xác nhận" desc="Thông báo email và số điện thoại" />
       </div>
     </section>
   );

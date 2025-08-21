@@ -4,13 +4,15 @@ import Image from "next/image";
 export default function ServiceCard({
   img,
   title,
-  price,
+  priceStart,
+  priceEnd,
   items,
   icon,
 }: {
   img: string;
   title: string;
-  price: string;
+  priceStart: string;
+  priceEnd: string;
   items: string[];
   icon: React.ReactNode;
 }) {
@@ -27,9 +29,11 @@ export default function ServiceCard({
       </div>
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
-          <h5 className="font-semibold">{title}</h5>
+          <h5 className="font-semibold truncate hover:overflow-visible">
+            {title}
+          </h5>
           <span className="text-primary-dark dark:text-primary-light font-bold">
-            {price}
+            {priceStart}-{priceEnd}
           </span>
         </div>
         {items.length > 0 && (
