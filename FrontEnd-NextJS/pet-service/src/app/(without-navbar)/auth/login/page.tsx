@@ -36,12 +36,12 @@ export default function LoginPage() {
       const credential = credentialResponse?.credential;
       if (!credential) throw new Error("Không nhận được credential từ Google.");
 
-      const { access_token } = (await handleGoogleLogin(credential)).data;
+      const { access_token, user } = (await handleGoogleLogin(credential)).data;
       googleLogout();
       setAT(access_token);
 
       toast.success("Đăng nhập thành công!");
-      const user = await getUser();
+
       dispatch(setAuth(user));
       router.replace("/appointments");
     } catch (e: any) {
@@ -57,9 +57,8 @@ export default function LoginPage() {
 
     const res = await localLogin(email, password);
     if (res) {
-      const user = await getUser();
-      dispatch(setAuth(user));
-      router.push("/appointments");
+      dispatch(setAuth(res.data.user));
+      router.push("/services");
     } else {
       setLoading(false);
     }
@@ -76,6 +75,7 @@ export default function LoginPage() {
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.5 }}
             whileTap={{ scale: 0.88 }}
+            onClick={() => router.replace("/")}
           >
             <Image
               src="/images/icons/ZOZO-cat.png"
@@ -106,6 +106,7 @@ export default function LoginPage() {
                 <input
                   type="email"
                   required
+                  disabled={loading}
                   className="rounded-xl mt-1 p-2 "
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -120,6 +121,7 @@ export default function LoginPage() {
                     required
                     className="rounded-xl w-full p-2 font-sans font-semibold"
                     value={password}
+                    disabled={loading}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <div
@@ -134,13 +136,24 @@ export default function LoginPage() {
                   </div>
                 </div>
                 <button
+                  disabled={loading}
                   type="submit"
-                  className="ring-2 rounded-xl h-10 mt-5 ring-black/40 dark:ring-white/30 bg-secondary-dark text-primary-light hover:bg-primary-dark"
+                  className="ring-2 rounded-xl h-10 mt-5 mb-5 ring-black/40 dark:ring-white/30 bg-secondary-dark text-primary-light hover:bg-primary-dark"
                 >
-                  Đăng nhập
+                  {!loading ? (
+                    "Đăng nhập"
+                  ) : (
+                    <div className="w-5 h-5 m-auto animate-spin rounded-full border-2 border-t-transparent border-primary-light"></div>
+                  )}
                 </button>
               </label>
             </form>
+            <Link
+              href="/auth/forget-password"
+              className="mt-3 cursor-pointer hover:underline"
+            >
+              Quên mật khẩu?
+            </Link>
           </div>
 
           <Link

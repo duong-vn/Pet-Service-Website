@@ -152,6 +152,7 @@ export class UsersService {
         ...updateUserDto,
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );
@@ -193,6 +194,7 @@ export class UsersService {
 
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );
@@ -238,10 +240,19 @@ export class UsersService {
     );
   }
 
-  updateUserToken = async (refresh_token: string | null, _id: string) => {
+  updateUserTokenAndGetPublic = async (
+    refresh_token: string | null,
+    _id: string,
+  ) => {
     let hashedRT = refresh_token;
     if (refresh_token) hashedRT = await this.getHash(refresh_token);
-    return await this.userModel.updateOne({ _id }, { refreshToken: hashedRT });
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { _id },
+      { refreshToken: hashedRT },
+      { new: true, select: '-password -refreshToken' },
+    );
+    if (!updatedUser) throw new BadRequestException('Cannot find user');
+    return updatedUser.toObject();
   };
 
   findUserbyRefreshToken = (refreshToken: string) => {

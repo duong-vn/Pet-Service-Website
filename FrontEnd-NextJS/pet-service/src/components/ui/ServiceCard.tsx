@@ -29,7 +29,7 @@ export default function ServiceCard({
       </div>
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
-          <h5 className="font-semibold truncate hover:overflow-visible">
+          <h5 className="font-semibold truncate hover:overflow-visible hover:whitespace-normal">
             {title}
           </h5>
           <span className="text-primary-dark dark:text-primary-light font-bold">

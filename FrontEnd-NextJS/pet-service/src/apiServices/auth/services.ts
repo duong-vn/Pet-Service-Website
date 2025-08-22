@@ -18,16 +18,13 @@ export const localLogin = async (email: string, password: string) => {
       },
       { withCredentials: true }
     );
-    if (isResOk(res.status)) {
-      const data = res.data;
-      const { access_token } = data.data;
 
-      setAT(access_token);
-      toast.success("Đăng nhập thành công");
-      return true;
-    }
-    toast.error(res.data.message);
-    return false;
+    const data = res.data;
+    const { access_token } = data.data;
+
+    setAT(access_token);
+    toast.success("Đăng nhập thành công");
+    return data;
   } catch (error) {
     handleError(error);
   }
@@ -87,16 +84,12 @@ export const verifyToken = async (token: string) => {
 
 export const logout = async () => {
   try {
-    const res = await api.post("/api/auth/logout");
+    await api.post("/api/auth/logout");
 
-    if (isResOk(res.status)) {
-      toast.success("Đã đăng xuất");
+    toast.success("Đã đăng xuất");
+    setAT(null);
 
-      setAT(null);
-      const dispatch = useAppDispatch();
-      dispatch(clearAuth());
-      return { message: "Đăng xuất thành công" };
-    }
+    return { message: "Đăng xuất thành công" };
   } catch (error: any) {
     handleError(error);
     return null;

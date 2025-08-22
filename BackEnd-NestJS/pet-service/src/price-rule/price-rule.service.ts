@@ -19,6 +19,7 @@ export class PriceRuleService {
       ...createPriceRuleDto,
       createdBy: {
         _id: user._id,
+        email: user.email,
       },
     });
   }
@@ -77,6 +78,7 @@ export class PriceRuleService {
         ...updatePriceRuleDto,
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );

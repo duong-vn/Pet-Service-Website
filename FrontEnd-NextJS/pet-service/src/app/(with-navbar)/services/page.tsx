@@ -16,6 +16,8 @@ import ServiceCard from "@/components/ui/ServiceCard";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import { handleError } from "@/apiServices/services";
 import { IService, PetType, ServiceType } from "@/types/back-end";
+import ServiceModal from "./ServiceModal";
+import Portal from "@/components/layout/Portal";
 
 const src2 = "/images/ui/bang_gia_tam.jpg";
 const src1 = "/images/ui/bang_gia_khach_san.jpg";
@@ -23,7 +25,8 @@ const src1 = "/images/ui/bang_gia_khach_san.jpg";
 export default function ServicesUI() {
   const { modal, open, close, isOpen } = useModal();
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
-  const { data: listServices, isLoading, isError, error } = useServices(1, 20);
+  
+  const { data: listServices, isLoading, isError, error } = useServices({current:1, pageSize:1});
 
   const [petFilter, setPetFilter] = useState<{ [k in PetType]?: boolean }>({});
   const [typeFilter, setTypeFilter] = useState<{
@@ -58,7 +61,7 @@ export default function ServicesUI() {
     }
   };
 
-  // lock scroll khi mở modal
+  // lock scroll
 
   useEffect(() => {
     if (modal.type) document.body.classList.add("overflow-hidden");
@@ -66,7 +69,7 @@ export default function ServicesUI() {
     return () => document.body.classList.remove("overflow-hidden");
   }, [modal.type]);
 
-  // đóng modal bằng phím ESC
+  // đóng modal bằng  ESC
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
@@ -77,7 +80,8 @@ export default function ServicesUI() {
 
   return (
     <div className="pb-16">
-      {/* HERO: 1-2 ảnh ở đầu */}
+      {/* HERO đầu */}
+      
       <section className="mx-auto mt-6 w-[92%] max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -85,9 +89,29 @@ export default function ServicesUI() {
           transition={{ duration: 0.45 }}
           className="grid grid-cols-1 gap-4 md:grid-cols-3"
         >
+         
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className=" flex min-h-24  max-w-6xl items-center  rounded-3xl bg-secondary-light p-4 text-secondary-dark shadow-lg dark:bg-primary-dark dark:text-primary-light"
+          >
+            <div className="flex  items-center flex-col gap-4">
+              <h1 className="text-3xl font-bold md:text-5xl">Dịch vụ</h1>
+
+              {can(permissions, PERMISSIONS.SERVICES_POST) && (
+                <button
+                  onClick={() => open({ type: "create-modal" })}
+                  className="rounded-2xl border border-black bg-red-400 p-3 text-lg transition hover:scale-105 hover:bg-primary-light dark:bg-secondary-dark dark:hover:bg-accent-dark"
+                >
+                  Tạo dịch vụ
+                </button>
+              )}
+            </div>
+          </motion.div>
           {/* Ảnh lớn bên trái */}
           <div
-            className="relative col-span-2 h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72"
+            className="relative  h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72"
             onClick={() => open({ type: "image", src: src1 })}
           >
             <Image
@@ -97,12 +121,12 @@ export default function ServicesUI() {
               className="object-cover transition-transform duration-500 hover:scale-105"
               priority
             />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-t from-black/30 to-transparent" />
-            <div className="absolute bottom-3 left-4 text-white drop-shadow">
+            <div className="pointer-events-none absolute inset-0 rounded-3xl text-black xl:text-white bg-gradient-to-t from-black/30 to-transparent" />
+            <div className="absolute bottom-3 left-4  drop-shadow">
               <h2 className="text-xl font-semibold md:text-2xl">
-                Chăm sóc & Spa
+                Bảng giá khách sạn
               </h2>
-              <p className="text-sm opacity-90">Làm đẹp & thư giãn cho boss</p>
+              <p className="text-sm opacity-90">Theo dõi 24/7</p>
             </div>
           </div>
 
@@ -118,10 +142,10 @@ export default function ServicesUI() {
               className="object-cover transition-transform duration-500 hover:scale-105"
               priority
             />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-t from-black/30 to-transparent" />
-            <div className="absolute bottom-3 left-4 text-white drop-shadow">
-              <h3 className="text-lg font-semibold md:text-xl">
-                Tắm gội cơ bản
+            <div className="pointer-events-none absolute inset-0 rounded-3xl text-white bg-gradient-to-t from-black/30 to-transparent" />
+            <div className="absolute bottom-3 left-4  drop-shadow bg-black/30">
+              <h3 className="text-lg font-semibold bg-black/30 md:text-xl">
+                Tắm gội cơ b
               </h3>
               <p className="text-sm opacity-90">Sạch thơm, khô ráo</p>
             </div>
@@ -130,23 +154,6 @@ export default function ServicesUI() {
       </section>
 
       {/* Thanh tiêu đề + nút tạo dịch vụ */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mx-auto mt-6 flex min-h-24 max-w-6xl items-center justify-between rounded-3xl bg-secondary-light p-4 text-secondary-dark shadow-lg dark:bg-primary-dark dark:text-primary-light"
-      >
-        <h1 className="text-3xl font-bold md:text-5xl">Dịch vụ</h1>
-
-        {can(permissions, PERMISSIONS.SERVICES_POST) && (
-          <button
-            onClick={() => open({ type: "create-modal" })}
-            className="rounded-2xl border border-black bg-red-400 p-3 text-lg transition hover:scale-105 hover:bg-primary-light dark:bg-secondary-dark dark:hover:bg-accent-dark"
-          >
-            Tạo dịch vụ
-          </button>
-        )}
-      </motion.div>
 
       {/* Bộ lọc + danh sách dịch vụ */}
       <section className="mx-auto mt-8 w-[92%] max-w-6xl">
@@ -227,7 +234,7 @@ export default function ServicesUI() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredServices.map((service: IService) => (
                 <ServiceCard
-                  key={service.id}
+                  key={service._id}
                   img={service.picture}
                   title={service.name}
                   priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
@@ -244,80 +251,9 @@ export default function ServicesUI() {
       {/* Modal tạo dịch vụ */}
       <AnimatePresence>
         {isOpen("create-modal") && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={close}
-            />
-
-            {/* Content */}
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              className="fixed left-1/2 top-1/2 z-50 w-[92%] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-2xl dark:bg-neutral-900"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xl font-semibold">Tạo dịch vụ mới</h3>
-                <button
-                  aria-label="Đóng"
-                  className="rounded-full p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                  onClick={close}
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              {/* Form demo — bạn thay bằng form thật */}
-              <form
-                className="space-y-3"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  // TODO: submit form
-                  close();
-                }}
-              >
-                <label className="block">
-                  <span className="text-sm">Tên dịch vụ</span>
-                  <input
-                    className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
-                    placeholder="Ví dụ: Tắm cơ bản"
-                  />
-                </label>
-                <label className="block">
-                  <span className="text-sm">Mô tả</span>
-                  <textarea
-                    className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
-                    rows={3}
-                    placeholder="Mô tả ngắn…"
-                  />
-                </label>
-
-                <div className="flex items-center justify-end gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={close}
-                    className="rounded-xl border px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                  >
-                    Hủy
-                  </button>
-                  <button
-                    type="submit"
-                    className="rounded-xl bg-black px-4 py-2 text-white hover:opacity-90 dark:bg-white dark:text-black"
-                  >
-                    Lưu
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </>
+          <Portal>
+            <ServiceModal close={close} />
+          </Portal>
         )}
       </AnimatePresence>
       {modal.type == "image" && <PreviewImage src={modal.src} close={close} />}

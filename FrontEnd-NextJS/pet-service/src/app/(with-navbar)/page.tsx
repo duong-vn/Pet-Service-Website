@@ -28,9 +28,11 @@ import { api } from "@/utils/axiosInstance";
 import { handleError } from "@/apiServices/services";
 import { IService, ServiceType } from "@/types/back-end";
 import LoadingScreen from "@/components/ui/LoadingScreen";
+import { FaArrowsAltV } from "react-icons/fa";
+import PriceRow from "@/components/layout/PriceRow";
 
 export default function Home() {
-  const { data: listServices, isLoading, isError, error } = useServices(1, 20);
+  const { data: listServices, isLoading, isError, error } = useServices({current:1,pageSize:8});
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   console.log("listServices", listServices);
 
@@ -106,6 +108,7 @@ export default function Home() {
               if (!service) return null;
               return (
                 <ServiceCard
+                  key={service._id}
                   img={service.picture}
                   title={service.name}
                   priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
@@ -128,36 +131,16 @@ export default function Home() {
             Bảng giá nhanh
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <PriceRow
-              name="Tắm siêu tốc (30')"
-              priceStart="90.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Tắm cơ bản (45')"
-              priceStart="120.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Tỉa lông cơ bản (60')"
-              priceStart="200.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Tỉa lông tạo kiểu (75')"
-              priceStart="250.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Spa thư giãn (90')"
-              priceStart="320.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Combo Tắm + Tỉa (120')"
-              priceStart="360.000đ"
-              priceEnd="90.000đ"
-            />
+            {listServices &&
+              listServices.result &&
+              listServices.result.map((service: IService) => (
+                <PriceRow
+                  key={service._id}
+                  name={service.name}
+                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
+                  priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
+                />
+              ))}
           </div>
         </div>
       </section>
@@ -224,28 +207,6 @@ export default function Home() {
       {/* CTA */}
       <CTA />
     </>
-  );
-}
-
-function PriceRow({
-  name,
-  priceStart,
-  priceEnd,
-}: {
-  name: string;
-  priceStart: string;
-  priceEnd: string;
-}) {
-  return (
-    <div className="flex items-center justify-between rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur px-4 py-3">
-      <div className="flex items-center gap-2">
-        <Calendar className="size-4 opacity-70" />
-        <span>{name}</span>
-      </div>
-      <div className="font-semibold">
-        {priceStart} - {priceEnd}
-      </div>
-    </div>
   );
 }
 

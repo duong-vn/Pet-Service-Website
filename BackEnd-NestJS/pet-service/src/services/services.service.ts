@@ -20,6 +20,7 @@ export class ServicesService {
       ...createServiceDto,
       createdBy: {
         _id: user._id,
+        email: user.email,
       },
     });
 
@@ -75,6 +76,7 @@ export class ServicesService {
         ...updateServiceDto,
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );

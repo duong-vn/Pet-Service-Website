@@ -25,7 +25,6 @@ export default function RootLayout({
         <ReduxProvider>
           <Toaster richColors position="top-left" />
           {children}
-
           <BootstrapAuth />
         </ReduxProvider>
       </body>

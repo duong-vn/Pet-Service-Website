@@ -31,6 +31,7 @@ export class PermissionsService {
       ...createPermissionDto,
       createdBy: {
         _id: user._id,
+        email: user.email,
       },
     });
   }
@@ -84,6 +85,7 @@ export class PermissionsService {
         ...updatePermissionDto,
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );

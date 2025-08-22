@@ -1,18 +1,22 @@
 "use client";
 import { verifyToken } from "@/apiServices/auth/services";
 import LoadingScreen from "@/components/ui/LoadingScreen";
+import { useAppDispatch } from "@/hooks/redux-hooks";
+import { setAuth } from "@/lib/authSlice";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function VerifyEmailPage() {
   const [token, setToken] = useState(false);
+  const dispatch = useAppDispatch();
   const [msg, setMsg] = useState(
     "Vui lòng kiểm tra email của bạn để xác nhận."
   );
   const router = useRouter();
 
   const verify = async (token: string) => {
-    await verifyToken(token);
+    const res = await verifyToken(token);
+    dispatch(setAuth(res.data.user));
   };
 
   useEffect(() => {

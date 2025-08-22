@@ -21,19 +21,21 @@ import { useState } from "react";
 import LoadingScreen from "../ui/LoadingScreen";
 import { setTimeout } from "timers/promises";
 import { delay } from "@/apiServices/services";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
   const { isOpen, close } = useSidebar();
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
   const handleLogout = async () => {
     setLoading(true);
     const res = await logout();
     if (res) dispatch(clearAuth());
-    delay(1000);
+
     setLoading(false);
+    router.replace("/");
   };
 
   const handleClose = () => {

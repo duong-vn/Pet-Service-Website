@@ -136,7 +136,7 @@ export default function NavBar() {
 
           {/* calendar icon */}
           <Link
-            href="/view "
+            href="/appointments "
             className={[
               iconClass.current,
               "p-2 hidden hover:scale-110 transition-none",

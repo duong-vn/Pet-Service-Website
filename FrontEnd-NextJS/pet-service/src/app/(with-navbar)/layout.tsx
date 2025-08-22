@@ -9,6 +9,7 @@ import Sidebar from "@/components/layout/SideBar";
 import { ThemeProvider } from "@/providers/theme.provider";
 import Footer from "@/components/layout/Footer";
 import ReactQueryProvider from "@/providers/ReactQuery.provider";
+import BootstrapAuth from "@/components/features/auth/BoostrapAuth";
 
 export const metadata: Metadata = {
   title: "ZOZO Pet's Service",

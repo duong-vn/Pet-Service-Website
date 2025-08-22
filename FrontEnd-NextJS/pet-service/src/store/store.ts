@@ -1,4 +1,9 @@
-import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import {
+  Action,
+  combineReducers,
+  configureStore,
+  ThunkAction,
+} from "@reduxjs/toolkit";
 import authReducer from "@/lib/authSlice";
 
 export type Permission = string;
@@ -7,6 +12,7 @@ export const makeStore = configureStore({
   reducer: {
     auth: authReducer,
   },
+
   devTools: process.env.NODE_ENV !== "production",
 });
 
@@ -20,3 +26,6 @@ export type AppThunk<ThunkReturnType = void> = ThunkAction<
   unknown,
   Action
 >;
+
+// Create store instance
+export const store = makeStore;

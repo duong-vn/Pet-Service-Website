@@ -27,12 +27,13 @@ export default function SendEmailFP() {
     <div className="flex justify-center text-white items-center flex-col text-center h-screen dark:text-primary-light ">
       <div className="border p-8 rounded-lg bg-primary-dark">
         <h1 className="text-3xl mb-3">Hãy nhập email:</h1>
-        <form className="text-white" onSubmit={handleSendEmail}>
+        <form className="" onSubmit={handleSendEmail}>
           <input
             type="email"
             required
+            disabled={loading}
             value={email}
-            className="w-full p-3 rounded-lg bg-transparent border border-primary-light dark:border-white/40 focus:outline-none"
+            className="w-full p-3 text-white rounded-lg bg-transparent border border-primary-light dark:border-white/40 focus:outline-none"
             placeholder="Nhập email của bạn"
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -42,7 +43,7 @@ export default function SendEmailFP() {
             className={[
               "w-full p-3 mt-4 text-lg",
               "rounded-lg border border-primary-light dark:border-white/70",
-              "bg-primary-light hover:bg-accent-dark",
+              "bg-primary-light hover:bg-primary-light/80",
               "transition-all duration-100",
             ].join(" ")}
           >
@@ -57,9 +58,9 @@ export default function SendEmailFP() {
         </form>
         <div
           className={[
-            "w-[400] p-5 mt-4 text-2xl",
-            " dark:hover:bg-accent-dark border border-black dark:border-white/70 rounded-xl",
-            " hover:bg-primary-light cursor-pointer",
+            " p-2 mt-4 ",
+            "  border border-black dark:border-white/70 rounded-xl",
+            " hover:bg-secondary-dark/50 bg-secondary-dark -dark cursor-pointer",
             "transition-all duration-100",
           ].join(" ")}
           onClick={() => router.replace("/")}

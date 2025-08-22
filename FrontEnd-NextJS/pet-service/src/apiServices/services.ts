@@ -13,6 +13,7 @@ export interface ApiResponse<T> {
 
 interface IToken {
   access_token: string;
+  user: IUser;
 }
 export const getUser = async (): Promise<IUser> => {
   const res = await api.get<ApiResponse<IUser>>("/api/auth/get-user");
@@ -41,12 +42,16 @@ export function isNumericString(s: string) {
 export function isResOk(statusCode: number) {
   return statusCode >= 200 && statusCode < 300;
 }
-export const delay = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 export const handleError = (error: any) => {
-  const msg = Array.isArray(error.response?.data.message)
-    ? error.response.data.message.join(", ")
-    : error.response.data.message || "Đã có lỗi xảy ra, thử lại sau.";
-  toast.error(msg);
-  console.error("API Error:", msg);
+  try {
+    const msg = Array.isArray(error.response?.data.message)
+      ? error.response.data.message.join(", ")
+      : error.response.data.message || "Đã có lỗi xảy ra, thử lại sau.";
+    toast.error(msg);
+    console.error("API Error:", msg);
+  } catch (error) {
+    toast.error("Đã có lỗi xảy ra, thử lại sau.");
+    console.error("API Error:", error);
+  }
 };

@@ -26,7 +26,7 @@ export interface IPayload {
   iss: string;
   _id: any;
   name: string;
-
+  email: string;
   role: {
     _id: any;
     name: string;
@@ -56,6 +56,7 @@ export class AuthService {
       sub: 'token login',
       iss: 'from server',
       _id,
+      email: user.email,
       name,
       role,
     };
@@ -63,7 +64,10 @@ export class AuthService {
     const refresh_token = await this.createRefreshToken(payload);
 
     //update refresh_token in database
-    await this.userService.updateUserToken(refresh_token, _id.toString());
+    await this.userService.updateUserTokenAndGetPublic(
+      refresh_token,
+      _id.toString(),
+    );
 
     res.clearCookie('refresh_token');
 
@@ -71,24 +75,26 @@ export class AuthService {
       httpOnly: true,
       maxAge: this.configService.get('COOKIE_EXPIRE'),
     });
-
+    const permissions = await this.roleService.getPermissionsForRole(
+      user.role._id.toString(),
+    );
     return {
       access_token: this.jwtService.sign(payload),
       user: {
-        _id,
-        name,
-        role,
+        ...user,
+        permissions,
       },
     };
   };
 
   async localLogin(res: Response, user: IUser) {
-    const { _id, role, name } = user;
+    const { _id, role, email, name } = user;
 
     const payload: IPayload = {
       sub: 'Local-login',
       iss: 'server',
       _id,
+      email,
       name,
       role,
     };
@@ -99,7 +105,10 @@ export class AuthService {
     };
     const refresh_token = await this.createRefreshToken(payloadRT);
 
-    await this.userService.updateUserToken(refresh_token, _id);
+    const userInfo = await this.userService.updateUserTokenAndGetPublic(
+      refresh_token,
+      _id,
+    );
 
     res.clearCookie('refresh_token');
     res.cookie('refresh_token', refresh_token, {
@@ -107,9 +116,13 @@ export class AuthService {
       maxAge: this.configService.getOrThrow('COOKIE_EXPIRE'),
     });
 
+    const permissions = await this.roleService.getPermissionsForRole(
+      user.role._id.toString(),
+    );
+
     return {
       access_token: this.jwtService.sign(payload),
-      user: { _id, name, role },
+      user: { ...userInfo, permissions },
     };
   }
 
@@ -222,19 +235,20 @@ export class AuthService {
         sub: 'refresh',
         iss: 'from server',
         _id: id,
+        email: email,
         name,
         role: userRole,
       };
 
-      this.createRefreshToken(payload);
+      const RT = await this.createRefreshToken(payload);
 
       res.clearCookie('refresh_token');
-      res.cookie('refresh_token', refresh_token, {
+      res.cookie('refresh_token', RT, {
         httpOnly: true,
         maxAge: this.configService.get('COOKIE_EXPIRE'),
       });
 
-      await this.userService.updateUserToken(refresh_token, _id.toString());
+      await this.userService.updateUserTokenAndGetPublic(RT, _id.toString());
       return {
         access_token: this.jwtService.sign(payload),
         user: {
@@ -261,7 +275,10 @@ export class AuthService {
   async logout(res: Response, user: IUser) {
     try {
       res.clearCookie('refresh_token');
-      await this.userService.updateUserToken(null, user._id.toString());
+      await this.userService.updateUserTokenAndGetPublic(
+        null,
+        user._id.toString(),
+      );
       return { message: 'Logout successful' };
     } catch (error) {
       throw new BadGatewayException(error.message);

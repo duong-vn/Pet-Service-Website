@@ -39,6 +39,7 @@ export class RolesService {
       ...createRoleDto,
       createdBy: {
         _id: user._id,
+        email: user.email,
       },
     });
   }
@@ -115,6 +116,7 @@ export class RolesService {
         ...updateRoleDto,
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );

@@ -45,6 +45,7 @@ export class AppointmentsService {
         status: PENDING_STATUS,
         createdBy: {
           _id: user._id,
+          email: user.email,
         },
       });
     } catch (error) {
@@ -111,6 +112,7 @@ export class AppointmentsService {
         ...updateAppointmentDto,
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );
