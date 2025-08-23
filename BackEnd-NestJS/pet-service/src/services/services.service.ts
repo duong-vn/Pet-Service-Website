@@ -68,7 +68,7 @@ export class ServicesService {
     try {
       const rules = await this.priceRuleModel
         .find({ service: id })
-        .select(['-service', '-createdAt', '-updatedAt', '-__v']);
+        .select(['-service', '-__v']);
       if (!rules) {
         throw new BadRequestException('No price rules found for this service');
       }

@@ -1,10 +1,12 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Trash2, X } from "lucide-react";
 
 interface IProps {
-    _id:string
+    _id:string;
+    public_id:string
   onClose: () => void;
-  onConfirm: (_id:string) => void;
+  onConfirm: (_id:string,public_id:string) => void;
   title?: string;
   message?: string;
   itemName?: string;
@@ -13,6 +15,7 @@ interface IProps {
 
 export default function DeleteModal({ 
     _id,
+    public_id,
   onClose, 
   onConfirm, 
   title = "Xác nhận xóa",
@@ -20,7 +23,7 @@ export default function DeleteModal({
   itemName,
   loading = false
 }: IProps) {
-
+const qc = useQueryClient()
 
   return (
     <>
@@ -88,7 +91,9 @@ export default function DeleteModal({
           </button>
           <button
             type="button"
-            onClick={()=>onConfirm(_id)}
+            onClick={async ()=>{ await onConfirm(_id,public_id)
+              qc.invalidateQueries({queryKey:['services']})
+            }}
             disabled={loading}
             className="rounded-xl bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >

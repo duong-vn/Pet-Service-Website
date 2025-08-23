@@ -24,6 +24,7 @@ import { FaPencilAlt } from "react-icons/fa";
 
 
 import DeleteModal from "@/components/ui/DeleteModal";
+import { deleteServices } from "@/apiServices/services/services";
 
 const src2 = "/images/ui/bang_gia_tam.jpg";
 const src1 = "/images/ui/bang_gia_khach_san.jpg";
@@ -40,9 +41,20 @@ export default function ServicesUI() {
     [k in ServiceType]?: boolean;
   }>({});
 
-  const deleteServicece = async (_id:string)=>{
+  const deleteServicece  = async (id: string,public_id:string) => {
 
-  }
+    try {
+         await deleteServices(id,public_id)
+   
+      
+    } catch (error) {
+      handleError(error);
+    } finally {
+      close()
+    }
+  };
+
+  
 
   useEffect(() => {
     if (isError) handleError(error);
@@ -285,7 +297,7 @@ export default function ServicesUI() {
                 _id={service._id}
               />
              
-              <FaTrashCan  className="absolute top-2 right-4 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id})}/>
+              <FaTrashCan  className="absolute top-2 right-4 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id, public_id:service.public_id})}/>
               <FaPencilAlt className="absolute bottom-16 right-4  cursor-pointer" onClick={()=>open({type:'update-modal',payload:service})} />
             </div>
             </motion.article>
@@ -309,7 +321,7 @@ export default function ServicesUI() {
         {
          modal.type === 'delete-modal' && (
             <Portal>
-              <DeleteModal _id= {modal._id} onConfirm = {deleteServicece}  onClose={close}
+              <DeleteModal _id= {modal._id} public_id={modal.public_id} onConfirm = {deleteServicece}  onClose={close}
               
               />
             </Portal>

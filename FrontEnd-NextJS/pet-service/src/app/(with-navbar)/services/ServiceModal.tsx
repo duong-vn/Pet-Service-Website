@@ -18,10 +18,11 @@ interface IProps {
 const handleNumStringForForm = async (e:ChangeEvent<HTMLInputElement>,setValue: (value:string)=>void, setLoading : (value:boolean)=>void) =>{
     if(e.target.value === ''){
       setValue((e.target.value))
-      return}
+      return
+    }
     if(!isNumericString(e.target.value)){
         toast.error('Phải nhập chuỗi số')
-        console.log(e.target.value)
+       
         setLoading(true)
          await delay(1000)
         setLoading(false)

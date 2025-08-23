@@ -21,3 +21,14 @@ export const patchService = async (_id:string,payload:IService)=>{
     }
 
 }
+
+export const deleteServices = async (id:string,public_id:string) =>{
+    try{await api.delete(`/api/services/${id}`)
+    await api.delete(`api/cloud/delete`,{params:{public_id}})
+    toast.success('Xóa thành công')
+
+}catch(error){
+    handleError(error)
+}
+
+}

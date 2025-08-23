@@ -29,4 +29,6 @@ export interface IService {
   type: ServiceType;
   public_id: string;
   variant: Variant;
+  createdAt:Date;
+  updatedAt:Date;
 }
