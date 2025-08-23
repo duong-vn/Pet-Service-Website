@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiResponse } from "../services";
+import { ApiResponse, handleError } from "../services";
 import { BASE_URL } from "@/utils/axiosInstance";
 const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const CLOUD_URL = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
@@ -42,6 +42,17 @@ export const uploadToCloud = async (
   folder: string,
   file: File
 ): Promise<IResData> => {
-  const sign = await postSign(folder);
-  return await postCloud(file, sign.data);
+  try{ 
+    
+    const sign = await postSign(folder);
+    return await postCloud(file, sign.data);
+  
+  }catch(error){
+      handleError(error)
+      return {
+        public_id:'/images/placeholders/meo.webp',
+        secure_url:''
+      }
+    }
+ 
 };

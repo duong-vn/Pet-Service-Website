@@ -8,11 +8,13 @@ import mongoose, { Model } from 'mongoose';
 import aqp from 'api-query-params';
 import { sign } from 'crypto';
 import { checkMongoId } from 'src/core/service';
+import { PriceRule } from 'src/price-rule/schemas/price-rule.schema';
 
 @Injectable()
 export class ServicesService {
   constructor(
     @InjectModel(Service.name) private serviceModel: Model<Service>,
+    @InjectModel(PriceRule.name) private priceRuleModel: Model<PriceRule>,
   ) {}
 
   async create(createServiceDto: CreateServiceDto, user: IUser) {
@@ -34,7 +36,7 @@ export class ServicesService {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-
+    console.log(filter);
     const defaultLimit = limit ?? 10;
     const offset = (current - 1) * defaultLimit;
 
@@ -61,10 +63,26 @@ export class ServicesService {
     };
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     checkMongoId(id);
-
-    return this.serviceModel.findOne({ _id: id.toString() });
+    try {
+      const rules = await this.priceRuleModel
+        .find({ service: id })
+        .select(['-service', '-createdAt', '-updatedAt', '-__v']);
+      if (!rules) {
+        throw new BadRequestException('No price rules found for this service');
+      }
+      const service = await this.serviceModel.findOne({ _id: id.toString() });
+      if (!service) {
+        throw new BadRequestException('Service not found');
+      }
+      return {
+        ...service.toObject(),
+        rules,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   update(id: string, updateServiceDto: UpdateServiceDto, user: IUser) {

@@ -32,9 +32,9 @@ import { FaArrowsAltV } from "react-icons/fa";
 import PriceRow from "@/components/layout/PriceRow";
 
 export default function Home() {
-  const { data: listServices, isLoading, isError, error } = useServices({current:1,pageSize:8});
+  const { data: listServices, isLoading, isError, error } = useServices({current:1,pageSize:6});
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  console.log("listServices", listServices);
+ 
 
   if (isError) {
     handleError(error);
@@ -108,6 +108,7 @@ export default function Home() {
               if (!service) return null;
               return (
                 <ServiceCard
+                _id={service._id}
                   key={service._id}
                   img={service.picture}
                   title={service.name}

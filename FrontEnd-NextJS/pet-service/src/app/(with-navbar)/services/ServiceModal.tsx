@@ -5,12 +5,16 @@ import { X } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { LuImagePlus } from "react-icons/lu";
+import { uploadToCloud } from "@/apiServices/cloud/services";
+import { patchService, postServices } from "@/apiServices/services/services";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 interface IProps {
   close: () => void;
   serviceData?: IService;
 }
+
 const handleNumStringForForm = async (e:ChangeEvent<HTMLInputElement>,setValue: (value:string)=>void, setLoading : (value:boolean)=>void) =>{
     if(e.target.value === ''){
       setValue((e.target.value))
@@ -28,6 +32,7 @@ const handleNumStringForForm = async (e:ChangeEvent<HTMLInputElement>,setValue: 
 
 
 export default function ServiceModal({ close, serviceData }: IProps) {
+  const qc = useQueryClient();
   const isUpdate = !!serviceData;
   const [loading,setLoading] = useState(false)
   const [name, setName] = useState(serviceData?.name ?? "");
@@ -38,6 +43,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
   const [priceStart, setPriceStart] = useState<string>(
     serviceData?.priceStart.toString() ?? ''
   );
+  const [picture,setPicture] = useState<string>(serviceData?.picture ?? '/images/placeholders/meo.webp')
   const [priceEnd, setPriceEnd] = useState<string>(serviceData?.priceEnd.toString() ?? '');
   const [pet, setPet] = useState<PetType>(serviceData?.pet ?? PetType.DOG);
   const [type, setType] = useState<ServiceType>(
@@ -50,7 +56,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
 
   const previewUrl = useMemo(() => {
     if (file) return URL.createObjectURL(file);
-    return  "/images/placeholders/meo.webp";
+    return  picture;
   }, [file]);
 
   useEffect(() => {
@@ -66,7 +72,14 @@ export default function ServiceModal({ close, serviceData }: IProps) {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const picture =''
+    setLoading(true)
+    
+    let public_id =serviceData?.public_id?? ' '
+    if(file){
+    const cloud = await uploadToCloud(`/services/${type}`,file!)
+    setPicture(cloud?.secure_url)
+    public_id = cloud?.public_id
+}
 
     const payload = {
       name,
@@ -79,18 +92,28 @@ export default function ServiceModal({ close, serviceData }: IProps) {
       priceEnd: Number(priceEnd) || 0,
       pet,
       type,
+      public_id,
       variant,
       picture, // nếu có file thì backend sẽ xử lý, ở đây giữ URL để xem trước
       // file: file (nếu muốn gửi FormData thì xử lý ở nơi gọi API)
-    } as Partial<IService> & { description: string[] };
-
+    } as IService
+  
+  
+    if(isUpdate){
+      const _id = serviceData._id
+        await patchService(_id,payload)
+    }else{
+      await postServices(payload)
+    }
     // TODO: gọi API create/update tại đây
     // if (isUpdate) await updateService(serviceData!.id, payload, file?)
     // else await createService(payload, file?)
 
     // Tạm thời log payload để kiểm tra
+    qc.invalidateQueries({queryKey:['services']})
+   setLoading(false)
     console.log(isUpdate ? "Update service" : "Create service", payload);
-    close();
+    close()
   };
 
   return (
@@ -105,7 +128,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
       />
 
       {/* Content */}
-      <div className="absolute top-1/2 left-1/2 z-50 w-[80%] max-w-2xl max-h-[90%] -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-2xl dark:bg-neutral-900">
+      <div className="fixed top-1/2 left-1/2 z-50 w-[80%] max-w-2xl max-h-[90%] -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-2xl dark:bg-neutral-900">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-xl font-semibold">
             {isUpdate ? "Cập nhật dịch vụ" : "Tạo dịch vụ mới"}

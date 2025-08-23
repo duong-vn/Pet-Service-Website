@@ -10,7 +10,7 @@ import { X, Bath, Scissors, Sparkles, Star } from "lucide-react";
 
 import PreviewImage from "@/components/layout/PreviewImage";
 import { useModal } from "@/hooks/modal-hooks";
-import { useServices } from "@/hooks/services-hook";
+import { ServiceParams, useServices } from "@/hooks/services-hook";
 
 import ServiceCard from "@/components/ui/ServiceCard";
 import LoadingScreen from "@/components/ui/LoadingScreen";
@@ -18,6 +18,12 @@ import { handleError } from "@/apiServices/services";
 import { IService, PetType, ServiceType } from "@/types/back-end";
 import ServiceModal from "./ServiceModal";
 import Portal from "@/components/layout/Portal";
+import Pagination from "@/components/layout/Pagination";
+import { FaTrashCan } from "react-icons/fa6";
+import { FaPencilAlt } from "react-icons/fa";
+
+
+import DeleteModal from "@/components/ui/DeleteModal";
 
 const src2 = "/images/ui/bang_gia_tam.jpg";
 const src1 = "/images/ui/bang_gia_khach_san.jpg";
@@ -25,29 +31,51 @@ const src1 = "/images/ui/bang_gia_khach_san.jpg";
 export default function ServicesUI() {
   const { modal, open, close, isOpen } = useModal();
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
+  const [params, setParams] = useState<ServiceParams>({current:1,pageSize:6})
   
-  const { data: listServices, isLoading, isError, error } = useServices({current:1, pageSize:1});
-
+  const { data: listServices, isLoading, isError, error } = useServices(params);
+  
   const [petFilter, setPetFilter] = useState<{ [k in PetType]?: boolean }>({});
   const [typeFilter, setTypeFilter] = useState<{
     [k in ServiceType]?: boolean;
   }>({});
 
+  const deleteServicece = async (_id:string)=>{
+
+  }
+
   useEffect(() => {
     if (isError) handleError(error);
   }, [isError, error]);
 
-  const filteredServices = useMemo(() => {
-    const data = listServices?.result ?? [];
-    const hasPet = Object.values(petFilter).some(Boolean);
-    const hasType = Object.values(typeFilter).some(Boolean);
-    return data.filter((s: IService) => {
-      const okPet = hasPet ? !!petFilter[s.pet] : true;
-      const okType = hasType ? !!typeFilter[s.type] : true;
-      return okPet && okType;
-    });
-  }, [listServices, petFilter, typeFilter]);
 
+  useEffect(() => {
+    const selectedPets = (Object.keys(petFilter) as PetType[]).filter(k => !!petFilter[k]) ;
+    const selectedTypes = (Object.keys(typeFilter) as ServiceType[]).filter(k => !!typeFilter[k]);
+  
+    setParams((p: ServiceParams) => {
+      // Only include filter if both pet and type have selections
+      if (selectedPets.length > 0 || selectedTypes.length > 0) {
+        return {
+          ...p,
+          current: 1, // đổi filter thì reset page
+          filter: {
+            pet: selectedPets.length > 0 ? selectedPets : [], // Provide default if empty
+            type: selectedTypes.length > 0 ? selectedTypes : [], // Provide default if empty
+          },
+        };
+      } else {
+        // No filters selected, remove filter property entirely
+        const { filter, ...rest } = p;
+        return {
+          ...rest,
+          current: 1,
+        };
+      }
+    });
+
+
+  }, [petFilter, typeFilter, setParams]);
   const iconOf = (t: ServiceType) => {
     switch (t) {
       case ServiceType.BATH:
@@ -118,12 +146,12 @@ export default function ServicesUI() {
               src={src1}
               alt="Dịch vụ chăm sóc thú cưng"
               fill
-              className="object-cover transition-transform duration-500 hover:scale-105"
+              className="object-contain transition-transform duration-500 hover:scale-105"
               priority
             />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl text-black xl:text-white bg-gradient-to-t from-black/30 to-transparent" />
-            <div className="absolute bottom-3 left-4  drop-shadow">
-              <h2 className="text-xl font-semibold md:text-2xl">
+            <div className="pointer-events-none absolute inset-0 rounded-3xl   bg-gradient-to-t from-black/30 to-transparent" />
+            <div className="absolute bottom-3 left-4 text-white drop-shadow">
+              <h2 className="text-xl  md:text-2xl">
                 Bảng giá khách sạn
               </h2>
               <p className="text-sm opacity-90">Theo dõi 24/7</p>
@@ -139,13 +167,13 @@ export default function ServicesUI() {
               src={src2}
               alt="Dịch vụ tắm gội"
               fill
-              className="object-cover transition-transform duration-500 hover:scale-105"
+              className="object-contain transition-transform duration-500 hover:scale-105"
               priority
             />
             <div className="pointer-events-none absolute inset-0 rounded-3xl text-white bg-gradient-to-t from-black/30 to-transparent" />
-            <div className="absolute bottom-3 left-4  drop-shadow bg-black/30">
-              <h3 className="text-lg font-semibold bg-black/30 md:text-xl">
-                Tắm gội cơ b
+            <div className="absolute bottom-3 left-4  drop-shadow text-white">
+              <h3 className="text-lg font-semibold text-white md:text-xl">
+                Tắm, tỉa lông
               </h3>
               <p className="text-sm opacity-90">Sạch thơm, khô ráo</p>
             </div>
@@ -231,19 +259,42 @@ export default function ServicesUI() {
           {isLoading ? (
             <LoadingScreen />
           ) : (
+
+
+            <>
+          
+
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredServices.map((service: IService) => (
-                <ServiceCard
-                  key={service._id}
-                  img={service.picture}
-                  title={service.name}
-                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
-                  priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
-                  items={service.description}
-                  icon={iconOf(service.type)}
-                />
-              ))}
+            {listServices.result.map((service: IService) => (
+              <motion.article
+              whileHover={{ scale: 1.02 }}
+              key={service._id}
+            >
+              <div 
+               className="relative"
+              
+              >
+              
+              <ServiceCard
+                img={service.picture}
+                title={service.name}
+                priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
+                priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
+                items={service.description}
+                icon={iconOf(service.type)}
+                _id={service._id}
+              />
+             
+              <FaTrashCan  className="absolute top-2 right-4 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id})}/>
+              <FaPencilAlt className="absolute bottom-16 right-4  cursor-pointer" onClick={()=>open({type:'update-modal',payload:service})} />
             </div>
+            </motion.article>
+            ))}
+
+          </div>
+         <Pagination current={listServices.meta.current} setParams={setParams} limit={listServices.meta.limit} totalItems={listServices.meta.totalItems} totalPage={listServices.meta.totalPage}/>
+          </>
+            
           )}
         </div>
       </section>
@@ -255,6 +306,22 @@ export default function ServicesUI() {
             <ServiceModal close={close} />
           </Portal>
         )}
+        {
+         modal.type === 'delete-modal' && (
+            <Portal>
+              <DeleteModal _id= {modal._id} onConfirm = {deleteServicece}  onClose={close}
+              
+              />
+            </Portal>
+          )
+        }
+         {modal.type ==='update-modal' && (
+         <Portal>
+            <ServiceModal close={close}  serviceData={modal.payload}/>
+            </Portal>
+        )}
+
+
       </AnimatePresence>
       {modal.type == "image" && <PreviewImage src={modal.src} close={close} />}
     </div>
