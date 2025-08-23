@@ -56,9 +56,9 @@ export default function ServiceCard({
           >
             Xem chi tiết
           </Link>
-          <button className="rounded-xl bg-primary-dark dark:bg-primary-light text-white dark:text-black px-4 py-2 text-sm font-medium hover:opacity-90 transition">
+          <Link href ={`/appointments?service=${_id}`} className="rounded-xl bg-primary-dark dark:bg-primary-light text-white dark:text-black px-4 py-2 text-sm font-medium hover:opacity-90 transition">
             Đặt lịch
-          </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -20,7 +20,7 @@ export default function HeroCard() {
           alt="zozo cat"
           width={900}
           height={900}
-          className="mx-auto  hover:scale-105 transition-transform "
+          className="mx-auto z-20 hover:scale-105 transition-transform "
         />
    
 

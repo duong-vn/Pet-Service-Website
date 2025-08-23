@@ -107,9 +107,13 @@ export default function Home() {
               );
               if (!service) return null;
               return (
+                <motion.article
+                whileHover={{ scale: 1.02 }}
+                key={service._id}
+              >
                 <ServiceCard
                 _id={service._id}
-                  key={service._id}
+                
                   img={service.picture}
                   title={service.name}
                   priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
@@ -117,6 +121,7 @@ export default function Home() {
                   items={service.description}
                   icon={iconOf(service.type)}
                 />
+                </motion.article>
               );
             })}
         </div>
@@ -135,12 +140,16 @@ export default function Home() {
             {listServices &&
               listServices.result &&
               listServices.result.map((service: IService) => (
-                <PriceRow
-                  key={service._id}
-                  name={service.name}
-                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
-                  priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
-                />
+                <motion.article
+                whileHover={{ scale: 1.02 }}
+                key={service._id}
+              > <PriceRow
+             
+              name={service.name}
+              priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
+              priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
+            /></motion.article>
+               
               ))}
           </div>
         </div>
@@ -206,7 +215,11 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <CTA />
+      <motion.article
+                whileHover={{ scale: 1.02 }}
+               
+              > <CTA /></motion.article>
+     
     </>
   );
 }
