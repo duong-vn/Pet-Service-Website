@@ -17,22 +17,23 @@ export default function BootstrapAuth() {
     ran.current = true;
 
     (async () => {
-      const tryGetUser = async () => {
-        const res = await api.get("/api/auth/get-user");
-        const user: IUser = res.data.data;
-        dispatch(setAuth(user));
-        console.log("bootstrap user", user);
-      };
+      // const tryGetUser = async () => {
+      //   const res = await api.get("/api/auth/get-user");
+      //   const user: IUser = res.data.data;
+      //   dispatch(setAuth(user));
+      //   console.log("bootstrap user", user);
+      // };
 
       try {
-        if (getAT()) {
-          await tryGetUser();
-          return;
-        }
+        // if (getAT()) {
+        //   await tryGetUser();
+        //   return;
+        // }
 
-        const res = await api.post("/api/auth/refresh");
-        setAT(res.data.data.access_token);
-        await tryGetUser();
+        const res = (await api.post("/api/auth/refresh")).data;
+        const data = res.data;
+        setAT(data.access_token);
+        dispatch(setAuth(data.user as IUser));
       } catch (e: any) {
         const hadAT = !!getAT();
         setAT(null);

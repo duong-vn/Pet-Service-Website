@@ -129,6 +129,37 @@ export const INIT_PERMISSIONS = [
     key: 'appointments:delete',
     module: 'APPOINTMENTS',
   },
+  // PRICE-RULES
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Tạo luật giá',
+    key: 'price-rules:post',
+    module: 'PRICE-RULES',
+  },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem danh sách luật giá',
+    key: 'price-rules:get',
+    module: 'PRICE-RULES',
+  },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Xem chi tiết luật giá',
+    key: 'price-rules/:id:get',
+    module: 'PRICE-RULES',
+  },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Cập nhật luật giá',
+    key: 'price-rules:patch',
+    module: 'PRICE-RULES',
+  },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Xóa luật giá',
+    key: 'price-rules:delete',
+    module: 'PRICE-RULES',
+  },
 ] as const;
 
 /** helper: lấy _id theo key */

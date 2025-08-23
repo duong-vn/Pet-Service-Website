@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import { find } from 'rxjs';
 import {
   AppointmentInfoDTO,
   ICostumer,
@@ -15,16 +16,17 @@ import { PetType } from 'src/appointments/dto/create-appointment.dto';
 import { checkMongoId } from 'src/core/service';
 import { ADMIN_ROLE, MANAGER_ROLE } from 'src/database/sample';
 import { Role } from 'src/roles/schemas/role.schema';
+import { ServiceType } from 'src/services/schemas/service.schema';
 import { User } from 'src/users/schemas/user.schema';
 
 export interface ISendEmailPayload {
   costumer: ICostumer;
   serviceName: string;
-  petType: PetType;
+  pet: PetType;
   petWeight: number;
   date: string;
   status: string;
-  duration: number;
+  duration: string;
   startTime: string;
   endTime: string;
   price: string;
@@ -45,8 +47,8 @@ export class MailService {
     const {
       costumer,
       serviceName,
-      petType,
       petWeight,
+      pet,
       date,
       duration,
       startTime,
@@ -58,7 +60,7 @@ export class MailService {
       throw new BadGatewayException('No user found or missing infomation');
     }
     const { email, name, phone } = costumer;
-    const priceString = price.toLocaleString();
+
     return await this.mailerService.sendMail({
       to: email,
       from: '"ZoZo" support@example.com', // override default from
@@ -67,14 +69,14 @@ export class MailService {
       context: {
         customerName: name,
         serviceName,
-        petType,
+        petType: pet,
         petWeight,
         phone,
         appointmentDate: date,
         duration,
         startTime,
         endTime,
-        price: priceString,
+        price,
         orderedAt,
       },
     });
@@ -84,7 +86,7 @@ export class MailService {
     const {
       costumer,
       serviceName,
-      petType,
+      pet,
       petWeight,
       date,
       status,
@@ -99,7 +101,7 @@ export class MailService {
       throw new BadGatewayException('No user found or missing infomation');
     }
     const staffsEmail = await this.getStaffs();
-    const priceString = price.toLocaleString();
+
     return await this.mailerService.sendMail({
       bcc: staffsEmail,
       from: '"Zozo" support@example.com', // override default from
@@ -107,11 +109,11 @@ export class MailService {
       template: 'staff_order_notification_template',
       context: {
         serviceName,
-        petType,
+        petType: pet,
         petWeight,
         customerName: costumer.name,
         phone: costumer.phone,
-        price: priceString,
+        price,
         status,
         appointmentDate: date,
         duration,
@@ -148,28 +150,34 @@ export class MailService {
     const {
       user,
       service,
-      petType,
       petWeight,
       date,
       startTime,
       status,
       price,
+      duration,
       endTime,
       createdAt,
       note,
     } = appointmentInfo;
+    const finalDuration =
+      service.type === ServiceType.HOTEL
+        ? Math.ceil(duration / 1440) + ' ' + 'ngày'
+        : service.duration + ' phút';
+
+    console.log('localstring', price.toLocaleString('vi-VN'));
 
     const sendEmailPayload: ISendEmailPayload = {
       costumer: user,
       serviceName: service.name,
-      petType,
+      pet: service.pet,
       petWeight,
       date: date.toISOString().split('T')[0],
       status,
-      duration: service.duration,
+      duration: finalDuration,
       startTime,
       endTime,
-      price: price.toLocaleString(),
+      price: Number(price).toLocaleString('vi-VN'),
       note: note,
       orderedAt: createdAt
         .toLocaleString('sv-SE', {
@@ -202,6 +210,28 @@ export class MailService {
       from: '"ZoZo" support@example.com', // override default from
       subject: 'Dịch vụ ZoZo',
       template: 'magic_link_template',
+      context: {
+        userName,
+        verifyUrl,
+      },
+    });
+  }
+
+  async toForgetPassword(costumerPayload: {
+    url: string;
+    name: string;
+    email: string;
+  }) {
+    const { url: verifyUrl, name: userName, email } = costumerPayload;
+    if (!verifyUrl || !userName || !email) {
+      throw new BadGatewayException('No user found or missing infomation');
+    }
+
+    return await this.mailerService.sendMail({
+      to: email,
+      from: '"ZoZo" support@example.com', // override default from
+      subject: 'Dịch vụ ZoZo',
+      template: 'forget_password',
       context: {
         userName,
         verifyUrl,

@@ -20,17 +20,22 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 export function SidebarContextProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   const toggle = () => {
-    if (isOpen) document.body.style.overflow = "";
-    else document.body.style.overflow = "hidden";
-    setIsOpen(!isOpen);
+    setIsOpen((v) => !v);
   };
   const close = () => {
-    document.body.style.overflow = ""; // mở lại cuộn
     setIsOpen(false);
   };
   const open = () => {
-    document.body.style.overflow = "hidden"; // khóa cuộn
     setIsOpen(true);
   };
 

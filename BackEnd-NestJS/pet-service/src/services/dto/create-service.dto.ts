@@ -1,5 +1,15 @@
-import { Type } from 'class-transformer';
-import { IsMongoId, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { PetType } from 'src/appointments/dto/create-appointment.dto';
+import { ServiceType, Variant } from '../schemas/service.schema';
 
 export class CreateServiceDto {
   @IsNotEmpty({ message: 'Name is required' })
@@ -8,7 +18,29 @@ export class CreateServiceDto {
   @IsNotEmpty({ message: 'Duration is required' })
   duration: string;
   @IsNotEmpty({ message: 'Description is required' })
-  description: string;
+  @IsArray()
+  @IsString({ each: true })
+  description: string[];
+
+  @IsEnum(ServiceType, {
+    message:
+      'Service type must be one of the following: BATH, HOTEL, SPA, OTHER',
+  })
+  @Transform((name) => name.value.toUpperCase())
+  type: ServiceType;
+
+  @IsEnum(Variant, {
+    message: 'Variant must be one of the following: STANDARD, PRO, PROMAX',
+  })
+  @Transform((name) => name.value.toUpperCase())
+  variant: Variant;
+
+  @IsNotEmpty({ message: 'Pet type is required' })
+  @IsEnum(PetType, {
+    message: 'Pet type must be one of the following: DOG, CAT, OTHER',
+  })
+  @Transform((name) => name.value.toUpperCase())
+  pet: PetType;
 
   @IsNotEmpty({ message: 'Picture is required' })
   picture: string;

@@ -1,4 +1,4 @@
-import { RootState } from "@/store";
+import { RootState } from "@/store/store";
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 export type Permission = string;
 

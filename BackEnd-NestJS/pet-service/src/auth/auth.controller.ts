@@ -92,4 +92,35 @@ export class AuthController {
   register(@Body() registerUserDto: RegisterUserDto) {
     return this.authService.register(registerUserDto);
   }
+
+  @Public()
+  @ResponseMessage('Verify successfuly')
+  @HttpCode(200)
+  @Post('verify-forget-password')
+  async verifyPass(@Body('token') token: string) {
+    const user = await this.authService.verifyToken(token);
+    if (!user) throw Error('Cannot find user');
+    return true;
+  }
+
+  @Public()
+  @ResponseMessage('Forget password')
+  @Post('forget-password')
+  @HttpCode(201)
+  forgetPass(@Body('email') email: string) {
+    return this.authService.forgetPassword(email);
+  }
+
+  @Public()
+  @ResponseMessage('Reset password')
+  @Post('reset-password')
+  @HttpCode(201)
+  async resetPass(
+    @Body('token') token: string,
+    @Body('password') password: string,
+  ) {
+    const user = await this.authService.verifyToken(token);
+    if (!user) throw new BadRequestException('Cannot find user');
+    return this.authService.resetPassword(user._id, password);
+  }
 }

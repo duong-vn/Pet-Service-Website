@@ -1,22 +1,27 @@
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 export default function ServiceCard({
   img,
   title,
-  price,
+  priceStart,
+  priceEnd,
   items,
   icon,
+  _id,
 }: {
   img: string;
   title: string;
-  price: string;
+  priceStart: string;
+  priceEnd: string;
   items: string[];
   icon: React.ReactNode;
+  _id:string
 }) {
   return (
-    <motion.article
-      whileHover={{ scale: 1.02 }}
+    <div
+    
       className="rounded-3xl overflow-hidden border border-black/10 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur shadow-sm"
     >
       <div className="relative h-44 w-full">
@@ -27,24 +32,35 @@ export default function ServiceCard({
       </div>
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
-          <h5 className="font-semibold">{title}</h5>
+          <h5 className="font-semibold truncate hover:overflow-visible ">
+            {title}
+          </h5>
           <span className="text-primary-dark dark:text-primary-light font-bold">
-            {price}
+            {priceStart}-{priceEnd}
           </span>
         </div>
+        {items.length > 0 && (
+          <ul className="mt-3 space-y-1 text-sm opacity-80">
+            {items.map((it) => (
+              <li key={it} className="flex items-center gap-2">
+                <CheckCircle className="size-4 opacity-70" /> {it}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="mt-4 flex items-center justify-between">
-          <a
-            href="/services"
+          <Link
+            href={`/services/${_id}`}
             className="text-primary-dark dark:text-primary-light text-sm underline-offset-4 hover:underline"
           >
             Xem chi tiết
-          </a>
+          </Link>
           <button className="rounded-xl bg-primary-dark dark:bg-primary-light text-white dark:text-black px-4 py-2 text-sm font-medium hover:opacity-90 transition">
             Đặt lịch
           </button>
         </div>
       </div>
-    </motion.article>
+    </div>
   );
 }

@@ -58,6 +58,7 @@ export default function LoginPage() {
 
     setLoading(false);
     if (res) router.replace("/auth/verify");
+    else setLoading(false);
   };
   if (loading)
     return (

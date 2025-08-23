@@ -1,34 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
+
 import "../globals.css";
-// import "./fonts/css/kalam.css";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+
 import NavBar from "../../components/layout/NavBar";
 
 import { SidebarContextProvider } from "@/context/SidebarContext";
 import Sidebar from "@/components/layout/SideBar";
 import { ThemeProvider } from "@/providers/theme.provider";
 import Footer from "@/components/layout/Footer";
+import ReactQueryProvider from "@/providers/ReactQuery.provider";
 import BootstrapAuth from "@/components/features/auth/BoostrapAuth";
-import { Toaster } from "sonner";
-import { ReduxProvider } from "@/providers/Redux.provider";
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
-// const globalFont = localFont({
-// src:'../fonts/Quicksand-Bold.woff2',
-// variable:'--font-global',
-
-// })
 
 export const metadata: Metadata = {
   title: "ZOZO Pet's Service",
@@ -47,16 +28,17 @@ export default function HomeLayout({
     <div
       className={` font-normal antialiased bg-background-light dark:bg-background-dark  transition-all  duration-700 `}
     >
-      <ThemeProvider>
-        <SidebarContextProvider>
-          <NavBar />
-          <Sidebar />
-        </SidebarContextProvider>
-
-        <div className="min-h-screen"> {children} </div>
-
-        <Footer />
-      </ThemeProvider>
+      <ReactQueryProvider>
+        <ThemeProvider>
+          {" "}
+          <SidebarContextProvider>
+            <NavBar />
+            <Sidebar />
+          </SidebarContextProvider>
+          <div className="min-h-screen"> {children}</div>
+          <Footer />
+        </ThemeProvider>
+      </ReactQueryProvider>
     </div>
   );
 }

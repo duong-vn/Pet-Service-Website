@@ -17,9 +17,9 @@ import { Type } from 'class-transformer';
 import mongoose from 'mongoose';
 
 export enum PetType {
-  DOG = 'dog',
-  CAT = 'cat',
-  OTHER = 'other',
+  DOG = 'DOG',
+  CAT = 'CAT',
+  OTHER = 'OTHER',
 }
 
 export const HH_MM_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -30,10 +30,6 @@ export class CreateAppointmentDto {
   @IsNotEmpty({ message: 'service là bắt buộc.' })
   @IsMongoId({ message: 'service phải là ObjectId hợp lệ.' })
   service: mongoose.Schema.Types.ObjectId;
-
-  @IsNotEmpty({ message: 'petType là bắt buộc.' })
-  @IsEnum(PetType, { message: 'petType ngoài định dạng' })
-  petType: PetType;
 
   @IsNotEmpty({ message: 'petWeight là bắt buộc.' })
   @Type(() => Number)
@@ -53,6 +49,8 @@ export class CreateAppointmentDto {
     { message: 'date phải ở dạng ISO (YYYY-MM-DD hoặc ISO full).' },
   )
   date!: string;
+  @IsOptional()
+  duration: number; // in minutes, optional, can be calculated based on service duration
 
   @IsNotEmpty({ message: 'startTime là bắt buộc.' })
   @Matches(HH_MM_REGEX, {

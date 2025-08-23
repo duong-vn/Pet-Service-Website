@@ -103,7 +103,7 @@ export class UsersService {
       result,
     };
   }
-  async findOneWithRT(id: string): Promise<IUser | null> {
+  async findOneWithRT(id: string) {
     // return `This action returns a #${id} user`;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Not found user');
@@ -114,8 +114,7 @@ export class UsersService {
         _id: id,
       })
       .select('-password')
-      .populate([{ path: 'role', select: { name: 1 } }])
-      .lean<IUser>();
+      .populate([{ path: 'role', select: { name: 1 } }]);
   }
   async findOne(id: string): Promise<IUser | null> {
     // return `This action returns a #${id} user`;
@@ -153,6 +152,7 @@ export class UsersService {
         ...updateUserDto,
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );
@@ -194,6 +194,7 @@ export class UsersService {
 
         updatedBy: {
           _id: user._id,
+          email: user.email,
         },
       },
     );
@@ -239,10 +240,19 @@ export class UsersService {
     );
   }
 
-  updateUserToken = async (refresh_token: string | null, _id: string) => {
+  updateUserTokenAndGetPublic = async (
+    refresh_token: string | null,
+    _id: string,
+  ) => {
     let hashedRT = refresh_token;
     if (refresh_token) hashedRT = await this.getHash(refresh_token);
-    return await this.userModel.updateOne({ _id }, { refreshToken: hashedRT });
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { _id },
+      { refreshToken: hashedRT },
+      { new: true, select: '-password -refreshToken' },
+    );
+    if (!updatedUser) throw new BadRequestException('Cannot find user');
+    return updatedUser.toObject();
   };
 
   findUserbyRefreshToken = (refreshToken: string) => {

@@ -26,7 +26,7 @@ export interface IPayload {
   iss: string;
   _id: any;
   name: string;
-
+  email: string;
   role: {
     _id: any;
     name: string;
@@ -56,6 +56,7 @@ export class AuthService {
       sub: 'token login',
       iss: 'from server',
       _id,
+      email: user.email,
       name,
       role,
     };
@@ -63,7 +64,10 @@ export class AuthService {
     const refresh_token = await this.createRefreshToken(payload);
 
     //update refresh_token in database
-    await this.userService.updateUserToken(refresh_token, _id.toString());
+    await this.userService.updateUserTokenAndGetPublic(
+      refresh_token,
+      _id.toString(),
+    );
 
     res.clearCookie('refresh_token');
 
@@ -71,24 +75,26 @@ export class AuthService {
       httpOnly: true,
       maxAge: this.configService.get('COOKIE_EXPIRE'),
     });
-
+    const permissions = await this.roleService.getPermissionsForRole(
+      user.role._id.toString(),
+    );
     return {
       access_token: this.jwtService.sign(payload),
       user: {
-        _id,
-        name,
-        role,
+        ...user,
+        permissions,
       },
     };
   };
 
   async localLogin(res: Response, user: IUser) {
-    const { _id, role, name } = user;
+    const { _id, role, email, name } = user;
 
     const payload: IPayload = {
       sub: 'Local-login',
       iss: 'server',
       _id,
+      email,
       name,
       role,
     };
@@ -99,7 +105,10 @@ export class AuthService {
     };
     const refresh_token = await this.createRefreshToken(payloadRT);
 
-    await this.userService.updateUserToken(refresh_token, _id);
+    const userInfo = await this.userService.updateUserTokenAndGetPublic(
+      refresh_token,
+      _id,
+    );
 
     res.clearCookie('refresh_token');
     res.cookie('refresh_token', refresh_token, {
@@ -107,26 +116,34 @@ export class AuthService {
       maxAge: this.configService.getOrThrow('COOKIE_EXPIRE'),
     });
 
+    const permissions = await this.roleService.getPermissionsForRole(
+      user.role._id.toString(),
+    );
+
     return {
       access_token: this.jwtService.sign(payload),
-      user: { _id, name, role },
+      user: { ...userInfo, permissions },
     };
   }
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByUsername(username);
     if (!user)
-      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
+      throw new BadRequestException('Sai thông tin emaill hoặc mật khẩu');
+    if (!user.emailVerifiedAt)
+      throw new BadRequestException(
+        'Email chưa được xác thực, hãy đăng kí lại để xác thực!',
+      );
     if (user && user.password) {
       const isValid = await this.userService.isMatchHashed(pass, user.password);
       if (isValid) {
         // console.log('>>>role', role, 'type of role', typeof role);
         return user;
       } else {
-        throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
+        throw new BadRequestException('Sai thông tin email hoặc mật khẩuu');
       }
     } else {
-      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
+      throw new BadRequestException('Sai thông tin email hoặcc mật khẩu');
     }
   }
 
@@ -144,6 +161,9 @@ export class AuthService {
       await this.userService.findOneByUsername(userInfo.email)
     )?.toObject();
     if (user) {
+      if (!user.emailVerifiedAt) {
+        await this.userService.verify(user._id.toString(), new Date());
+      }
       if (!user.provider.includes('google')) {
         const provider = user.provider + '-google';
         await this.userService.mergeAccount(
@@ -184,53 +204,81 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
+
       const { refreshToken: userRT } = user;
       if (!(await this.userService.isMatchHashed(refresh_token, userRT!))) {
         throw new UnauthorizedException('User doesnt exist or unathenticated');
       }
 
-      const { name, role } = user;
+      const {
+        name,
+        role,
+        email,
+        age,
+        gender,
+        address,
+        phone,
+        provider,
+        picture,
+        emailVerifiedAt,
+      } = user;
       const userRole = role as any as {
         _id: any;
         name: string;
       };
+      const permissions = await this.roleService.getPermissionsForRole(
+        userRole._id.toString(),
+      );
 
       const id = _id.toString();
       const payload: IPayload = {
         sub: 'refresh',
         iss: 'from server',
         _id: id,
+        email: email,
         name,
         role: userRole,
       };
 
-      this.createRefreshToken(payload);
+      const RT = await this.createRefreshToken(payload);
 
       res.clearCookie('refresh_token');
-      res.cookie('refresh_token', refresh_token, {
+      res.cookie('refresh_token', RT, {
         httpOnly: true,
         maxAge: this.configService.get('COOKIE_EXPIRE'),
       });
 
-      await this.userService.updateUserToken(refresh_token, _id.toString());
+      await this.userService.updateUserTokenAndGetPublic(RT, _id.toString());
       return {
         access_token: this.jwtService.sign(payload),
         user: {
           _id,
           name,
           role,
+          email,
+          age,
+          gender,
+          address,
+          phone,
+          provider,
+          picture,
+          emailVerifiedAt,
+          permissions,
         },
       };
     } catch (error) {
       res.clearCookie('refresh_token');
-      console.log('deleted lols');
-      throw new UnauthorizedException('deleted lols' + error.message);
+      console.log('deleted lols 1');
+      throw new UnauthorizedException('deleted lols 2' + error.message);
     }
   }
   async logout(res: Response, user: IUser) {
     try {
       res.clearCookie('refresh_token');
-      await this.userService.updateUserToken(null, user._id.toString());
+      await this.userService.updateUserTokenAndGetPublic(
+        null,
+        user._id.toString(),
+      );
       return { message: 'Logout successful' };
     } catch (error) {
       throw new BadGatewayException(error.message);
@@ -317,4 +365,40 @@ export class AuthService {
       throw new BadRequestException('Token hết hạn hoặc không hợp lệ');
     }
   }
+
+  forgetPassword = async (email) => {
+    const user = await this.userService.findOneByUsername(email);
+    if (!user) {
+      throw new BadRequestException('Email không tồn tại');
+    }
+    const token = await this.createMagicToken(user._id.toString());
+    const url = `${this.configService.getOrThrow('FE_BASE_URL')}/auth/forget-password#${token}`;
+    const payload = {
+      url,
+      name: user.name,
+      email: user.email,
+    };
+
+    try {
+      await this.mail.toForgetPassword(payload);
+      return { message: 'Vui lòng kiểm tra email để đặt lại mật khẩu' };
+    } catch (error) {
+      throw new BadGatewayException(
+        'Không thể gửi email, vui lòng thử lại sau',
+      );
+    }
+  };
+
+  resetPassword = async (id: string, password: string) => {
+    const hashedPassword = await this.userService.getHash(password);
+    const updatedUser = await this.userService.update(
+      id,
+      { password: hashedPassword },
+      { _id: id } as IUser,
+    );
+    if (!updatedUser) {
+      throw new BadGatewayException('Không thể cập nhật mật khẩu');
+    }
+    return;
+  };
 }

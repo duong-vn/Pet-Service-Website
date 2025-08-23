@@ -12,7 +12,6 @@ export default function ServicesUI() {
     const res = await api.delete("/api/appointments/68959fe7a05e87347875ce7d");
     console.log(res);
     console.log(getAT());
-    window;
   };
   return (
     <motion.div

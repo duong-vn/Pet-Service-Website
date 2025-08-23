@@ -14,7 +14,7 @@ import {
   Star,
   ChevronDown,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import BenefitCard from "@/components/ui/BenefitCard";
 import ServiceCard from "@/components/ui/ServiceCard";
@@ -23,10 +23,38 @@ import IntroCard from "@/components/layout/IntroCard";
 import StepsAppointment from "@/components/layout/StepsAppointment";
 import Link from "next/link";
 import CTA from "@/components/ui/CTA";
+import { useServices } from "@/hooks/services-hook";
+import { api } from "@/utils/axiosInstance";
+import { handleError } from "@/apiServices/services";
+import { IService, ServiceType } from "@/types/back-end";
+import LoadingScreen from "@/components/ui/LoadingScreen";
+import { FaArrowsAltV } from "react-icons/fa";
+import PriceRow from "@/components/layout/PriceRow";
 
 export default function Home() {
+  const { data: listServices, isLoading, isError, error } = useServices({current:1,pageSize:6});
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+ 
 
+  if (isError) {
+    handleError(error);
+  }
+  const iconOf = (t: ServiceType) => {
+    switch (t) {
+      case ServiceType.BATH:
+        return <Bath className="size-5" />;
+      case ServiceType.GROOMING:
+        return <Scissors className="size-5" />;
+      case ServiceType.HOTEL:
+        return <Star className="size-5" />;
+      default:
+        return <Sparkles className="size-5" />;
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
   return (
     <>
       {/* HERO */}
@@ -35,7 +63,7 @@ export default function Home() {
 
       {/* INTRO CARD */}
       <IntroCard />
-      <h2 className="mx-auto mt-10 max-w-6xl text-3xl xl:text-5xl px-4 py-10 text-primary-dark dark:text-primary-light">
+      <h2 className="mx-auto mt-10 max-w-6xl text-3xl xl:text-5xl px-4 py-10 ">
         Các dịch vụ trong hệ thống:
       </h2>
       {/* benefit */}
@@ -63,27 +91,34 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-4 ">
         <h3 className="text-2xl md:text-3xl font-bold mb-6">Dịch vụ nổi bật</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ServiceCard
-            img="/images/placeholders/meo.webp"
-            title="Tắm cơ bản"
-            price="120.000đ"
-            items={["Gội xả sạch", "Sấy khô", "Vệ sinh tai"]}
-            icon={<Bath className="size-5" />}
-          />
-          <ServiceCard
-            img="/images/placeholders/meo.webp"
-            title="Tỉa lông tạo kiểu"
-            price="250.000đ"
-            items={["Tư vấn kiểu", "Tỉa mặt", "Gọn gàng theo giống"]}
-            icon={<Scissors className="size-5" />}
-          />
-          <ServiceCard
-            img="/images/placeholders/meo.webp"
-            title="Spa thư giãn"
-            price="320.000đ"
-            items={["Massage", "Ủ dưỡng", "Tinh dầu thơm"]}
-            icon={<Sparkles className="size-5" />}
-          />
+          {listServices &&
+            listServices.result &&
+            (
+              [
+                ServiceType.BATH,
+                ServiceType.GROOMING,
+                ServiceType.HOTEL,
+                ServiceType.OTHER,
+              ] as const
+            ).map((type: ServiceType) => {
+              const services = listServices.result;
+              const service = services.find(
+                (item: IService) => item.type == type
+              );
+              if (!service) return null;
+              return (
+                <ServiceCard
+                _id={service._id}
+                  key={service._id}
+                  img={service.picture}
+                  title={service.name}
+                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
+                  priceEnd={service.priceEnd.toLocaleString() + "đ"}
+                  items={service.description}
+                  icon={iconOf(service.type)}
+                />
+              );
+            })}
         </div>
       </section>
 
@@ -97,36 +132,16 @@ export default function Home() {
             Bảng giá nhanh
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <PriceRow
-              name="Tắm siêu tốc (30')"
-              priceStart="90.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Tắm cơ bản (45')"
-              priceStart="120.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Tỉa lông cơ bản (60')"
-              priceStart="200.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Tỉa lông tạo kiểu (75')"
-              priceStart="250.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Spa thư giãn (90')"
-              priceStart="320.000đ"
-              priceEnd="90.000đ"
-            />
-            <PriceRow
-              name="Combo Tắm + Tỉa (120')"
-              priceStart="360.000đ"
-              priceEnd="90.000đ"
-            />
+            {listServices &&
+              listServices.result &&
+              listServices.result.map((service: IService) => (
+                <PriceRow
+                  key={service._id}
+                  name={service.name}
+                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
+                  priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
+                />
+              ))}
           </div>
         </div>
       </section>
@@ -160,9 +175,9 @@ export default function Home() {
         <div className="divide-y divide-black/10 dark:divide-white/10 rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden">
           {FAQS.map((f, i) => (
             <button
-              key={i}
+              key={f.q}
               onClick={() => setOpenFaq((o) => (o === i ? null : i))}
-              className="w-full text-left px-4 py-4 bg-background-light/40 dark:bg-black/20 hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center justify-between"
+              className="w-full text-left px-4 py-4 bg-background-light/40 dark:bg-black/20 hover:bg-black/5 dark:hover:bg-white/5  flex items-center justify-between"
               aria-expanded={openFaq === i}
             >
               <span className="font-medium">{f.q}</span>
@@ -193,28 +208,6 @@ export default function Home() {
       {/* CTA */}
       <CTA />
     </>
-  );
-}
-
-function PriceRow({
-  name,
-  priceStart,
-  priceEnd,
-}: {
-  name: string;
-  priceStart: string;
-  priceEnd: string;
-}) {
-  return (
-    <div className="flex items-center justify-between rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur px-4 py-3">
-      <div className="flex items-center gap-2">
-        <Calendar className="size-4 opacity-70" />
-        <span>{name}</span>
-      </div>
-      <div className="font-semibold">
-        {priceStart} - {priceEnd}
-      </div>
-    </div>
   );
 }
 
