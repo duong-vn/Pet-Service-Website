@@ -1,6 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Trash2, X } from "lucide-react";
+import { tree } from "next/dist/build/templates/app-page";
+import { useState } from "react";
 
 interface IProps {
     _id:string;
@@ -10,7 +12,7 @@ interface IProps {
   title?: string;
   message?: string;
   itemName?: string;
-  loading?: boolean;
+  
 }
 
 export default function DeleteModal({ 
@@ -21,10 +23,21 @@ export default function DeleteModal({
   title = "Xác nhận xóa",
   message = "Bạn có chắc chắn muốn xóa item này không?",
   itemName,
-  loading = false
+ 
 }: IProps) {
 const qc = useQueryClient()
+const [loading,setLoading] = useState(false)
 
+const handleDelete = async ()=>{
+  setLoading(true)
+  await onConfirm(_id,public_id)
+  qc.invalidateQueries({queryKey:['services']})
+  setLoading(false)
+  close()
+}
+const doNothing =()=>{
+
+}
   return (
     <>
       {/* Overlay */}
@@ -33,7 +46,7 @@ const qc = useQueryClient()
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={onClose}
+        onClick={loading?onClose:doNothing}
       />
 
       {/* Content */}
@@ -91,9 +104,8 @@ const qc = useQueryClient()
           </button>
           <button
             type="button"
-            onClick={async ()=>{ await onConfirm(_id,public_id)
-              qc.invalidateQueries({queryKey:['services']})
-            }}
+            onClick={handleDelete
+            }
             disabled={loading}
             className="rounded-xl bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >

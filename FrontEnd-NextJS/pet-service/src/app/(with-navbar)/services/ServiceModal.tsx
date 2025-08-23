@@ -74,11 +74,11 @@ export default function ServiceModal({ close, serviceData }: IProps) {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true)
-    
+    let cloudPicture = null
     let public_id =serviceData?.public_id?? ' '
     if(file){
-    const cloud = await uploadToCloud(`/services/${type}`,file!)
-    setPicture(cloud?.secure_url)
+    const cloud = await uploadToCloud(`/images/services/${type}`,file)
+    cloudPicture= cloud.secure_url
     public_id = cloud?.public_id
 }
 
@@ -95,7 +95,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
       type,
       public_id,
       variant,
-      picture, // nếu có file thì backend sẽ xử lý, ở đây giữ URL để xem trước
+      picture:cloudPicture??picture, // nếu có file thì backend sẽ xử lý, ở đây giữ URL để xem trước
       // file: file (nếu muốn gửi FormData thì xử lý ở nơi gọi API)
     } as IService
   
@@ -299,6 +299,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
             <div className="flex items-center justify-end gap-3 pt-4">
               <button
                 type="button"
+                disabled={loading}
                 onClick={close}
                 className="rounded-xl border px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
               >
@@ -306,9 +307,17 @@ export default function ServiceModal({ close, serviceData }: IProps) {
               </button>
               <button
                 type="submit"
+                disabled={loading}
                 className="rounded-xl bg-primary-dark/80 hover:bg-primary-dark px-4 py-2 text-white hover:opacity-90 dark:bg-white dark:text-black"
               >
-                {isUpdate ? "Cập nhật" : "Lưu"}
+                {loading? <div className="w-5 h-5 m-auto border border-t-transparent animate-spin border-background-dark rounded-full bord">  </div>
+                
+                :
+                
+                isUpdate ? "Cập nhật" : "Lưu"
+
+}
+
               </button>
             </div>
           </div>

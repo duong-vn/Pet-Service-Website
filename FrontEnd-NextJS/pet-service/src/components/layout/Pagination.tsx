@@ -1,3 +1,4 @@
+import { scrollWindowToTop } from "@/apiServices/services"
 import { ServiceParams } from "@/hooks/services-hook"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -62,7 +63,7 @@ export default function Pagination({current, limit, totalItems, setParams, total
         <div className="flex items-center justify-center mt-8 gap-2">
             {/* Previous button */}
             <button 
-                onClick={() => setCurrent(current - 1)} 
+                onClick={() =>{ setCurrent(current - 1);scrollWindowToTop()}} 
                 disabled={current === 1}
                 className={`flex text-black dark:text-white  items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
                     current === 1 
@@ -79,7 +80,13 @@ export default function Pagination({current, limit, totalItems, setParams, total
                 {getPageNumbers().map((page, index) => (
                     <button
                         key={index}
-                        onClick={() => typeof page === 'number' ? setCurrent(page) : null}
+                        onClick={() =>{ 
+                            typeof page === 'number' ?
+                           ( ()=>{
+                             setCurrent(page)
+                             scrollWindowToTop() })()  
+                             : 
+                             null}}
                         disabled={typeof page !== 'number'}
                         className={`px-3 py-2 rounded-lg border transition-colors ${
                             page === current
@@ -96,7 +103,12 @@ export default function Pagination({current, limit, totalItems, setParams, total
 
             {/* Next button */}
             <button 
-                onClick={() => setCurrent(current + 1)} 
+                onClick={() => {
+                    
+                    setCurrent(current + 1)
+                scrollWindowToTop()
+            }
+                } 
                 disabled={current === totalPage}
                 className={`flex items-center text-black dark:text-white  gap-2 px-3 py-2 rounded-lg border transition-colors ${
                     current === totalPage 
