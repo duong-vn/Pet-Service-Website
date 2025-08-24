@@ -74,8 +74,9 @@ export default function ServiceModal({ close, serviceData }: IProps) {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true)
-    if(priceStart > priceEnd){
+    if(Number(priceStart) > Number(priceEnd)){
       toast.error('Giá đầu phải nhỏ hơn giá cuối!')
+      console.log('>>pricestart ', priceStart,'>>>price end',priceEnd)
      await delay(1000);
      setLoading(false)
      return;
