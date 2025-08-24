@@ -74,6 +74,8 @@ export class AuthService {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       maxAge: this.configService.get('COOKIE_EXPIRE'),
+      sameSite: 'none',
+      path: '/',
     });
     const permissions = await this.roleService.getPermissionsForRole(
       user.role._id.toString(),
@@ -114,6 +116,8 @@ export class AuthService {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       maxAge: this.configService.getOrThrow('COOKIE_EXPIRE'),
+      sameSite: 'none',
+      path: '/',
     });
 
     const permissions = await this.roleService.getPermissionsForRole(
@@ -246,6 +250,8 @@ export class AuthService {
       res.cookie('refresh_token', RT, {
         httpOnly: true,
         maxAge: this.configService.get('COOKIE_EXPIRE'),
+        sameSite: 'none',
+        path: '/',
       });
 
       await this.userService.updateUserTokenAndGetPublic(RT, _id.toString());
