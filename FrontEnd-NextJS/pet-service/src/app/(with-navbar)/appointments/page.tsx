@@ -24,7 +24,7 @@ export default function ServicesUI() {
     queryKey:['services/:id',service]}
 
 )
-  const [value,setValue,clear]= useSession<{petWeight:number,phone:string}>('services-appointments',{petWeight:0,phone:''})
+  // const [value,setValue,clear]= useSession<{petWeight:number,phone:string}>('services-appointments',{petWeight:0,phone:''})
 
 if(isError) {handleError(error); return null}
 if(isLoading)return <LoadingScreen/>
