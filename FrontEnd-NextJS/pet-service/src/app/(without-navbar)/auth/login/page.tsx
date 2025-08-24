@@ -1,9 +1,9 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { CredentialResponse, googleLogout } from "@react-oauth/google";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getUser, handleGoogleLogin } from "@/apiServices/services";
 import { setAT } from "@/lib/authToken";
 import Login from "@/components/features/auth/login";
@@ -21,6 +21,8 @@ export default function LoginPage() {
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const searchParams = useSearchParams()
+  const next = useRef(searchParams.get('next')??'/').current
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -43,7 +45,7 @@ export default function LoginPage() {
       toast.success("Đăng nhập thành công!");
 
       dispatch(setAuth(user));
-      router.replace("/appointments");
+      router.replace(next);
     } catch (e: any) {
       console.error(e);
       setErr(e?.message || "Đăng nhập thất bại, thử lại sau.");
@@ -58,7 +60,7 @@ export default function LoginPage() {
     const res = await localLogin(email, password);
     if (res) {
       dispatch(setAuth(res.data.user));
-      router.push("/services");
+      router.push(next);
     } else {
       setLoading(false);
     }

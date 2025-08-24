@@ -6,9 +6,8 @@ import { useState } from "react";
 
 interface IProps {
     _id:string;
-    public_id:string
   onClose: () => void;
-  onConfirm: (_id:string,public_id:string) => void;
+  onConfirm: (_id:string) => void;
   title?: string;
   message?: string;
   itemName?: string;
@@ -17,7 +16,7 @@ interface IProps {
 
 export default function DeleteModal({ 
     _id,
-    public_id,
+    
   onClose, 
   onConfirm, 
   title = "Xác nhận xóa",
@@ -28,16 +27,8 @@ export default function DeleteModal({
 const qc = useQueryClient()
 const [loading,setLoading] = useState(false)
 
-const handleDelete = async ()=>{
-  setLoading(true)
-  await onConfirm(_id,public_id)
-  qc.invalidateQueries({queryKey:['services']})
-  setLoading(false)
-  close()
-}
-const doNothing =()=>{
 
-}
+const doNothing =()=>{}
   return (
     <>
       {/* Overlay */}
@@ -104,7 +95,11 @@ const doNothing =()=>{
           </button>
           <button
             type="button"
-            onClick={handleDelete
+            onClick={async ()=>{
+              setLoading(true)
+              await onConfirm(_id)
+              setLoading(false)
+            }
             }
             disabled={loading}
             className="rounded-xl bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"

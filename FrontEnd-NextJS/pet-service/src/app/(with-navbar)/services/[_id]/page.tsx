@@ -1,15 +1,32 @@
-import { isResOk } from "@/apiServices/services"
+'use client'
+import { handleError, isResOk } from "@/apiServices/services"
 import NotFound from "@/components/layout/NotFound"
 import { api, BASE_URL } from "@/utils/axiosInstance"
 import ServiceDetailClient from "./ServiceDetailClient"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useParams } from "next/navigation"
+import LoadingScreen from "@/components/ui/LoadingScreen"
 
 
-export default async function ServicePage({ params }: { params: { _id: string } }) {
-    const { _id } = await params
-    const res = await fetch(`${BASE_URL}/api/services/${_id}`).then(r => r.json())
+export default function ServicePage() {
+   
+    const {_id} = useParams<{_id:string}>()
+    console.log(_id)
+const {data, isLoading,isError,error} = useQuery({
+    enabled:!!_id,
+    queryFn: async ()=>{ 
+        const res = await api.get(`/api/services/${_id}`)
+        return res.data
+    },
+    queryKey:['services/:id',_id]}
 
-    if (!isResOk(res.statusCode)) return <NotFound />
-    const serviceData = res.data
+)
+if(isLoading) return <LoadingScreen/>
+if(isError) {handleError(error); return null}
+
+
+    if (data.statusCode === 404) return <NotFound />
+    const serviceData = data.data
 
     return <ServiceDetailClient serviceData={serviceData} />
 }

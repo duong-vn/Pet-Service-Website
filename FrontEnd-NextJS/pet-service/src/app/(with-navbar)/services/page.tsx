@@ -25,6 +25,7 @@ import { FaPencilAlt } from "react-icons/fa";
 
 import DeleteModal from "@/components/ui/DeleteModal";
 import { deleteServices } from "@/apiServices/services/services";
+import { useQueryClient } from "@tanstack/react-query";
 
 const src2 = "/images/ui/bang_gia_tam.jpg";
 const src1 = "/images/ui/bang_gia_khach_san.jpg";
@@ -35,15 +36,18 @@ export default function ServicesUI() {
   const [params, setParams] = useState<ServiceParams>({current:1,pageSize:6})
   
   const { data: listServices, isLoading, isError, error } = useServices(params);
-  
+  const qc = useQueryClient()
   const [petFilter, setPetFilter] = useState<{ [k in PetType]?: boolean }>({});
   const [typeFilter, setTypeFilter] = useState<{
     [k in ServiceType]?: boolean;
   }>({});
 
-  const deleteServicece  = async (id: string,public_id:string) => {
+  const deleteService  = async (id: string) => {
     try {
-         await deleteServices(id,public_id)        
+      const service = listServices.result.find((s:IService)=>s._id==id)
+      
+         await deleteServices(id,service.public_id)        
+         qc.invalidateQueries({queryKey:['services',params]})
     } catch (error) {
       handleError(error);
     } finally {
@@ -314,7 +318,7 @@ export default function ServicesUI() {
         )}
         {modal.type === 'delete-modal' && (
             <Portal>
-              <DeleteModal _id= {modal._id} public_id={modal.public_id} onConfirm = {deleteServicece}  onClose={close}/>
+              <DeleteModal _id= {modal._id} onConfirm = {deleteService}  onClose={close}/>
             </Portal>
           )
         }
