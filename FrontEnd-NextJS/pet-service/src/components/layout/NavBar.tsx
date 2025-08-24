@@ -70,7 +70,7 @@ export default function NavBar() {
   return (
     <header
       className={[
-        " w-full top-0 z-10 sticky mb-5 ",
+        " w-full top-0 z-30 sticky mb-5 ",
         "transition-trasnform duration-500",
         "ease-out will-change-transform ",
         hidden ? "-translate-y-[calc(100%+1.5rem)]" : "-translate-y-0  ",
