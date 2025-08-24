@@ -26,7 +26,8 @@ try{
     handleError(error)
 }
         
-    },[key,value])
+    },[key])
+    
     useEffect(()=>{
         if (!isBrowser()) return;
         try{
@@ -35,7 +36,6 @@ try{
         }catch(error){
             handleError(error)
         }
-setValue(initial)
     },[key,value])
 
     return [value,setValue,clear] as const
