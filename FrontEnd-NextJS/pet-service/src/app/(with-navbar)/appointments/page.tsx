@@ -1,25 +1,34 @@
 "use client";
+import { handleError } from "@/apiServices/services";
+import LoadingScreen from "@/components/ui/LoadingScreen";
+import { useSession } from "@/hooks/session-hooks";
 import { getAT } from "@/lib/authToken";
 import { api } from "@/utils/axiosInstance";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ServicesUI() {
-  const temp = getAT();
-  const [ok,setok] =useState('ok')
-  const [at, setAt] = useState(temp);
-  const test = async () => {
-    const res = await api.delete("/api/appointments/68959fe7a05e87347875ce7d");
-    console.log(res);
-    console.log(getAT());
-  };
+  const searchParams = useSearchParams()
+  const [service,setService] = useState(searchParams.get('service'))
+  if(!!!service)return <LoadingScreen/>
 
-  useEffect(()=>{
+  const {data, isLoading,isError,error} = useQuery({
+    enabled:!!service,
+    queryFn: async ()=>{ 
+        const res = await api.get(`/api/services/${service}`)
+        return res.data
+    },
+    queryKey:['services/:id',service]}
 
-    console.log('trong usse EFF')
+)
+  // const [value,setValue,clear]= useSession<{petWeight:number,phone:string}>('services-appointments',{petWeight:0,phone:''})
 
-  },[temp])
+if(isError) {handleError(error); return null}
+if(isLoading)return <LoadingScreen/>
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }} // trạng thái ban đầu
@@ -28,8 +37,7 @@ export default function ServicesUI() {
       transition={{ duration: 0.5 }} // thời gian & easing
       className="p-4 bg-blue-500 text-white rounded"
     >
-      Hello Framer Motion!
-      <div onClick={test}>HELLO</div>
+     {service}
     </motion.div>
   );
 }

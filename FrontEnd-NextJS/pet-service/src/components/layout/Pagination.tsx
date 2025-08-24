@@ -67,7 +67,7 @@ export default function Pagination({current, limit, totalItems, setParams, total
                 disabled={current === 1}
                 className={`flex text-black dark:text-white  items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
                     current === 1 
-                        ? 'border-gray-300 text-gray-400 cursor-not-allowed' 
+                        ? 'border-gray-300 text-gray-400 dark:border-white/50 dark:text-white/30 cursor-not-allowed' 
                         : 'border-gray-300 text-gray-700 hover:bg-secondary-light dark:hover:bg-primary-dark hover:border-gray-400'
                 }`}
             >
@@ -112,7 +112,7 @@ export default function Pagination({current, limit, totalItems, setParams, total
                 disabled={current === totalPage}
                 className={`flex items-center text-black dark:text-white  gap-2 px-3 py-2 rounded-lg border transition-colors ${
                     current === totalPage 
-                        ? 'border-gray-300 text-gray-400 cursor-not-allowed' 
+                        ? 'border-gray-300 text-gray-400 dark:border-white/50 dark:text-white/30 cursor-not-allowed' 
                         : 'border-gray-300 text-gray-700 hover:bg-secondary-light dark:hover:bg-primary-dark hover:border-gray-400'
                 }`}
             >

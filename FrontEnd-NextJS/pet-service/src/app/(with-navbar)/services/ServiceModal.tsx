@@ -3,7 +3,7 @@ import { IService, PetType, ServiceType, Variant } from "@/types/back-end";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { LuImagePlus } from "react-icons/lu";
 import { uploadToCloud } from "@/apiServices/cloud/services";
 import { patchService, postServices } from "@/apiServices/services/services";
@@ -74,6 +74,12 @@ export default function ServiceModal({ close, serviceData }: IProps) {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true)
+    if(priceStart > priceEnd){
+      toast.error('Giá đầu phải nhỏ hơn giá cuối!')
+     await delay(1000);
+     setLoading(false)
+     return;
+    }
     let cloudPicture = null
     let public_id =serviceData?.public_id?? ' '
     if(file){

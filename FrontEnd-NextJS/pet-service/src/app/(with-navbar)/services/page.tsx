@@ -25,6 +25,7 @@ import { FaPencilAlt } from "react-icons/fa";
 
 import DeleteModal from "@/components/ui/DeleteModal";
 import { deleteServices } from "@/apiServices/services/services";
+import { useQueryClient } from "@tanstack/react-query";
 
 const src2 = "/images/ui/bang_gia_tam.jpg";
 const src1 = "/images/ui/bang_gia_khach_san.jpg";
@@ -35,27 +36,24 @@ export default function ServicesUI() {
   const [params, setParams] = useState<ServiceParams>({current:1,pageSize:6})
   
   const { data: listServices, isLoading, isError, error } = useServices(params);
-  
+  const qc = useQueryClient()
   const [petFilter, setPetFilter] = useState<{ [k in PetType]?: boolean }>({});
   const [typeFilter, setTypeFilter] = useState<{
     [k in ServiceType]?: boolean;
   }>({});
 
-  const deleteServicece  = async (id: string,public_id:string) => {
-
+  const deleteService  = async (id: string) => {
     try {
-         await deleteServices(id,public_id)
-   
+      const service = listServices.result.find((s:IService)=>s._id==id)
       
+         await deleteServices(id,service.public_id)        
+         qc.invalidateQueries({queryKey:['services',params]})
     } catch (error) {
       handleError(error);
     } finally {
       close()
     }
   };
-
-  
-
   useEffect(() => {
     if (isError) handleError(error);
   }, [isError, error]);
@@ -65,19 +63,18 @@ export default function ServicesUI() {
     const selectedPets = (Object.keys(petFilter) as PetType[]).filter(k => !!petFilter[k]) ;
     const selectedTypes = (Object.keys(typeFilter) as ServiceType[]).filter(k => !!typeFilter[k]);
   
-    setParams((p: ServiceParams) => {
-      // Only include filter if both pet and type have selections
+    setParams((p: ServiceParams) => {  
       if (selectedPets.length > 0 || selectedTypes.length > 0) {
         return {
           ...p,
-          current: 1, // đổi filter thì reset page
+          current: 1, 
           filter: {
-            pet: selectedPets.length > 0 ? selectedPets : [], // Provide default if empty
-            type: selectedTypes.length > 0 ? selectedTypes : [], // Provide default if empty
+            pet: selectedPets.length > 0 ? selectedPets : [], 
+            type: selectedTypes.length > 0 ? selectedTypes : [], 
           },
         };
       } else {
-        // No filters selected, remove filter property entirely
+       
         const { filter, ...rest } = p;
         return {
           ...rest,
@@ -118,10 +115,12 @@ export default function ServicesUI() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  if(isLoading) return (
+    <LoadingScreen />
+  ) 
   return (
     <div className="pb-16">
-      {/* HERO đầu */}
-      
+      {/* Hero đầu */}
       <section className="mx-auto mt-6 w-[92%] max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -129,65 +128,71 @@ export default function ServicesUI() {
           transition={{ duration: 0.45 }}
           className="grid grid-cols-1 gap-4 md:grid-cols-3"
         >
-         
+          {/* Header chính - Tiêu đề + Nút tạo dịch vụ */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className=" flex min-h-24  max-w-6xl items-center  rounded-3xl bg-secondary-light p-4 text-secondary-dark shadow-lg dark:bg-primary-dark dark:text-primary-light"
+            className="flex flex-col justify-center items-center gap-6 rounded-3xl bg-gradient-to-br from-secondary-light to-primary-light p-8 text-secondary-dark shadow-lg dark:from-primary-dark dark:to-secondary-dark dark:text-primary-light"
           >
-            <div className="flex  items-center flex-col gap-4">
-              <h1 className="text-3xl font-bold md:text-5xl">Dịch vụ</h1>
-
-              {can(permissions, PERMISSIONS.SERVICES_POST) && (
-                <button
-                  onClick={() => open({ type: "create-modal" })}
-                  className="rounded-2xl border border-black bg-red-400 p-3 text-lg transition hover:scale-105 hover:bg-primary-light dark:bg-secondary-dark dark:hover:bg-accent-dark"
-                >
-                  Tạo dịch vụ
-                </button>
-              )}
+            <div className="text-center">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">Dịch vụ</h1>
+              <p className="text-lg md:text-xl opacity-80 mb-6">
+                Chăm sóc thú cưng chuyên nghiệp
+              </p>
             </div>
+
+            {can(permissions, PERMISSIONS.SERVICES_POST) && (
+              <button
+                onClick={() => open({ type: "create-modal" })}
+                className="group relative px-8 py-4 bg-white/90 dark:bg-black/90 backdrop-blur rounded-2xl border-2 border-transparent hover:border-secondary-dark dark:hover:border-primary-light transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              >
+                <span className="text-lg font-semibold text-secondary-dark dark:text-primary-light group-hover:text-secondary-dark dark:group-hover:text-primary-light transition-colors">
+                  + Tạo dịch vụ mới
+                </span>
+              </button>
+            )}
           </motion.div>
-          {/* Ảnh lớn bên trái */}
+
+          {/* Ảnh lớn bên phải - Khách sạn */}
           <div
-            className="relative  h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72"
+            className="relative h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72 cursor-pointer group"
             onClick={() => open({ type: "image", src: src1 })}
           >
             <Image
               src={src1}
               alt="Dịch vụ chăm sóc thú cưng"
               fill
-              className="object-contain transition-transform duration-500 hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               priority
             />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl   bg-gradient-to-t from-black/30 to-transparent" />
-            <div className="absolute bottom-3 left-4 text-white drop-shadow">
-              <h2 className="text-xl  md:text-2xl">
-                Bảng giá khách sạn
+            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+            <div className="absolute bottom-4 left-4 text-white drop-shadow-lg">
+              <h2 className="text-xl md:text-2xl font-bold mb-1">
+                Khách sạn thú cưng
               </h2>
-              <p className="text-sm opacity-90">Theo dõi 24/7</p>
+              <p className="text-sm opacity-90">Theo dõi 24/7, chăm sóc tận tâm</p>
             </div>
           </div>
 
-          {/* Ảnh nhỏ bên phải */}
+          {/* Ảnh nhỏ bên phải - Tắm gội */}
           <div
-            className="relative h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72"
+            className="relative h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72 cursor-pointer group"
             onClick={() => open({ type: "image", src: src2 })}
           >
             <Image
               src={src2}
               alt="Dịch vụ tắm gội"
               fill
-              className="object-contain transition-transform duration-500 hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               priority
             />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl text-white bg-gradient-to-t from-black/30 to-transparent" />
-            <div className="absolute bottom-3 left-4  drop-shadow text-white">
-              <h3 className="text-lg font-semibold text-white md:text-xl">
-                Tắm, tỉa lông
+            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+            <div className="absolute bottom-4 left-4 text-white drop-shadow-lg">
+              <h3 className="text-lg font-bold text-white md:text-xl mb-1">
+                Tắm & Tỉa lông
               </h3>
-              <p className="text-sm opacity-90">Sạch thơm, khô ráo</p>
+              <p className="text-sm opacity-90">Sạch thơm, khô ráo, đẹp lông</p>
             </div>
           </div>
         </motion.div>
@@ -197,7 +202,12 @@ export default function ServicesUI() {
 
       {/* Bộ lọc + danh sách dịch vụ */}
       <section className="mx-auto mt-8 w-[92%] max-w-6xl">
-        <div className="rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur p-4">
+      <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+         
+         className="rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur p-4">
           <h3 className="text-lg font-semibold mb-3">Bộ lọc</h3>
           <div className="grid gap-3 md:grid-cols-2">
             <div>
@@ -265,17 +275,11 @@ export default function ServicesUI() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <div className="mt-6">
-          {isLoading ? (
-            <LoadingScreen />
-          ) : (
-
-
-            <>
-          
-
+           
+            <>        
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {listServices.result.map((service: IService) => (
               <motion.article
@@ -283,10 +287,7 @@ export default function ServicesUI() {
               key={service._id}
             >
               <div 
-               className="relative"
-              
-              >
-              
+               className="relative">              
               <ServiceCard
                 img={service.picture}
                 title={service.name}
@@ -295,19 +296,16 @@ export default function ServicesUI() {
                 items={service.description}
                 icon={iconOf(service.type)}
                 _id={service._id}
-              />
-             
-              <FaTrashCan  className="absolute top-2 right-4 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id, public_id:service.public_id})}/>
-              <FaPencilAlt className="absolute bottom-16 right-4  cursor-pointer" onClick={()=>open({type:'update-modal',payload:service})} />
+              />             
+              <FaTrashCan  className="absolute top-5 right-5 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id, public_id:service.public_id})}/>
+              <FaPencilAlt className="absolute bottom-16 right-5  cursor-pointer" onClick={()=>open({type:'update-modal',payload:service})} />
             </div>
             </motion.article>
             ))}
-
           </div>
          <Pagination current={listServices.meta.current} setParams={setParams} limit={listServices.meta.limit} totalItems={listServices.meta.totalItems} totalPage={listServices.meta.totalPage}/>
-          </>
-            
-          )}
+          </>            
+          
         </div>
       </section>
 
@@ -318,19 +316,16 @@ export default function ServicesUI() {
             <ServiceModal close={close} />
           </Portal>
         )}
-        {
-         modal.type === 'delete-modal' && (
+        {modal.type === 'delete-modal' && (
             <Portal>
-              <DeleteModal _id= {modal._id} public_id={modal.public_id} onConfirm = {deleteServicece}  onClose={close}
-              
-              />
+              <DeleteModal _id= {modal._id} onConfirm = {deleteService}  onClose={close}/>
             </Portal>
           )
         }
          {modal.type ==='update-modal' && (
-         <Portal>
+          <Portal>
             <ServiceModal close={close}  serviceData={modal.payload}/>
-            </Portal>
+          </Portal>
         )}
 
 

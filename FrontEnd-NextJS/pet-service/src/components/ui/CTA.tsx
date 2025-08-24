@@ -11,12 +11,12 @@ export default function CTA() {
       transition={{ duration: 0.4 }}
     >
       <section className="max-w-6xl mx-auto px-4 py-16">
-        <div className="rounded-3xl bg-gradient-to-tl  from-primary-light dark to-background-light dark:from-primary-dark dark:to-background-dark  p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-6">
+        <div className="rounded-3xl text-black dark:text-white bg-gradient-to-tl  from-primary-light dark to-background-light dark:from-primary-dark dark:to-background-dark  p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-6">
           <div className="flex-1  ">
-            <h3 className="text-3xl  text-black md:text-4xl  mb-2 ">
+            <h3 className="text-3xl   md:text-4xl  mb-2 ">
               Sẵn sàng cho một chiếc boss thơm tho?
             </h3>
-            <p className="opacity-90 text-black ">
+            <p className="opacity-90  ">
               Đặt lịch chỉ trong vài chạm – chọn dịch vụ phù hợp và khung giờ
               bạn muốn.
             </p>
