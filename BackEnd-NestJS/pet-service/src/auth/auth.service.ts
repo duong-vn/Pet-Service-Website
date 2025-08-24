@@ -69,14 +69,17 @@ export class AuthService {
       _id.toString(),
     );
 
-    res.clearCookie('refresh_token');
-
-    res.cookie('refresh_token', refresh_token, {
+    const refreshCookieOpts = {
       httpOnly: true,
-      maxAge: this.configService.get('COOKIE_EXPIRE'),
-      sameSite: 'none',
-      path: '/',
-    });
+      secure: this.configService.get('NODE_ENV') === 'production',
+      sameSite: 'none' as const,
+      path: '/api/auth/refresh',
+      maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
+    };
+
+    res.clearCookie('refresh_token', { ...refreshCookieOpts });
+
+    res.cookie('refresh_token', refresh_token, refreshCookieOpts);
     const permissions = await this.roleService.getPermissionsForRole(
       user.role._id.toString(),
     );
@@ -112,13 +115,17 @@ export class AuthService {
       _id,
     );
 
-    res.clearCookie('refresh_token');
-    res.cookie('refresh_token', refresh_token, {
+    const refreshCookieOpts = {
       httpOnly: true,
-      maxAge: this.configService.getOrThrow('COOKIE_EXPIRE'),
-      sameSite: 'none',
-      path: '/',
-    });
+      secure: this.configService.get('NODE_ENV') === 'production',
+      sameSite: 'none' as const,
+      path: '/api/auth/refresh',
+      maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
+    };
+
+    res.clearCookie('refresh_token', { ...refreshCookieOpts });
+
+    res.cookie('refresh_token', refresh_token, refreshCookieOpts);
 
     const permissions = await this.roleService.getPermissionsForRole(
       user.role._id.toString(),
@@ -206,7 +213,7 @@ export class AuthService {
       const user = await this.userService.findOneWithRT(_id);
 
       if (!user) {
-        throw new UnauthorizedException('User doesnt exist or unathenticated');
+        throw new UnauthorizedException('User doesnt exist');
       }
 
       const { refreshToken: userRT } = user;
@@ -246,13 +253,17 @@ export class AuthService {
 
       const RT = await this.createRefreshToken(payload);
 
-      res.clearCookie('refresh_token');
-      res.cookie('refresh_token', RT, {
+      const refreshCookieOpts = {
         httpOnly: true,
-        maxAge: this.configService.get('COOKIE_EXPIRE'),
-        sameSite: 'none',
-        path: '/',
-      });
+        secure: this.configService.get('NODE_ENV') === 'production',
+        sameSite: 'none' as const,
+        path: '/api/auth/refresh',
+        maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
+      };
+
+      res.clearCookie('refresh_token', { ...refreshCookieOpts });
+
+      res.cookie('refresh_token', RT, refreshCookieOpts);
 
       await this.userService.updateUserTokenAndGetPublic(RT, _id.toString());
       return {
@@ -273,14 +284,28 @@ export class AuthService {
         },
       };
     } catch (error) {
-      res.clearCookie('refresh_token');
-      console.log('deleted lols 1');
+      const refreshCookieOpts = {
+        httpOnly: true,
+        secure: this.configService.get('NODE_ENV') === 'production',
+        sameSite: 'none' as const,
+        path: '/api/auth/refresh',
+        maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
+      };
+      res.clearCookie('refresh_token', { ...refreshCookieOpts });
+      console.log('deleted' + error.message);
       throw new UnauthorizedException('deleted lols 2' + error.message);
     }
   }
   async logout(res: Response, user: IUser) {
     try {
-      res.clearCookie('refresh_token');
+      const refreshCookieOpts = {
+        httpOnly: true,
+        secure: this.configService.get('NODE_ENV') === 'production',
+        sameSite: 'none' as const,
+        path: '/api/auth/refresh',
+        maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
+      };
+      res.clearCookie('refresh_token', { ...refreshCookieOpts });
       await this.userService.updateUserTokenAndGetPublic(
         null,
         user._id.toString(),
