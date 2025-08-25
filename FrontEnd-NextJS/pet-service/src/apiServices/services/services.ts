@@ -68,3 +68,14 @@ return res;
         }
 
 }   
+export const getPrice = async (service:string,petWeight:number) =>{
+    try {
+        const price  = (await api.post(`/api/price-rules/calc/${service}`,{petWeight})).data.data
+        return price
+    } catch (error) {
+        handleError(error)
+        return null
+    }
+}
+
+

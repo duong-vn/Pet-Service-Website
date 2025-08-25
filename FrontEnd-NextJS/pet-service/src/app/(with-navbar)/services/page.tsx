@@ -115,9 +115,7 @@ export default function ServicesUI() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  if(isLoading) return (
-    <LoadingScreen />
-  ) 
+  
   return (
     <div className="pb-16">
       {/* Hero đầu */}
@@ -278,7 +276,8 @@ export default function ServicesUI() {
         </motion.div>
 
         <div className="mt-6">
-           
+          { isLoading? <LoadingScreen/>
+          :
             <>        
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {listServices.result.map((service: IService) => (
@@ -305,7 +304,7 @@ export default function ServicesUI() {
             ))}
           </div>
          <Pagination current={listServices.meta.current} setParams={setParams} limit={listServices.meta.limit} totalItems={listServices.meta.totalItems} totalPage={listServices.meta.totalPage}/>
-          </>            
+          </>     }       
           
         </div>
       </section>
