@@ -22,7 +22,7 @@ const [service,setService] = useState(searchParams.get('service'))
 
   useEffect(()=>{setMounted(true)},[])
 
-  if(!mounted || !!!service){return <LoadingScreen/>}
+  if(!!!service){return <LoadingScreen/>}
   if(!authenticated && mounted) {
     
     
