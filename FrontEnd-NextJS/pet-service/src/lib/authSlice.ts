@@ -13,7 +13,7 @@ export interface IUser {
   role: Role;
   age?: number;
   picture?: string;
-
+phone?:string,
   createdAt?: string;
   gender?: string;
   address?: string;

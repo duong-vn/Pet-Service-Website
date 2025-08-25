@@ -2,7 +2,7 @@
 import { useRef } from "react";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { RootState } from "@/store/store";
 import { simpleInfoSelector } from "@/lib/authSlice";
@@ -10,6 +10,8 @@ import { FaPencilAlt } from "react-icons/fa";
 
 export default function UserPill() {
   const router = useRouter();
+  const pathName = usePathname()
+  const searchParams = useSearchParams()
 
   const user = useAppSelector(simpleInfoSelector);
   console.log(user);
@@ -22,7 +24,8 @@ export default function UserPill() {
         <div
           className="ring-2 rounded-xl dark:hover:bg-neutral-dark dark:text-black dark:bg-background-light dark:ring-white ring-black hover:scale-105 hover:bg-primary-dark transition-all cursor-pointer w-32 text-center p-2 bg-background-dark text-white "
           onClick={() => {
-            router.push("/auth/login");
+           
+router.push("/auth/login?next=" +encodeURIComponent( pathName +'?'+searchParams.toString()) );
           }}
         >
           đăng nhập

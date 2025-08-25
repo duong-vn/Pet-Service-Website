@@ -120,6 +120,9 @@ export default function PriceRuleModal({
       <div
         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[95%] max-w-2xl bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-neutral-700"
       >
+        <div className=" hidden absolute md:flex top-8 right-20 text-error">
+          Cân nặng tôi đa cao nhất là 100
+        </div>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-neutral-700">
           <div className="flex items-center gap-3">
@@ -127,7 +130,7 @@ export default function PriceRuleModal({
               <Tag className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-xl  text-gray-900 dark:text-white">
                 {isEdit ? "Chỉnh sửa quy tắc giá" : "Tạo quy tắc giá mới"}
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">

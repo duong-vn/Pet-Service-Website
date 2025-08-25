@@ -89,6 +89,12 @@ export default function ServiceModal({ close, serviceData }: IProps) {
     public_id = cloud?.public_id
 }
 
+  if(Number(duration) >1440){
+    toast.error('Thời lượng cao nhất là 1440')
+    await delay(1000);
+    setLoading(false)
+    return;
+  }
     const payload = {
       name,
       description: descriptionText
@@ -134,9 +140,13 @@ export default function ServiceModal({ close, serviceData }: IProps) {
         exit={{ opacity: 0 }}
         onClick={close}
       />
+      
 
       {/* Content */}
       <div className="fixed top-1/2 left-1/2 z-50 w-[80%] max-w-2xl max-h-[90%] -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-2xl dark:bg-neutral-900">
+      <div className="absolute  left-1/2 top-5 right-12 text-red-600">
+    Lưu ý: dịch vụ chọn nhiều ngày thì thời lượng là 1440
+      </div>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-xl font-semibold">
             {isUpdate ? "Cập nhật dịch vụ" : "Tạo dịch vụ mới"}

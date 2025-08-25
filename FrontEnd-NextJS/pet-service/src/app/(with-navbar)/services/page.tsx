@@ -133,7 +133,7 @@ export default function ServicesUI() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col justify-center items-center gap-6 rounded-3xl bg-gradient-to-br from-secondary-light to-primary-light p-8 text-secondary-dark shadow-lg dark:from-primary-dark dark:to-secondary-dark dark:text-primary-light"
+            className="flex  flex-col justify-center items-center  rounded-3xl bg-gradient-to-br from-secondary-light to-primary-light p-8 text-secondary-dark shadow-lg dark:from-primary-dark dark:to-secondary-dark dark:text-primary-light"
           >
             <div className="text-center">
               <h1 className="text-4xl md:text-6xl font-bold mb-4">Dịch vụ</h1>
@@ -145,9 +145,9 @@ export default function ServicesUI() {
             {can(permissions, PERMISSIONS.SERVICES_POST) && (
               <button
                 onClick={() => open({ type: "create-modal" })}
-                className="group relative px-8 py-4 bg-white/90 dark:bg-black/90 backdrop-blur rounded-2xl border-2 border-transparent hover:border-secondary-dark dark:hover:border-primary-light transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="group relative px-4 py-4 bg-white/90 dark:bg-black/90 backdrop-blur rounded-2xl border-2 border-transparent hover:border-secondary-dark dark:hover:border-primary-light transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
-                <span className="text-lg font-semibold text-secondary-dark dark:text-primary-light group-hover:text-secondary-dark dark:group-hover:text-primary-light transition-colors">
+                <span className="text-base font-semibold text-secondary-dark dark:text-primary-light group-hover:text-secondary-dark dark:group-hover:text-primary-light transition-colors">
                   + Tạo dịch vụ mới
                 </span>
               </button>
@@ -156,7 +156,7 @@ export default function ServicesUI() {
 
           {/* Ảnh lớn bên phải - Khách sạn */}
           <div
-            className="relative h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72 cursor-pointer group"
+            className="relative overflow-hidden rounded-3xl md:h-64 xl:h-72 cursor-pointer group"
             onClick={() => open({ type: "image", src: src1 })}
           >
             <Image
@@ -297,9 +297,10 @@ export default function ServicesUI() {
                 icon={iconOf(service.type)}
                 _id={service._id}
               />             
-              <FaTrashCan  className="absolute top-5 right-5 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id, public_id:service.public_id})}/>
-              <FaPencilAlt className="absolute bottom-16 right-5  cursor-pointer" onClick={()=>open({type:'update-modal',payload:service})} />
-            </div>
+              {can(permissions,PERMISSIONS.SERVICES_DELETE) &&<FaTrashCan  className="absolute top-5 right-5 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id, public_id:service.public_id})}/>
+              }
+             {can(permissions,PERMISSIONS.SERVICES_PATCH) && <FaPencilAlt className="absolute bottom-16 right-5  cursor-pointer" onClick={()=>open({type:'update-modal',payload:service})} />
+            }</div>
             </motion.article>
             ))}
           </div>
