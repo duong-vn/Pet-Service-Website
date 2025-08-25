@@ -279,9 +279,9 @@ return
                       {serviceData.rules.map((rule : PriceRule, index) => (
                         <tr key={rule._id} className="hover:bg-background-light/70 bg-background-light dark:bg-background-dark dark:hover:bg-background-dark/50 ">
                           <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
-                            {rule.minWeight === 0 ? (
+                            {Number(rule.minWeight) === 0 ? (
                               <span>Dưới {rule.maxWeight}kg</span>
-                            ) : rule.maxWeight === 100 ? (
+                            ) : Number(rule.maxWeight) === 100 ? (
                               <span>Trên {rule.minWeight}kg</span>
                             ) : (
                               <span>{rule.minWeight} - {rule.maxWeight}kg</span>

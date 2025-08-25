@@ -22,8 +22,8 @@ const [service,setService] = useState(searchParams.get('service'))
 
   useEffect(()=>{setMounted(true)},[])
 
-  if(!!!service){return <LoadingScreen/>}
-  if(!authenticated && mounted) {
+  
+  if(!authenticated) {
     
     
     return (
@@ -37,7 +37,7 @@ const [service,setService] = useState(searchParams.get('service'))
   
   
 
-
+  if(!!!service){return <LoadingScreen/>}
  return (
   <Appointments service = {service}/>
 

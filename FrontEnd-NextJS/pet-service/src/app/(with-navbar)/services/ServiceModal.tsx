@@ -15,7 +15,7 @@ interface IProps {
   serviceData?: IService;
 }
 
-const handleNumStringForForm = async (e:ChangeEvent<HTMLInputElement>,setValue: (value:string)=>void, setLoading : (value:boolean)=>void) =>{
+export const handleNumStringForForm = async (e:ChangeEvent<HTMLInputElement>,setValue: (value:string)=>void, setLoading : (value:boolean)=>void) =>{
     if(e.target.value === ''){
       setValue((e.target.value))
       return

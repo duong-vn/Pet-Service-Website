@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Weight, DollarSign, Tag, Save, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { handleNumStringForForm } from "../ServiceModal";
 
 export interface PriceRule {
   _id?: string;
   name: string;
-  minWeight: number;
-  maxWeight: number;
+  minWeight: string;
+  maxWeight: string;
   price: number | string;
   isActive: boolean;
 }
@@ -29,8 +30,9 @@ export default function PriceRuleModal({
 }: ModalPriceRuleProps) {
   const [name, setName] = useState(initialData?.name?? '');
   const isEdit = !!initialData
-  const [minWeight, setMinWeight] = useState(initialData?.minWeight?? 0);
-  const [maxWeight, setMaxWeight] = useState(initialData?.maxWeight?? 0);
+
+  const [minWeight, setMinWeight] = useState<string>(initialData?.minWeight?? '0');
+  const [maxWeight, setMaxWeight] = useState<string>(initialData?.maxWeight?? '0');
   const [price, setPrice] = useState<number | string>(initialData?.price?? 'liên hệ');
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,16 +47,16 @@ export default function PriceRuleModal({
     } 
 
     // Validate minWeight
-    if (minWeight < 0) {
+    if (Number(minWeight) < 0) {
       toast.error("Cân nặng tối thiểu không được âm");
       return false;
     }
 
     // Validate maxWeight
-    if (maxWeight <= minWeight) {
+    if (Number(maxWeight) <= Number(minWeight)) {
       toast.error("Cân nặng tối đa phải lớn hơn tối thiểu");
       return false;
-    } else if (maxWeight > 100) {
+    } else if (Number(maxWeight) > 100) {
       toast.error("Cân nặng tối đa không được vượt quá 100kg");
       return false;
     } 
@@ -73,7 +75,7 @@ export default function PriceRuleModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+ 
     if (!validateForm()) {
      
       return;
@@ -101,9 +103,9 @@ export default function PriceRuleModal({
     }
   };
 
-  const getWeightLabel = (min: number, max: number): string => {
-    if (min === 0) return `Dưới ${max}kg`;
-    if (max >= 100) return `Trên ${min}kg`;
+  const getWeightLabel = (min: string, max: string): string => {
+    if (Number(min) === 0) return `Dưới ${max}kg`;
+    if (Number(max) >= 100) return `Trên ${min}kg`;
     return `${min} - ${max}kg`;
   };
 
@@ -130,10 +132,10 @@ export default function PriceRuleModal({
               <Tag className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h2 className="text-xl  text-gray-900 dark:text-white">
+              <h2 className="text-xl  ">
                 {isEdit ? "Chỉnh sửa quy tắc giá" : "Tạo quy tắc giá mới"}
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm ">
                 {isEdit ? "Cập nhật thông tin quy tắc giá" : "Thêm quy tắc giá theo cân nặng"}
               </p>
             </div>
@@ -180,20 +182,20 @@ export default function PriceRuleModal({
           </div>
 
           {/* Weight Range */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 text-black dark:text-white">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium  text-gray-700 dark:text-gray-300 mb-2">
                 Cân nặng tối thiểu (kg) <span className="text-red-500">*</span>
               </label>
               <input
-                type="number"
+                type="text"
                 min="0"
                 max="99"
                 value={minWeight}
-                onChange={(e) => setMinWeight(Number(e.target.value))}
-                className={`w-full px-4 py-3 rounded-xl border transition-colors 
-               
-                     border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800
+                onChange={async (e) => await handleNumStringForForm(e,setMinWeight,setIsLoading) }
+                className={`w-full bg-white px-4 py-3 rounded-xl border transition-colors 
+                  dark:text-white
+                     border-gray-300 dark:border-neutral-600  dark:bg-neutral-800
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                 placeholder="0"
                 disabled={isLoading}
@@ -206,13 +208,13 @@ export default function PriceRuleModal({
                 Cân nặng tối đa (kg) <span className="text-red-500">*</span>
               </label>
               <input
-                type="number"
+                type="text"
                 min="1"
                 max="100"
                 value={maxWeight}
-                onChange={(e) => setMaxWeight(Number(e.target.value))}
-                className={`w-full px-4 py-3 rounded-xl border transition-colors 
-                     border-gray-300  bg-white dark:bg-neutral-80
+                onChange={(e) => setMaxWeight((e.target.value))}
+                className={`w-full px-4 py-3 rounded-xl border bg-white
+                      dark:text-white dark:bg-neutral-800
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                 placeholder="5"
                 disabled={isLoading}
@@ -232,6 +234,7 @@ export default function PriceRuleModal({
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 className={`w-full pl-12 pr-4 py-3 rounded-xl border transition-colors
+                  dark:text-white
                      border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                 placeholder="100000 hoặc 'liên hệ'"
@@ -275,7 +278,7 @@ export default function PriceRuleModal({
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-secondary-light dark:bg-secondary-dark hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-colors"
             >
               {isLoading ? (
                 <>

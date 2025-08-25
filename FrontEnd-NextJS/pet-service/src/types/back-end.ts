@@ -1,3 +1,5 @@
+import { PriceRule } from "@/app/(with-navbar)/services/[_id]/PriceRuleModal";
+
 export enum ServiceType {
   BATH = "BATH",
   HOTEL = "HOTEL",
@@ -31,4 +33,6 @@ export interface IService {
   variant: Variant;
   createdAt:Date;
   updatedAt:Date;
+  rules?:PriceRule[]
 }
+

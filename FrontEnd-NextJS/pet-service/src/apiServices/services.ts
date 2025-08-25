@@ -23,6 +23,8 @@ export const getUser = async (): Promise<IUser> => {
   return user;
 };
 
+
+
 export const handleGoogleLogin = async (
   id_token: string
 ): Promise<ApiResponse<IToken>> => {
