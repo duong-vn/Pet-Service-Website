@@ -17,6 +17,15 @@ import { postAppointments } from "@/apiServices/appointments/services";
 import { useModal } from "@/hooks/modal-hooks";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { useRouter } from "next/navigation";
+import {
+  Calendar,
+  Clock,
+  Phone,
+  Weight,
+  FileText,
+  CheckCircle2,
+  ArrowRight,
+} from "lucide-react";
 
 interface IFo {
   petWeight: number;
@@ -217,17 +226,25 @@ export default function Appointments({ service }: { service: string | null }) {
   }
 
   return (
-    <div className="min-h-screen py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-screen py-8 dark:bg-gradient-to-t dark:from-primary-dark  dark:to-background-dark  bg-gradient-to-r from-primary-light to-white/30">
+      <div className="max-w-4xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-neutral-light dark:bg-primary-dark rounded-3xl shadow-lg p-6"
+          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-8"
         >
-          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-            Đặt Lịch Dịch Vụ
-          </h1>
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-secondary-dark to-primary-dark rounded-full mb-4">
+              <Calendar className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-dark to-secondary-dark bg-clip-text text-transparent mb-2">
+              Đặt Lịch Dịch Vụ
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Chọn dịch vụ và thời gian phù hợp cho thú cưng của bạn
+            </p>
+          </div>
 
           <form
             onSubmit={(e) => {
@@ -237,26 +254,30 @@ export default function Appointments({ service }: { service: string | null }) {
             className="space-y-6"
           >
             {/* Service Info */}
-            <div className="bg-blue-50 flex justify-between items-center p-4 rounded-3xl">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700/30 flex justify-between items-center p-6 rounded-2xl">
               <div>
-                <h2 className="text-lg text-blue-800 mb-2">
+                <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
                   Thông Tin Dịch Vụ:
                 </h2>
-                <p className="text-blue-700">{data?.name ?? "-"}</p>
+                <p className="text-blue-700 dark:text-blue-300 text-lg font-medium">
+                  {data?.name ?? "-"}
+                </p>
               </div>
               <Link
                 href="/services"
-                className="py-2 px-3 border-transparent border-2 text-black bg-primary-light/30 dark:bg-primary-dark/30 hover:border-primary-light rounded-3xl dark:hover:border-primary-dark hover:scale-105 transition-transform"
+                className="flex items-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-600 hover:to-indigo-700 hover:scale-105 transition-all duration-200 shadow-lg"
               >
+                <ArrowRight className="w-4 h-4" />
                 Chọn dịch vụ
               </Link>
             </div>
 
             {/* Date Picker */}
-            <div className="flex justify-center flex-col md:flex-row items-center gap-3">
+            <div className="flex justify-center flex-col lg:flex-row items-start gap-8">
               <div
                 className={[
-                  "dark:bg-secondary-dark bg-secondary-light rounded-3xl p-3",
+                  "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 shadow-lg",
                   service ? " block" : "hidden",
                 ].join(" ")}
               >
@@ -287,51 +308,92 @@ export default function Appointments({ service }: { service: string | null }) {
                 )}
               </div>
 
-              <div className="text-xs mt-1">
-                Chọn ngày từ hôm nay đến {maxDateStr}
-                {isDayMode && (
-                  <div className="opacity-45">(Ấn 2 lần để reset)</div>
-                )}
-                <div className="text-xl">
-                  Giá:{" "}
-                  {typeof briefPrice === "string"
-                    ? briefPrice
-                    : briefPrice.toLocaleString("vi-VN")}
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700/30 rounded-xl p-4">
+                  <h3 className="font-semibold text-green-800 dark:text-green-200 mb-2 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Thông tin đặt lịch
+                  </h3>
+                  <p className="text-sm text-green-700 dark:text-green-300 mb-3">
+                    Chọn ngày từ hôm nay đến {maxDateStr}
+                  </p>
+                  {isDayMode && (
+                    <div className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">
+                      (Ấn 2 lần để reset)
+                    </div>
+                  )}
                 </div>
-                {data && (
-                  <div className="mt-1 text-sm">
-                    Thời lượng:{" "}
-                    {isDayMode ? `${datePicked} ngày` : `${data.duration} phút`}
+
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200 dark:border-purple-700/30 rounded-xl p-4">
+                  <h3 className="font-semibold text-purple-800 dark:text-purple-200 mb-2 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Chi tiết dịch vụ
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-purple-700 dark:text-purple-300">
+                        Giá:
+                      </span>
+                      <span className="font-bold text-lg text-purple-800 dark:text-purple-200">
+                        {typeof briefPrice === "string"
+                          ? briefPrice
+                          : briefPrice.toLocaleString("vi-VN")}
+                        đ
+                      </span>
+                    </div>
+                    {data && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-purple-700 dark:text-purple-300">
+                          Thời lượng:
+                        </span>
+                        <span className="font-medium text-purple-800 dark:text-purple-200">
+                          {isDayMode
+                            ? `${datePicked} ngày`
+                            : `${data.duration} phút`}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {data?.pet && (
+                  <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border border-orange-200 dark:border-orange-700/30 rounded-xl p-4">
+                    <h3 className="font-semibold text-orange-800 dark:text-orange-200 mb-2 flex items-center gap-2">
+                      <Weight className="w-4 h-4" />
+                      Thông tin thú cưng
+                    </h3>
+                    <p className="text-orange-700 dark:text-orange-300">
+                      Pet: {data.pet}
+                    </p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Pet info under DayPicker (only when data available) */}
-            {data?.pet && (
-              <div className="mt-1 text-sm text-gray-700 dark:text-gray-300">
-                *Pet: {data.pet}
-              </div>
-            )}
-
             {/* Time Picker */}
-            <div>
-              <label htmlFor="time" className="block text-sm font-medium mb-2">
-                {isDayMode ? (
-                  <p>*Giờ đón thú cưng</p>
-                ) : (
-                  <p className="opacity-50">*Giờ bắt đầu dịch vụ</p>
-                )}
+            <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 shadow-lg">
+              <label
+                htmlFor="time"
+                className="block text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="w-5 h-5 text-blue-500" />
+                  {isDayMode ? (
+                    <span>*Giờ đón thú cưng</span>
+                  ) : (
+                    <span>*Giờ bắt đầu dịch vụ</span>
+                  )}
+                </div>
                 Chọn Giờ *
               </label>
 
               {!isDayMode && isDayLoading ? (
-                <select
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option>Loading...</option>
-                </select>
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+                  <span className="ml-3 text-gray-600 dark:text-gray-400">
+                    Đang tải khung giờ...
+                  </span>
+                </div>
               ) : (
                 <select
                   id="time"
@@ -339,9 +401,13 @@ export default function Appointments({ service }: { service: string | null }) {
                   required
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full px-3 py-2 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg"
                 >
-                  <option value="">Chọn giờ</option>
+                  {!isDayMode && selectedDate && daySlots?.length === 0 ? (
+                    <option value="">Hết chỗ</option>
+                  ) : (
+                    <option value="">Chọn giờ </option>
+                  )}
                   {(isDayMode ? timeSlots : daySlots ?? []).map((t) => (
                     <option key={t} value={t}>
                       {t}
@@ -352,12 +418,15 @@ export default function Appointments({ service }: { service: string | null }) {
             </div>
 
             {/* Pet Weight */}
-            <div>
+            <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 shadow-lg">
               <label
                 htmlFor="petWeight"
-                className="block text-sm font-medium mb-2"
+                className="block text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"
               >
-                Cân Nặng Thú Cưng (kg) *
+                <div className="flex items-center gap-2 mb-2">
+                  <Weight className="w-5 h-5 text-green-500" />
+                  Cân Nặng Thú Cưng (kg) *
+                </div>
               </label>
               <input
                 type="number"
@@ -375,14 +444,20 @@ export default function Appointments({ service }: { service: string | null }) {
                   })
                 }
                 placeholder="Nhập cân nặng thú cưng"
-                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg"
               />
             </div>
 
             {/* Phone */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                Số Điện Thoại *
+            <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 shadow-lg">
+              <label
+                htmlFor="phone"
+                className="block text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Phone className="w-5 h-5 text-purple-500" />
+                  Số Điện Thoại *
+                </div>
               </label>
               <input
                 type="tel"
@@ -392,14 +467,20 @@ export default function Appointments({ service }: { service: string | null }) {
                 value={value.phone}
                 onChange={(e) => setValue({ ...value, phone: e.target.value })}
                 placeholder="Nhập số điện thoại"
-                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white  dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg"
               />
             </div>
 
             {/* Notes */}
-            <div>
-              <label htmlFor="notes" className="block text-sm font-medium mb-2">
-                Ghi Chú
+            <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 shadow-lg">
+              <label
+                htmlFor="notes"
+                className="block text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-5 h-5 text-orange-500" />
+                  Ghi Chú
+                </div>
               </label>
               <textarea
                 id="notes"
@@ -408,17 +489,20 @@ export default function Appointments({ service }: { service: string | null }) {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Nhập ghi chú nếu cần"
-                className="w-full px-3 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none text-lg"
               />
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-secondary-light/80 hover:bg-secondary-light dark:bg-neutral-dark/80 dark:hover:bg-neutral-dark text-white py-3 px-4 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-lg"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-4 px-6 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:ring-offset-2 transition-all duration-300 font-semibold text-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-current border-t-transparent animate-spin m-auto rounded-full" />
+                <div className="flex items-center justify-center gap-3">
+                  <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Đang xử lý...</span>
+                </div>
               ) : (
                 <span>Xác Nhận Đặt Lịch</span>
               )}
@@ -431,12 +515,13 @@ export default function Appointments({ service }: { service: string | null }) {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4"
+                className="mt-8 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700/30 rounded-2xl p-6 shadow-lg"
               >
-                <h3 className="text-lg font-semibold text-green-800 mb-2">
+                <h3 className="text-xl font-semibold text-green-800 dark:text-green-200 mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
                   Tóm Tắt Đặt Lịch
                 </h3>
-                <div className="space-y-1 text-green-700">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-green-700 dark:text-green-300">
                   <p>
                     <span className="font-medium">Dịch vụ:</span> {data?.name}
                   </p>

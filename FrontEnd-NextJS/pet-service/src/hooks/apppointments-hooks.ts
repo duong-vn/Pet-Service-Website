@@ -9,6 +9,7 @@ export interface IAppointments {
     _id: string;
     picture: string;
   };
+  duration: number;
   petWeight: string;
   date: string;
   startTime: string;
@@ -35,8 +36,13 @@ export function useAppointment(params: APParams) {
   return useQuery({
     queryKey: ["appointments", params],
     queryFn: async () => {
-      const resData = (await api.get(`/api/appointments?${buildAqp(params)}`))
-        .data;
+      const resData = (
+        await api.get(
+          `/api/appointments?populate=service&fields=service.picture&${buildAqp(
+            params
+          )}`
+        )
+      ).data;
       return resData.data;
     },
   });
