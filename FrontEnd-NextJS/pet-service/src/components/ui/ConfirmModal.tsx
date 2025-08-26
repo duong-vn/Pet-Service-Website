@@ -94,7 +94,7 @@ export default function ConfirmModal({
             {loading ? (
               <div className="flex items-center gap-2">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                Đang xóa...
+                Đang tạo...
               </div>
             ) : (
               "Xác nhận"

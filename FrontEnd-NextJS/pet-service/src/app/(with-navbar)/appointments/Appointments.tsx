@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Matcher, DayPicker, DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { handleError } from "@/apiServices/services";
+import { handleError, sendNotifyEmail } from "@/apiServices/services";
 import { getPrice } from "@/apiServices/services/services";
 import { postAppointments } from "@/apiServices/appointments/services";
 import { useModal } from "@/hooks/modal-hooks";
@@ -37,6 +37,12 @@ export default function Appointments({ service }: { service: string | null }) {
   >();
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const toLocalDateString = (d: Date): string => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
   const toMinutes = (hhmm: string) => {
     const [hh, mm] = hhmm.split(":").map(Number);
     return hh * 60 + mm;
@@ -68,10 +74,11 @@ export default function Appointments({ service }: { service: string | null }) {
   const isDayMode = !!(data && data.duration >= 1440);
 
   // Slot theo ngày (chỉ gọi khi KHÔNG day-mode & đã chọn ngày)
-  const dateStr = selectedDate ? selectedDate.toISOString().split("T")[0] : "";
+  const dateStr = selectedDate ? toLocalDateString(selectedDate) : "";
+
   const { data: daySlots, isLoading: isDayLoading } = useQuery({
     enabled: !isDayMode && !!selectedDate,
-    queryKey: ["day-slots", service, dateStr],
+    queryKey: ["day-slots", service, selectedDate],
     queryFn: async () => {
       const resData = (
         await api.post("/api/appointments/day-slots", {
@@ -107,7 +114,7 @@ export default function Appointments({ service }: { service: string | null }) {
     d.setDate(d.getDate() + 30);
     return d;
   }, []);
-  const maxDateStr = maxDate.toISOString().split("T")[0];
+  const maxDateStr = maxDate.toLocaleDateString();
 
   const matcher: Matcher[] = [{ before: new Date() }, { after: maxDate }];
 
@@ -149,8 +156,10 @@ export default function Appointments({ service }: { service: string | null }) {
     }
 
     const date = isDayMode
-      ? selectedRangeDate?.to?.toISOString()
-      : selectedDate?.toISOString();
+      ? toLocalDateString(selectedRangeDate?.from!)
+      : selectedDate
+      ? toLocalDateString(selectedDate)
+      : undefined;
     const duration = isDayMode ? 1440 * datePicked : data?.duration;
     const endTime = isDayMode
       ? minutesToTimeString(toMinutes(selectedTime) + 30)
@@ -158,7 +167,7 @@ export default function Appointments({ service }: { service: string | null }) {
     const payload = {
       service,
       petWeight: value.petWeight,
-      date: date,
+      date,
       duration,
       startTime: selectedTime,
       endTime,
@@ -166,10 +175,16 @@ export default function Appointments({ service }: { service: string | null }) {
       note: notes,
     };
 
-    const resData = await postAppointments(payload);
-    if (resData) {
+    const _id = await postAppointments(payload);
+    if (_id) {
       toast.success("Đặt lịch thành công");
+      const mail = await sendNotifyEmail(_id);
+      if (!mail) {
+        toast.error("Lỗi không gửi mail được");
+        setLoading(false);
+      }
     }
+    toast.error("Đang có lỗi hiện chưa tạo được");
     setLoading(false);
   };
 
@@ -282,6 +297,13 @@ export default function Appointments({ service }: { service: string | null }) {
               </div>
             </div>
 
+            {/* Pet info under DayPicker (only when data available) */}
+            {data?.pet && (
+              <div className="mt-1 text-sm text-gray-700 dark:text-gray-300">
+                *Pet: {data.pet}
+              </div>
+            )}
+
             {/* Time Picker */}
             <div>
               <label htmlFor="time" className="block text-sm font-medium mb-2">
@@ -302,7 +324,7 @@ export default function Appointments({ service }: { service: string | null }) {
                   required
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full px-3 py-2 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/20 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
+                  className="w-full px-3 py-2 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
                 >
                   <option value="">Chọn giờ</option>
                   {(isDayMode ? timeSlots : daySlots ?? []).map((t) => (
@@ -338,7 +360,7 @@ export default function Appointments({ service }: { service: string | null }) {
                   })
                 }
                 placeholder="Nhập cân nặng thú cưng"
-                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/20 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
+                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
               />
             </div>
 
@@ -355,7 +377,7 @@ export default function Appointments({ service }: { service: string | null }) {
                 value={value.phone}
                 onChange={(e) => setValue({ ...value, phone: e.target.value })}
                 placeholder="Nhập số điện thoại"
-                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/20 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
+                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20  dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
               />
             </div>
 
@@ -404,6 +426,9 @@ export default function Appointments({ service }: { service: string | null }) {
                     <span className="font-medium">Dịch vụ:</span> {data?.name}
                   </p>
                   <p>
+                    <span className="font-medium">Pet:</span> {data?.pet ?? "-"}
+                  </p>
+                  <p>
                     <span className="font-medium">Ngày:</span>{" "}
                     {isDayMode
                       ? `${selectedRangeDate?.from?.toLocaleDateString()} đến ${selectedRangeDate?.to?.toLocaleDateString()}`
@@ -430,7 +455,17 @@ export default function Appointments({ service }: { service: string | null }) {
             )}
         </motion.div>
         {isOpen("confirm-modal") && (
-          <ConfirmModal onConfirm={handleSubmit} onClose={close} />
+          <ConfirmModal
+            onConfirm={handleSubmit}
+            onClose={close}
+            smallInfo={
+              "Kiểm tra thông tin" +
+              "\nSdt: " +
+              value.phone +
+              " Thú cưng:" +
+              data?.pet
+            }
+          />
         )}
       </div>
     </div>
