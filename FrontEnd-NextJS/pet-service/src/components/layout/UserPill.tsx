@@ -10,22 +10,22 @@ import { FaPencilAlt } from "react-icons/fa";
 
 export default function UserPill() {
   const router = useRouter();
-  const pathName = usePathname()
-  const searchParams = useSearchParams()
-
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
+  const authenticated = useAppSelector((s) => s.auth.authenticated);
   const user = useAppSelector(simpleInfoSelector);
   console.log(user);
 
- 
-
-  if (!user.authenticated) {
+  if (authenticated === "unauthenticated") {
     return (
       <div className="flex justify-center items-center gap-5 h-full w-full ">
         <div
           className="ring-2 rounded-xl dark:hover:bg-neutral-dark dark:text-black dark:bg-background-light dark:ring-white ring-black hover:scale-105 hover:bg-primary-dark transition-all cursor-pointer w-32 text-center p-2 bg-background-dark text-white "
           onClick={() => {
-           
-router.push("/auth/login?next=" +encodeURIComponent( pathName +'?'+searchParams.toString()) );
+            router.push(
+              "/auth/login?next=" +
+                encodeURIComponent(pathName + "?" + searchParams.toString())
+            );
           }}
         >
           đăng nhập
@@ -64,11 +64,14 @@ router.push("/auth/login?next=" +encodeURIComponent( pathName +'?'+searchParams.
         <p> {user.email}</p>
       </div>
       <div className=" absolute inset-0 group opacity-0 hover:opacity-100 hover:bg-black/30 rounded-full transition-all duration-300">
-      <FaPencilAlt onClick={(e)=>{
-e.stopPropagation()
-router.push('/users/me')
-      }} size={32} className="opacity-100 cursor-pointer text-white  absolute top-1/2 -translate-y-1/2 right-1/2 translate-x-1/2 " />
-
+        <FaPencilAlt
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push("/users/me");
+          }}
+          size={32}
+          className="opacity-100 cursor-pointer text-white  absolute top-1/2 -translate-y-1/2 right-1/2 translate-x-1/2 "
+        />
       </div>
     </div>
   );

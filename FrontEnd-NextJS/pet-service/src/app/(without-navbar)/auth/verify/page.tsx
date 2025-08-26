@@ -56,10 +56,9 @@ export default function VerifyEmailPage() {
       </div>
     );
   }
-
   return (
-    <>
-      <LoadingScreen />
-    </>
+    <div className="min-h-[100vh] flex justify-center items-center">
+      <LoadingScreen />{" "}
+    </div>
   );
 }

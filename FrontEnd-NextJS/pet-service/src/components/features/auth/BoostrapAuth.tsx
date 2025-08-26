@@ -30,9 +30,7 @@ export default function BootstrapAuth() {
         //   return;
         // }
 
-        const res = (await api.post("/api/auth/refresh",null,
-            {withCredentials:true}
-        )).data;
+        const res = (await api.post("/api/auth/refresh")).data;
         const data = res.data;
         setAT(data.access_token);
         dispatch(setAuth(data.user as IUser));

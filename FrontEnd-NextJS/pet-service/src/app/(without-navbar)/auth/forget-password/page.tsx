@@ -29,7 +29,12 @@ export default function ForgetPasswordPage() {
     history.replaceState({}, "", "forget-password");
   }, []);
 
-  if (verifying) return <LoadingScreen />;
+  if (verifying)
+    return (
+      <div className="min-h-[100vh] flex justify-center items-center">
+        <LoadingScreen />{" "}
+      </div>
+    );
 
   if (!token) return <SendEmailFP />;
   if (!verified) return <SendEmailFP />;

@@ -16,35 +16,37 @@ export interface PriceRule {
 }
 
 interface ModalPriceRuleProps {
-  
   onClose: () => void;
-  onSubmit: (rule: PriceRule,_id?:string) => Promise<void>;
+  onSubmit: (rule: PriceRule, _id?: string) => Promise<void>;
   initialData?: PriceRule;
 }
 
 export default function PriceRuleModal({
-  
   onClose,
   onSubmit,
   initialData,
 }: ModalPriceRuleProps) {
-  const [name, setName] = useState(initialData?.name?? '');
-  const isEdit = !!initialData
+  const [name, setName] = useState(initialData?.name ?? "");
+  const isEdit = !!initialData;
 
-  const [minWeight, setMinWeight] = useState<string>(initialData?.minWeight?? '0');
-  const [maxWeight, setMaxWeight] = useState<string>(initialData?.maxWeight?? '0');
-  const [price, setPrice] = useState<number | string>(initialData?.price?? 'liên hệ');
+  const [minWeight, setMinWeight] = useState<string>(
+    initialData?.minWeight ?? "0"
+  );
+  const [maxWeight, setMaxWeight] = useState<string>(
+    initialData?.maxWeight ?? "0"
+  );
+  const [price, setPrice] = useState<number | string>(
+    initialData?.price ?? "liên hệ"
+  );
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  
-  
 
   const validateForm = (): boolean => {
     // Validate name
     if (!name.trim()) {
       toast.error("Tên gói không được để trống");
       return false;
-    } 
+    }
 
     // Validate minWeight
     if (Number(minWeight) < 0) {
@@ -59,13 +61,13 @@ export default function PriceRuleModal({
     } else if (Number(maxWeight) > 100) {
       toast.error("Cân nặng tối đa không được vượt quá 100kg");
       return false;
-    } 
+    }
 
     // Validate price
-    if (typeof price === 'number' && price < 0) {
+    if (typeof price === "number" && price < 0) {
       toast.error("Giá không được âm");
       return false;
-    } else if (typeof price === 'string' && price.trim() === '') {
+    } else if (typeof price === "string" && price.trim() === "") {
       toast.error("Giá không được để trống");
       return false;
     }
@@ -75,16 +77,15 @@ export default function PriceRuleModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
- 
+
     if (!validateForm()) {
-     
       return;
     }
 
     setIsLoading(true);
     try {
       const ruleData = {
-        _id:initialData?._id, 
+        _id: initialData?._id,
         name: name.trim(),
         minWeight,
         maxWeight,
@@ -93,7 +94,7 @@ export default function PriceRuleModal({
       };
 
       await onSubmit(ruleData);
-      
+
       onClose();
     } catch (error) {
       toast.error("Có lỗi xảy ra, vui lòng thử lại");
@@ -109,19 +110,11 @@ export default function PriceRuleModal({
     return `${min} - ${max}kg`;
   };
 
- 
-
   return (
-    <
-    >
-      <div      
-        className="fixed inset-0 z-50 bg-black/50"
-        onClick={onClose}
-      />
+    <>
+      <div className="fixed inset-0 z-50 bg-black/50" onClick={onClose} />
 
-      <div
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[95%] max-w-2xl bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-neutral-700"
-      >
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[95%] max-w-2xl bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-neutral-700">
         <div className=" hidden absolute md:flex top-8 right-20 text-error">
           Cân nặng tôi đa cao nhất là 100
         </div>
@@ -136,7 +129,9 @@ export default function PriceRuleModal({
                 {isEdit ? "Chỉnh sửa quy tắc giá" : "Tạo quy tắc giá mới"}
               </h2>
               <p className="text-sm ">
-                {isEdit ? "Cập nhật thông tin quy tắc giá" : "Thêm quy tắc giá theo cân nặng"}
+                {isEdit
+                  ? "Cập nhật thông tin quy tắc giá"
+                  : "Thêm quy tắc giá theo cân nặng"}
               </p>
             </div>
           </div>
@@ -158,7 +153,8 @@ export default function PriceRuleModal({
               <span className="font-medium">Xem trước:</span>
             </div>
             <p className="text-sm text-blue-700 dark:text-blue-300">
-              <strong>{name || "Tên gói"}</strong> - {getWeightLabel(minWeight, maxWeight)}
+              <strong>{name || "Tên gói"}</strong> -{" "}
+              {getWeightLabel(minWeight, maxWeight)}
             </p>
           </div>
 
@@ -171,14 +167,10 @@ export default function PriceRuleModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl border transition-colors ${
-              
-                   'border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800'
-              } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+              className={`w-full px-4 py-3 rounded-xl border transition-colors ${"border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               placeholder="Ví dụ: Tắm thường chó dưới 5kg"
               disabled={isLoading}
             />
-           
           </div>
 
           {/* Weight Range */}
@@ -192,7 +184,9 @@ export default function PriceRuleModal({
                 min="0"
                 max="99"
                 value={minWeight}
-                onChange={async (e) => await handleNumStringForForm(e,setMinWeight,setIsLoading) }
+                onChange={async (e) =>
+                  await handleNumStringForForm(e, setMinWeight, setIsLoading)
+                }
                 className={`w-full bg-white px-4 py-3 rounded-xl border transition-colors 
                   dark:text-white
                      border-gray-300 dark:border-neutral-600  dark:bg-neutral-800
@@ -200,7 +194,6 @@ export default function PriceRuleModal({
                 placeholder="0"
                 disabled={isLoading}
               />
-            
             </div>
 
             <div>
@@ -212,15 +205,14 @@ export default function PriceRuleModal({
                 min="1"
                 max="100"
                 value={maxWeight}
-                onChange={(e) => setMaxWeight((e.target.value))}
+                onChange={(e) => setMaxWeight(e.target.value)}
                 className={`w-full px-4 py-3 rounded-xl border bg-white
                       dark:text-white dark:bg-neutral-800
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                 placeholder="5"
                 disabled={isLoading}
               />
-              
-            </div >
+            </div>
           </div>
 
           {/* Price Field */}
@@ -247,7 +239,6 @@ export default function PriceRuleModal({
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Nhập số tiền (VD: 100000) hoặc text (VD: liên hệ)
             </p>
-            
           </div>
 
           {/* Active Status */}
@@ -260,7 +251,10 @@ export default function PriceRuleModal({
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               disabled={isLoading}
             />
-            <label htmlFor="isActive" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="isActive"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Kích hoạt quy tắc này
             </label>
           </div>
@@ -287,7 +281,11 @@ export default function PriceRuleModal({
                 </>
               ) : (
                 <>
-                  {isEdit ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  {isEdit ? (
+                    <Save className="w-4 h-4" />
+                  ) : (
+                    <Plus className="w-4 h-4" />
+                  )}
                   {isEdit ? "Cập nhật" : "Tạo mới"}
                 </>
               )}

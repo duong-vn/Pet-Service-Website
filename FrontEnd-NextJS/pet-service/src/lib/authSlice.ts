@@ -22,13 +22,13 @@ phone?:string,
 
 export interface AuthState {
   user: IUser | null;
-  authenticated: boolean;
+  authenticated: 'checking'|'authenticated'|'unauthenticated';
 }
 
 const initialState: AuthState = {
   user: null,
-  authenticated: false,
-};
+  authenticated: 'checking',
+};  
 
 export const authSlice = createSlice({
   name: "auth",
@@ -36,12 +36,13 @@ export const authSlice = createSlice({
   reducers: {
     setAuth(state, action: PayloadAction<IUser>) {
       state.user = action.payload;
-      state.authenticated = true;
+      state.authenticated = 'authenticated';
     },
     clearAuth(state) {
       state.user = null;
-      state.authenticated = false;
+      state.authenticated = 'unauthenticated';
     },
+    
   },
 });
 

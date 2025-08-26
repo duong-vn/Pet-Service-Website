@@ -29,8 +29,8 @@ export class Appointment extends Document {
   duration: number; // in minutes
   @Prop()
   endTime: String;
-  @Prop()
-  price: number;
+  @Prop({ type: mongoose.Schema.Types.Mixed })
+  price: number | string;
 
   @Prop()
   status: string;

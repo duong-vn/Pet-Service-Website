@@ -22,7 +22,6 @@ import Pagination from "@/components/layout/Pagination";
 import { FaTrashCan } from "react-icons/fa6";
 import { FaPencilAlt } from "react-icons/fa";
 
-
 import DeleteModal from "@/components/ui/DeleteModal";
 import { deleteServices } from "@/apiServices/services/services";
 import { useQueryClient } from "@tanstack/react-query";
@@ -33,48 +32,53 @@ const src1 = "/images/ui/bang_gia_khach_san.jpg";
 export default function ServicesUI() {
   const { modal, open, close, isOpen } = useModal();
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
-  const [params, setParams] = useState<ServiceParams>({current:1,pageSize:6})
-  
+  const [params, setParams] = useState<ServiceParams>({
+    current: 1,
+    pageSize: 6,
+  });
+
   const { data: listServices, isLoading, isError, error } = useServices(params);
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   const [petFilter, setPetFilter] = useState<{ [k in PetType]?: boolean }>({});
   const [typeFilter, setTypeFilter] = useState<{
     [k in ServiceType]?: boolean;
   }>({});
 
-  const deleteService  = async (id: string) => {
+  const deleteService = async (id: string) => {
     try {
-      const service = listServices.result.find((s:IService)=>s._id==id)
-      
-         await deleteServices(id,service.public_id)        
-         qc.invalidateQueries({queryKey:['services',params]})
+      const service = listServices.result.find((s: IService) => s._id == id);
+
+      await deleteServices(id, service.public_id);
+      qc.invalidateQueries({ queryKey: ["services", params] });
     } catch (error) {
       handleError(error);
     } finally {
-      close()
+      close();
     }
   };
   useEffect(() => {
     if (isError) handleError(error);
   }, [isError, error]);
 
-
   useEffect(() => {
-    const selectedPets = (Object.keys(petFilter) as PetType[]).filter(k => !!petFilter[k]) ;
-    const selectedTypes = (Object.keys(typeFilter) as ServiceType[]).filter(k => !!typeFilter[k]);
-  
-    setParams((p: ServiceParams) => {  
+    const selectedPets = (Object.keys(petFilter) as PetType[]).filter(
+      (k) => !!petFilter[k]
+    );
+    const selectedTypes = (Object.keys(typeFilter) as ServiceType[]).filter(
+      (k) => !!typeFilter[k]
+    );
+
+    setParams((p: ServiceParams) => {
       if (selectedPets.length > 0 || selectedTypes.length > 0) {
         return {
           ...p,
-          current: 1, 
+          current: 1,
           filter: {
-            pet: selectedPets.length > 0 ? selectedPets : [], 
-            type: selectedTypes.length > 0 ? selectedTypes : [], 
+            pet: selectedPets.length > 0 ? selectedPets : [],
+            type: selectedTypes.length > 0 ? selectedTypes : [],
           },
         };
       } else {
-       
         const { filter, ...rest } = p;
         return {
           ...rest,
@@ -82,8 +86,6 @@ export default function ServicesUI() {
         };
       }
     });
-
-
   }, [petFilter, typeFilter, setParams]);
   const iconOf = (t: ServiceType) => {
     switch (t) {
@@ -98,24 +100,6 @@ export default function ServicesUI() {
     }
   };
 
-  // lock scroll
-
-  useEffect(() => {
-    if (modal.type) document.body.classList.add("overflow-hidden");
-    else document.body.classList.remove("overflow-hidden");
-    return () => document.body.classList.remove("overflow-hidden");
-  }, [modal.type]);
-
-  // đóng modal bằng  ESC
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  
   return (
     <div className="pb-16">
       {/* Hero đầu */}
@@ -169,7 +153,9 @@ export default function ServicesUI() {
               <h2 className="text-xl md:text-2xl font-bold mb-1">
                 Khách sạn thú cưng
               </h2>
-              <p className="text-sm opacity-90">Theo dõi 24/7, chăm sóc tận tâm</p>
+              <p className="text-sm opacity-90">
+                Theo dõi 24/7, chăm sóc tận tâm
+              </p>
             </div>
           </div>
 
@@ -200,12 +186,12 @@ export default function ServicesUI() {
 
       {/* Bộ lọc + danh sách dịch vụ */}
       <section className="mx-auto mt-8 w-[92%] max-w-6xl">
-      <motion.div
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-         
-         className="rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur p-4">
+          className="rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur p-4"
+        >
           <h3 className="text-lg font-semibold mb-3">Bộ lọc</h3>
           <div className="grid gap-3 md:grid-cols-2">
             <div>
@@ -276,36 +262,65 @@ export default function ServicesUI() {
         </motion.div>
 
         <div className="mt-6">
-          { isLoading? <LoadingScreen/>
-          :
-            <>        
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {listServices.result.map((service: IService) => (
-              <motion.article
-              whileHover={{ scale: 1.02 }}
-              key={service._id}
-            >
-              <div 
-               className="relative">              
-              <ServiceCard
-                img={service.picture}
-                title={service.name}
-                priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
-                priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
-                items={service.description}
-                icon={iconOf(service.type)}
-                _id={service._id}
-              />             
-              {can(permissions,PERMISSIONS.SERVICES_DELETE) &&<FaTrashCan  className="absolute top-5 right-5 text-error cursor-pointer" onClick={()=>open({type:'delete-modal',_id:service._id, public_id:service.public_id})}/>
-              }
-             {can(permissions,PERMISSIONS.SERVICES_PATCH) && <FaPencilAlt className="absolute bottom-16 right-5  cursor-pointer" onClick={()=>open({type:'update-modal',payload:service})} />
-            }</div>
-            </motion.article>
-            ))}
-          </div>
-         <Pagination current={listServices.meta.current} setParams={setParams} limit={listServices.meta.limit} totalItems={listServices.meta.totalItems} totalPage={listServices.meta.totalPage}/>
-          </>     }       
-          
+          {isLoading ? (
+            <div className="min-h-[50vh] flex justify-center items-center">
+              <LoadingScreen />{" "}
+            </div>
+          ) : (
+            <>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {listServices.result.map((service: IService) => (
+                  <motion.article
+                    whileHover={{ scale: 1.02 }}
+                    key={service._id}
+                  >
+                    <div className="relative">
+                      <ServiceCard
+                        img={service.picture}
+                        title={service.name}
+                        priceStart={
+                          service.priceStart.toLocaleString("vi-VN") + "đ"
+                        }
+                        priceEnd={
+                          service.priceEnd.toLocaleString("vi-VN") + "đ"
+                        }
+                        items={service.description}
+                        icon={iconOf(service.type)}
+                        _id={service._id}
+                      />
+                      {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
+                        <FaTrashCan
+                          className="absolute top-5 right-5 text-error cursor-pointer"
+                          onClick={() =>
+                            open({
+                              type: "delete-modal",
+                              _id: service._id,
+                              public_id: service.public_id,
+                            })
+                          }
+                        />
+                      )}
+                      {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
+                        <FaPencilAlt
+                          className="absolute bottom-16 right-5  cursor-pointer"
+                          onClick={() =>
+                            open({ type: "update-modal", payload: service })
+                          }
+                        />
+                      )}
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+              <Pagination
+                current={listServices.meta.current}
+                setParams={setParams}
+                limit={listServices.meta.limit}
+                totalItems={listServices.meta.totalItems}
+                totalPage={listServices.meta.totalPage}
+              />
+            </>
+          )}
         </div>
       </section>
 
@@ -316,19 +331,20 @@ export default function ServicesUI() {
             <ServiceModal close={close} />
           </Portal>
         )}
-        {modal.type === 'delete-modal' && (
-            <Portal>
-              <DeleteModal _id= {modal._id} onConfirm = {deleteService}  onClose={close}/>
-            </Portal>
-          )
-        }
-         {modal.type ==='update-modal' && (
+        {modal.type === "delete-modal" && (
           <Portal>
-            <ServiceModal close={close}  serviceData={modal.payload}/>
+            <DeleteModal
+              _id={modal._id}
+              onConfirm={deleteService}
+              onClose={close}
+            />
           </Portal>
         )}
-
-
+        {modal.type === "update-modal" && (
+          <Portal>
+            <ServiceModal close={close} serviceData={modal.payload} />
+          </Portal>
+        )}
       </AnimatePresence>
       {modal.type == "image" && <PreviewImage src={modal.src} close={close} />}
     </div>

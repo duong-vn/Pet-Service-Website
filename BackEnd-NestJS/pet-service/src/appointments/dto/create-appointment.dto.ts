@@ -65,9 +65,7 @@ export class CreateAppointmentDto {
   endTime!: string;
 
   @IsNotEmpty({ message: 'Price is required' })
-  @Type(() => Number)
-  @IsNumber()
-  price: number;
+  price: number | string;
 
   @IsOptional()
   @IsString({ message: 'note phải là chuỗi.' })

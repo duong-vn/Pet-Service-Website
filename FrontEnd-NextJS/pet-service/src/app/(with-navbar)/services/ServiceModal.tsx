@@ -9,43 +9,51 @@ import { uploadToCloud } from "@/apiServices/cloud/services";
 import { patchService, postServices } from "@/apiServices/services/services";
 import { useQueryClient } from "@tanstack/react-query";
 
-
 interface IProps {
   close: () => void;
   serviceData?: IService;
 }
 
-export const handleNumStringForForm = async (e:ChangeEvent<HTMLInputElement>,setValue: (value:string)=>void, setLoading : (value:boolean)=>void) =>{
-    if(e.target.value === ''){
-      setValue((e.target.value))
-      return
-    }
-    if(!isNumericString(e.target.value)){
-        toast.error('Phải nhập chuỗi số')
-       
-        setLoading(true)
-         await delay(1000)
-        setLoading(false)
-    }else{
-    setValue((e.target.value))}
-  
+export const handleNumStringForForm = async (
+  e: ChangeEvent<HTMLInputElement>,
+  setValue: (value: string) => void,
+  setLoading: (value: boolean) => void
+) => {
+  if (e.target.value === "") {
+    setValue(e.target.value);
+    return;
   }
+  if (!isNumericString(e.target.value)) {
+    toast.error("Phải nhập chuỗi số");
 
+    setLoading(true);
+    await delay(1000);
+    setLoading(false);
+  } else {
+    setValue(e.target.value);
+  }
+};
 
 export default function ServiceModal({ close, serviceData }: IProps) {
   const qc = useQueryClient();
   const isUpdate = !!serviceData;
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState(serviceData?.name ?? "");
   const [descriptionText, setDescriptionText] = useState(
     (serviceData?.description ?? []).join("\n")
   );
-  const [duration, setDuration] = useState<string>(serviceData?.duration.toString() ?? '');
-  const [priceStart, setPriceStart] = useState<string>(
-    serviceData?.priceStart.toString() ?? ''
+  const [duration, setDuration] = useState<string>(
+    serviceData?.duration.toString() ?? ""
   );
-  const [picture,setPicture] = useState<string>(serviceData?.picture ?? '/images/placeholders/meo.webp')
-  const [priceEnd, setPriceEnd] = useState<string>(serviceData?.priceEnd.toString() ?? '');
+  const [priceStart, setPriceStart] = useState<string>(
+    serviceData?.priceStart.toString() ?? ""
+  );
+  const [picture, setPicture] = useState<string>(
+    serviceData?.picture ?? "/images/placeholders/meo.webp"
+  );
+  const [priceEnd, setPriceEnd] = useState<string>(
+    serviceData?.priceEnd.toString() ?? ""
+  );
   const [pet, setPet] = useState<PetType>(serviceData?.pet ?? PetType.DOG);
   const [type, setType] = useState<ServiceType>(
     serviceData?.type ?? ServiceType.BATH
@@ -57,7 +65,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
 
   const previewUrl = useMemo(() => {
     if (file) return URL.createObjectURL(file);
-    return  picture;
+    return picture;
   }, [file]);
 
   useEffect(() => {
@@ -73,28 +81,28 @@ export default function ServiceModal({ close, serviceData }: IProps) {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true)
-    if(Number(priceStart) > Number(priceEnd)){
-      toast.error('Giá đầu phải nhỏ hơn giá cuối!')
-      console.log('>>pricestart ', priceStart,'>>>price end',priceEnd)
-     await delay(1000);
-     setLoading(false)
-     return;
+    setLoading(true);
+    if (Number(priceStart) > Number(priceEnd)) {
+      toast.error("Giá đầu phải nhỏ hơn giá cuối!");
+      console.log(">>pricestart ", priceStart, ">>>price end", priceEnd);
+      await delay(1000);
+      setLoading(false);
+      return;
     }
-    let cloudPicture = null
-    let public_id =serviceData?.public_id?? ' '
-    if(file){
-    const cloud = await uploadToCloud(`/images/services/${type}`,file)
-    cloudPicture= cloud.secure_url
-    public_id = cloud?.public_id
-}
+    let cloudPicture = null;
+    let public_id = serviceData?.public_id ?? " ";
+    if (file) {
+      const cloud = await uploadToCloud(`/images/services/${type}`, file);
+      cloudPicture = cloud.secure_url;
+      public_id = cloud?.public_id;
+    }
 
-  if(Number(duration) >1440){
-    toast.error('Thời lượng cao nhất là 1440')
-    await delay(1000);
-    setLoading(false)
-    return;
-  }
+    if (Number(duration) > 1440) {
+      toast.error("Thời lượng cao nhất là 1440");
+      await delay(1000);
+      setLoading(false);
+      return;
+    }
     const payload = {
       name,
       description: descriptionText
@@ -108,26 +116,25 @@ export default function ServiceModal({ close, serviceData }: IProps) {
       type,
       public_id,
       variant,
-      picture:cloudPicture??picture, // nếu có file thì backend sẽ xử lý, ở đây giữ URL để xem trước
+      picture: cloudPicture ?? picture, // nếu có file thì backend sẽ xử lý, ở đây giữ URL để xem trước
       // file: file (nếu muốn gửi FormData thì xử lý ở nơi gọi API)
-    } as IService
-  
-  
-    if(isUpdate){
-      const _id = serviceData._id
-        await patchService(_id,payload)
-    }else{
-      await postServices(payload)
+    } as IService;
+
+    if (isUpdate) {
+      const _id = serviceData._id;
+      await patchService(_id, payload);
+    } else {
+      await postServices(payload);
     }
     // TODO: gọi API create/update tại đây
     // if (isUpdate) await updateService(serviceData!.id, payload, file?)
     // else await createService(payload, file?)
 
     // Tạm thời log payload để kiểm tra
-    qc.invalidateQueries({queryKey:['services']})
-   setLoading(false)
+    qc.invalidateQueries({ queryKey: ["services"] });
+    setLoading(false);
     console.log(isUpdate ? "Update service" : "Create service", payload);
-    close()
+    close();
   };
 
   return (
@@ -140,13 +147,12 @@ export default function ServiceModal({ close, serviceData }: IProps) {
         exit={{ opacity: 0 }}
         onClick={close}
       />
-      
 
       {/* Content */}
       <div className="fixed top-1/2 left-1/2 z-50 w-[80%] max-w-2xl max-h-[90%] -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-2xl dark:bg-neutral-900">
-      <div className="absolute  left-1/2 top-5 right-12 text-red-600">
-    Lưu ý: dịch vụ chọn nhiều ngày thì thời lượng là 1440
-      </div>
+        <div className="absolute  left-1/2 top-5 right-12 text-red-600">
+          Lưu ý: dịch vụ chọn nhiều ngày thì thời lượng là 1440
+        </div>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-xl font-semibold">
             {isUpdate ? "Cập nhật dịch vụ" : "Tạo dịch vụ mới"}
@@ -166,7 +172,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
             <label className="block">
               <span className="text-sm">Tên dịch vụ</span>
               <input
-                 disabled={loading}
+                disabled={loading}
                 className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
                 placeholder="Ví dụ: Tắm cơ bản"
                 value={name}
@@ -185,7 +191,6 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                 value={descriptionText}
                 onChange={(e) => setDescriptionText(e.target.value)}
               />
-              
             </label>
 
             <div className="grid grid-cols-2 gap-3">
@@ -198,22 +203,22 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                   disabled={loading}
                   className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
                   value={duration}
-                  onChange={async (e) => await handleNumStringForForm(e,setDuration,setLoading)}
+                  onChange={async (e) =>
+                    await handleNumStringForForm(e, setDuration, setLoading)
+                  }
                   required
                 />
               </label>
               <label className="block">
                 <span className="text-sm">Biến thể</span>
                 <select
-                   disabled={loading}
-
-
+                  disabled={loading}
                   className="mt-1 w-full rounded-xl border p-2 cursor-pointer dark:bg-neutral-800"
                   value={variant}
                   onChange={(e) => setVariant(e.target.value as Variant)}
                 >
                   {Object.values(Variant).map((v) => (
-                    <option  key={v} value={v}>
+                    <option key={v} value={v}>
                       {v}
                     </option>
                   ))}
@@ -230,8 +235,9 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                   min={0}
                   className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
                   value={priceStart}
-                  onChange={async (e) => await handleNumStringForForm(e,setPriceStart,setLoading)
-                   }
+                  onChange={async (e) =>
+                    await handleNumStringForForm(e, setPriceStart, setLoading)
+                  }
                   required
                 />
               </label>
@@ -243,7 +249,9 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                   disabled={loading}
                   className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
                   value={priceEnd}
-                  onChange={async (e) => await handleNumStringForForm(e,setPriceEnd,setLoading)}
+                  onChange={async (e) =>
+                    await handleNumStringForForm(e, setPriceEnd, setLoading)
+                  }
                   required
                 />
               </label>
@@ -253,14 +261,18 @@ export default function ServiceModal({ close, serviceData }: IProps) {
               <label className="block">
                 <span className="text-sm">Thú cưng</span>
                 <select
-                   disabled={loading}
+                  disabled={loading}
                   className="mt-1 w-full rounded-xl  cursor-pointer border p-2 dark:bg-neutral-800"
                   value={pet}
                   onChange={(e) => setPet(e.target.value as PetType)}
                 >
                   {Object.values(PetType).map((p) => (
                     <option key={p} value={p}>
-                      {p === PetType.DOG ? "Chó" : p === PetType.CAT ? "Mèo" : "Khác"}
+                      {p === PetType.DOG
+                        ? "Chó"
+                        : p === PetType.CAT
+                        ? "Mèo"
+                        : "Khác"}
                     </option>
                   ))}
                 </select>
@@ -295,17 +307,24 @@ export default function ServiceModal({ close, serviceData }: IProps) {
               <span className="text-sm">Ảnh xem trước</span>
               <div className="mt-2 xl:aspect-video w-full overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={previewUrl} alt={name || "preview"} className="h-full w-full object-cover" />
+                <img
+                  src={previewUrl}
+                  alt={name || "preview"}
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
 
-           
-
-            <label className="block cursor-pointer bg-primary-light/80 hover:bg-primary-light p-2 rounded-2xl w-fit" htmlFor="uploadImage">
-              <span  className=" flex items-center gap-2 text-sm"><LuImagePlus size={24} />  Tải ảnh lên  </span>
+            <label
+              className="block cursor-pointer bg-primary-light/80 hover:bg-primary-light p-2 rounded-2xl w-fit"
+              htmlFor="uploadImage"
+            >
+              <span className=" flex items-center gap-2 text-sm">
+                <LuImagePlus size={24} /> Tải ảnh lên{" "}
+              </span>
               <input
-              disabled={loading}
-                  id='uploadImage'
+                disabled={loading}
+                id="uploadImage"
                 type="file"
                 accept="image/*"
                 className="mt-1 w-full hidden rounded-xl border p-2 dark:bg-neutral-800"
@@ -327,14 +346,15 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                 disabled={loading}
                 className="rounded-xl bg-primary-dark/80 hover:bg-primary-dark px-4 py-2 text-white hover:opacity-90 dark:bg-white dark:text-black"
               >
-                {loading? <div className="w-5 h-5 m-auto border border-t-transparent animate-spin border-background-dark rounded-full bord">  </div>
-                
-                :
-                
-                isUpdate ? "Cập nhật" : "Lưu"
-
-}
-
+                {loading ? (
+                  <div className="w-5 h-5 m-auto border border-t-transparent animate-spin border-background-dark rounded-full bord">
+                    {" "}
+                  </div>
+                ) : isUpdate ? (
+                  "Cập nhật"
+                ) : (
+                  "Lưu"
+                )}
               </button>
             </div>
           </div>
