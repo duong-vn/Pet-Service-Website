@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useAppDispatch } from "@/hooks/redux-hooks";
 import { IUser, setAuth, clearAuth } from "@/lib/authSlice";
 import { getUser } from "@/apiServices/services";
+import { logout } from "@/apiServices/auth/services";
 
 export default function BootstrapAuth() {
   const dispatch = useAppDispatch();
@@ -30,15 +31,24 @@ export default function BootstrapAuth() {
         //   return;
         // }
 
-        const res = (await api.post("/api/auth/refresh")).data;
+        const res = (
+          await api.post("/api/auth/refresh", null, {
+            withCredentials: true,
+          })
+        ).data;
         const data = res.data;
         setAT(data.access_token);
+        console.log("AT", data.access_token);
         dispatch(setAuth(data.user as IUser));
       } catch (e: any) {
+        console.log("1");
         const hadAT = !!getAT();
+
         setAT(null);
         dispatch(clearAuth());
-        if (hadAT) toast.error("Phiên đăng nhập đã hết hạn");
+        if (hadAT) {
+          toast.error("Phiên đăng nhập đã hết hạn");
+        }
       }
     })();
   }, []);

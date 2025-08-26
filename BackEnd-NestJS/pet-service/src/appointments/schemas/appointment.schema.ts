@@ -18,7 +18,8 @@ export class Appointment extends Document {
 
   // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   // staff: mongoose.Schema.Types.ObjectId;
-
+  @Prop()
+  phone: string;
   @Prop()
   date: Date;
 

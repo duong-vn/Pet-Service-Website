@@ -31,8 +31,14 @@ export interface IService {
   type: ServiceType;
   public_id: string;
   variant: Variant;
-  createdAt:Date;
-  updatedAt:Date;
-  rules?:PriceRule[]
+  createdAt: Date;
+  updatedAt: Date;
+  rules?: PriceRule[];
 }
 
+export enum IStatus {
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  COMPLETED = "COMPLETED",
+  CANCELED = "CANCELED",
+}

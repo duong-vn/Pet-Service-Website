@@ -23,6 +23,7 @@ export interface AppointmentInfoDTO {
   service: IService;
   petWeight: number;
   duration: number; // in minutes
+  phone: string;
   date: Date;
   startTime: string;
   endTime: string;

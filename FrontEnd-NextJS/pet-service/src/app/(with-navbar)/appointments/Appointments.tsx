@@ -16,6 +16,7 @@ import { getPrice } from "@/apiServices/services/services";
 import { postAppointments } from "@/apiServices/appointments/services";
 import { useModal } from "@/hooks/modal-hooks";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import { useRouter } from "next/navigation";
 
 interface IFo {
   petWeight: number;
@@ -29,6 +30,7 @@ export default function Appointments({ service }: { service: string | null }) {
     petWeight: 0,
     phone: phone ?? "",
   });
+  const router = useRouter();
 
   const [loading, setLoading] = useState(service ? false : true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
@@ -167,6 +169,7 @@ export default function Appointments({ service }: { service: string | null }) {
     const payload = {
       service,
       petWeight: value.petWeight,
+      phone: value.phone,
       date,
       duration,
       startTime: selectedTime,
@@ -183,6 +186,7 @@ export default function Appointments({ service }: { service: string | null }) {
         toast.error("Lỗi không gửi mail được");
         setLoading(false);
       }
+      router.replace("/appointments/done");
     }
     toast.error("Đang có lỗi hiện chưa tạo được");
     setLoading(false);
@@ -388,7 +392,7 @@ export default function Appointments({ service }: { service: string | null }) {
                 value={value.phone}
                 onChange={(e) => setValue({ ...value, phone: e.target.value })}
                 placeholder="Nhập số điện thoại"
-                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20  dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
+                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white  dark:bg-black/50 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
               />
             </div>
 

@@ -25,6 +25,7 @@ export interface ISendEmailPayload {
   pet: PetType;
   petWeight: number;
   date: string;
+  phone: string;
   status: string;
   duration: string;
   startTime: string;
@@ -50,16 +51,17 @@ export class MailService {
       petWeight,
       pet,
       date,
+      phone,
       duration,
       startTime,
       endTime,
       price,
       orderedAt,
     } = costumerPayload;
-    if (!costumer || !costumer.email || !costumer.name || !costumer.phone) {
+    if (!costumer || !costumer.email || !costumer.name) {
       throw new BadGatewayException('No user found or missing infomation');
     }
-    const { email, name, phone } = costumer;
+    const { email, name } = costumer;
 
     return await this.mailerService.sendMail({
       to: email,
@@ -87,6 +89,7 @@ export class MailService {
       costumer,
       serviceName,
       pet,
+      phone,
       petWeight,
       date,
       status,
@@ -97,7 +100,7 @@ export class MailService {
       orderedAt,
       note,
     } = staffEmailPayload;
-    if (!costumer || !costumer.email || !costumer.name || !costumer.phone) {
+    if (!costumer || !costumer.email || !costumer.name) {
       throw new BadGatewayException('No user found or missing infomation');
     }
     const staffsEmail = await this.getStaffs();
@@ -112,7 +115,7 @@ export class MailService {
         petType: pet,
         petWeight,
         customerName: costumer.name,
-        phone: costumer.phone,
+        phone,
         price,
         status,
         appointmentDate: date,
@@ -150,6 +153,7 @@ export class MailService {
     const {
       user,
       service,
+      phone,
       petWeight,
       date,
       startTime,
@@ -171,6 +175,7 @@ export class MailService {
       costumer: user,
       serviceName: service.name,
       pet: service.pet,
+      phone,
       petWeight,
       date: date.toISOString().split('T')[0],
       status,
