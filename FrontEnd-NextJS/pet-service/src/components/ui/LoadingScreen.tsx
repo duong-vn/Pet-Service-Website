@@ -1,7 +1,7 @@
 export default function LoadingScreen() {
   return (
     <div
-      className="flex min-h-dvh items-center justify-center flex-col text-center
+      className="flex items-center justify-center flex-col text-center
                  dark:text-primary-light text-secondary-dark"
       role="status"
       aria-live="polite"

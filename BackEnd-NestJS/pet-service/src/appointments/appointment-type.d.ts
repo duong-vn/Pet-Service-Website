@@ -27,7 +27,7 @@ export interface AppointmentInfoDTO {
   startTime: string;
   endTime: string;
   status: 'CANCELED' | 'CONFIRMED' | 'PENDING' | 'COMPLETED';
-  price: number;
+  price: number | string;
   note: string;
   createdAt: Date;
 }

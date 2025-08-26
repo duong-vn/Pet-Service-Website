@@ -7,7 +7,7 @@ import { api } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Matcher, DayPicker, DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -17,60 +17,53 @@ import { postAppointments } from "@/apiServices/appointments/services";
 import { useModal } from "@/hooks/modal-hooks";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 
-interface IFo { petWeight: number; phone: string }
+interface IFo {
+  petWeight: number;
+  phone: string;
+}
 
-export default function Appointments({ service }: { service?: string }) {
-  const {modal,open,close,isOpen} = useModal()
+export default function Appointments({ service }: { service: string | null }) {
+  const { modal, open, close, isOpen } = useModal();
   const phone = useAppSelector((s) => s.auth.user?.phone);
   const [value, setValue] = useSession<IFo>("services-appointments", {
     petWeight: 0,
     phone: phone ?? "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(service ? false : true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedRangeDate, setSelectedRangeDate] = useState<DateRange | undefined>();
+  const [selectedRangeDate, setSelectedRangeDate] = useState<
+    DateRange | undefined
+  >();
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const toMinutes = (hhmm: string) => {
-    const [hh, mm] = hhmm.split(':').map(Number);
+    const [hh, mm] = hhmm.split(":").map(Number);
     return hh * 60 + mm;
   };
- const minutesToTimeString = (totalMinutes: number): string => {
+  const minutesToTimeString = (totalMinutes: number): string => {
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
 
-   
-    const paddedHours = hours.toString().padStart(2, '0');
-    const paddedMinutes = minutes.toString().padStart(2, '0');
+    const paddedHours = hours.toString().padStart(2, "0");
+    const paddedMinutes = minutes.toString().padStart(2, "0");
 
     return `${paddedHours}:${paddedMinutes}`;
-  }
+  };
 
- 
-  if (!service) {
-    return (
-      <div className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
-        <p className="text-lg">Chưa chọn dịch vụ.</p>
-        <Link
-          href="/services"
-          className="px-4 py-2 rounded-2xl bg-blue-600 text-white hover:opacity-90"
-        >
-          Chọn dịch vụ
-        </Link>
-      </div>
-    );
-  }
-
-  const { data, isLoading: isLoadingService, isError, error } = useQuery({
+  const {
+    data,
+    isLoading: isLoadingService,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["services/:id", service],
+    enabled: !!service,
     queryFn: async (): Promise<IService> => {
       const res = await api.get(`/api/services/${service}`);
       return res.data.data;
     },
   });
-
- 
 
   const isDayMode = !!(data && data.duration >= 1440);
 
@@ -80,18 +73,33 @@ export default function Appointments({ service }: { service?: string }) {
     enabled: !isDayMode && !!selectedDate,
     queryKey: ["day-slots", service, dateStr],
     queryFn: async () => {
-      const resData = (await api.post("/api/appointments/day-slots", {
-        date: dateStr,
-        serviceId: service,
-      })).data;
+      const resData = (
+        await api.post("/api/appointments/day-slots", {
+          date: dateStr,
+          serviceId: service,
+        })
+      ).data;
       return resData.data.slots as string[];
     },
   });
 
   const timeSlots = [
-    "08:00","08:30","09:00","09:30","10:00","10:30",
-    "11:00","11:30","14:00","14:30","15:00","15:30",
-    "16:00","16:30","17:00","17:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
   ];
 
   const maxDate = useMemo(() => {
@@ -101,10 +109,7 @@ export default function Appointments({ service }: { service?: string }) {
   }, []);
   const maxDateStr = maxDate.toISOString().split("T")[0];
 
-  const matcher: Matcher[] = [
-    { before: new Date() },
-    { after: maxDate },
-  ];
+  const matcher: Matcher[] = [{ before: new Date() }, { after: maxDate }];
 
   const datePicked = useMemo(() => {
     if (!isDayMode) return 1;
@@ -117,67 +122,79 @@ export default function Appointments({ service }: { service?: string }) {
   const briefPrice = useMemo(() => {
     if (!data?.rules?.length) return 0;
     const w = value.petWeight ?? 0;
-    const rule = data.rules.find(
-      (r) => w >= r.minWeight && w < r.maxWeight
-    );
+    if (w >= 100) return "liên hệ";
+    const rule = data.rules.find((r) => w >= r.minWeight && w < r.maxWeight);
     const base = rule?.price ?? 0;
-    if(typeof base ==='string') return base
+    if (typeof base === "string") return base;
     return isDayMode ? base * (datePicked || 0) : base;
   }, [data, value.petWeight, isDayMode, datePicked]);
 
   const handleSubmit = async () => {
     setLoading(true);
-    const res = await getPrice(service,value.petWeight)
+    const res = await getPrice(service!, value.petWeight);
+    let isEqual = false;
+    if (res) {
+      if (typeof res === "string") {
+        if (res === briefPrice) isEqual = true;
+      } else
+        isEqual = isDayMode
+          ? datePicked * res === briefPrice
+          : res === briefPrice;
+    }
+    if (!isEqual) {
+      toast.error("Không trùng giá ở backend và frontendfrontend");
 
-    let isEqual = false
-  if(res){
-        if(typeof res ==='string'){
-            if(res === briefPrice) isEqual= true
-        }else{
-       isEqual= isDayMode?datePicked*res===briefPrice : res===briefPrice 
-}
+      setLoading(false);
+      return;
+    }
 
-  }
-        if(!isEqual) {toast.error('Không trùng giá ở backend và frontendfrontend')
-           
+    const date = isDayMode
+      ? selectedRangeDate?.to?.toISOString()
+      : selectedDate?.toISOString();
+    const duration = isDayMode ? 1440 * datePicked : data?.duration;
+    const endTime = isDayMode
+      ? minutesToTimeString(toMinutes(selectedTime) + 30)
+      : minutesToTimeString(toMinutes(selectedTime) + data?.duration!);
+    const payload = {
+      service,
+      petWeight: value.petWeight,
+      date: date,
+      duration,
+      startTime: selectedTime,
+      endTime,
+      price: briefPrice,
+      note: notes,
+    };
+
+    const resData = await postAppointments(payload);
+    if (resData) {
+      toast.success("Đặt lịch thành công");
+    }
     setLoading(false);
-return}
-       
+  };
 
-    const date = isDayMode?selectedRangeDate?.to?.toISOString() : selectedDate?.toISOString()
-    const duration= isDayMode?1440*datePicked : data?.duration
-    const endTime = isDayMode? minutesToTimeString(toMinutes(selectedTime) + 30) : minutesToTimeString(toMinutes(selectedTime) + data?.duration!)
-       const payload = {
-        service,
-        petWeight:value.petWeight,
-        date:date,
-        duration,
-        startTime:selectedTime,
-        endTime,
-        price:briefPrice,
-        note:notes,
-
-
-       } 
-
-      const resData = await postAppointments(payload)
-      if(resData){
-      console.log('>>>>resData',resData)
-      toast.success('Đặt lịch thành côngcông')
-}
-setLoading(false)
-
-
-};
-if (isError) {
-    toast.error("Không tải được dịch vụ");
-    console.error(error);
+  // Thông báo khi dịch vụ không có bảng giá (chỉ sau khi đã có dữ liệu)
+  useEffect(() => {
+    if (
+      service &&
+      !isLoadingService &&
+      data &&
+      Array.isArray(data.rules) &&
+      data.rules.length === 0
+    ) {
+      toast.error("Chưa có giá cho dịch vụ này");
+    }
+  }, [service, isLoadingService, data?.rules?.length]);
+  if (isError) {
+    handleError(error);
     return null;
   }
-  if (isLoadingService) return <LoadingScreen />;
-
-  if (!data?.rules || data.rules.length === 0) {
-    toast.error("Chưa có giá cho dịch vụ này");
+  if (isLoadingService) {
+    return (
+      <div className="min-h-[100vh] flex justify-center items-center">
+        <LoadingScreen />;
+      </div>
+    );
   }
 
   return (
@@ -193,31 +210,41 @@ if (isError) {
             Đặt Lịch Dịch Vụ
           </h1>
 
-          <form onSubmit={(e)=>{
-              e.preventDefault()
-              open({type:"confirm-modal"})
-          }} className="space-y-6">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              open({ type: "confirm-modal" });
+            }}
+            className="space-y-6"
+          >
             {/* Service Info */}
             <div className="bg-blue-50 flex justify-between items-center p-4 rounded-3xl">
               <div>
-                <h2 className="text-lg text-blue-800 mb-2">Thông Tin Dịch Vụ:</h2>
+                <h2 className="text-lg text-blue-800 mb-2">
+                  Thông Tin Dịch Vụ:
+                </h2>
                 <p className="text-blue-700">{data?.name ?? "-"}</p>
               </div>
               <Link
                 href="/services"
                 className="py-2 px-3 border-transparent border-2 text-black bg-primary-light/30 dark:bg-primary-dark/30 hover:border-primary-light rounded-3xl dark:hover:border-primary-dark hover:scale-105 transition-transform"
               >
-                Chọn lại
+                Chọn dịch vụ
               </Link>
             </div>
 
             {/* Date Picker */}
             <div className="flex justify-center flex-col md:flex-row items-center gap-3">
-              <div className="dark:bg-secondary-dark bg-secondary-light rounded-3xl p-3">
+              <div
+                className={[
+                  "dark:bg-secondary-dark bg-secondary-light rounded-3xl p-3",
+                  service ? " block" : "hidden",
+                ].join(" ")}
+              >
                 {isDayMode ? (
                   <DayPicker
                     mode="range"
-                    disabled={matcher}
+                    disabled={matcher || loading}
                     selected={selectedRangeDate}
                     onSelect={setSelectedRangeDate}
                     footer={
@@ -229,7 +256,7 @@ if (isError) {
                 ) : (
                   <DayPicker
                     mode="single"
-                    disabled={matcher}
+                    disabled={matcher || loading}
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     footer={
@@ -243,9 +270,14 @@ if (isError) {
 
               <div className="text-xs mt-1">
                 Chọn ngày từ hôm nay đến {maxDateStr}
-                {isDayMode && <div className="opacity-45">(Ấn 2 lần để reset)</div>}
+                {isDayMode && (
+                  <div className="opacity-45">(Ấn 2 lần để reset)</div>
+                )}
                 <div className="text-xl">
-                  Giá: {(typeof briefPrice=== 'string')? briefPrice:briefPrice.toLocaleString("vi-VN")}
+                  Giá:{" "}
+                  {typeof briefPrice === "string"
+                    ? briefPrice
+                    : briefPrice.toLocaleString("vi-VN")}
                 </div>
               </div>
             </div>
@@ -256,7 +288,7 @@ if (isError) {
                 Chọn Giờ *
               </label>
 
-              {(!isDayMode && isDayLoading) ? (
+              {!isDayMode && isDayLoading ? (
                 <select
                   disabled
                   className="w-full px-3 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -266,14 +298,17 @@ if (isError) {
               ) : (
                 <select
                   id="time"
+                  disabled={loading || !service}
                   required
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/20 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
                 >
                   <option value="">Chọn giờ</option>
-                  {(isDayMode ? timeSlots : (daySlots ?? [])).map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                  {(isDayMode ? timeSlots : daySlots ?? []).map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
                   ))}
                 </select>
               )}
@@ -281,8 +316,11 @@ if (isError) {
 
             {/* Pet Weight */}
             <div>
-              <label htmlFor="petWeight" className="block text-sm font-medium mb-2">
-                Cân Nặng Thú Cưng (kg) * <span className="opacity-70">VD: 6,7 hoặc 2</span>
+              <label
+                htmlFor="petWeight"
+                className="block text-sm font-medium mb-2"
+              >
+                Cân Nặng Thú Cưng (kg) *
               </label>
               <input
                 type="number"
@@ -294,10 +332,13 @@ if (isError) {
                 max={99}
                 value={value.petWeight || ""}
                 onChange={(e) =>
-                  setValue({ ...value, petWeight: parseFloat(e.target.value) || 0 })
+                  setValue({
+                    ...value,
+                    petWeight: parseFloat(e.target.value) || 0,
+                  })
                 }
                 placeholder="Nhập cân nặng thú cưng"
-                className="w-full px-3 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/20 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
               />
             </div>
 
@@ -314,7 +355,7 @@ if (isError) {
                 value={value.phone}
                 onChange={(e) => setValue({ ...value, phone: e.target.value })}
                 placeholder="Nhập số điện thoại"
-                className="w-full px-3 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 rounded-3xl border border-black/10 dark:border-white/20 bg-white dark:bg-black/20 text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary-light/60 dark:focus:ring-primary-light/40"
               />
             </div>
 
@@ -347,33 +388,50 @@ if (isError) {
             </button>
           </form>
 
-          {(selectedTime && (selectedDate || (selectedRangeDate?.from && selectedRangeDate?.to))) && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4"
-            >
-              <h3 className="text-lg font-semibold text-green-800 mb-2">Tóm Tắt Đặt Lịch</h3>
-              <div className="space-y-1 text-green-700">
-                <p><span className="font-medium">Dịch vụ:</span> {data?.name}</p>
-                <p>
-                  <span className="font-medium">Ngày:</span>{" "}
-                  {isDayMode
-                    ? `${selectedRangeDate?.from?.toLocaleDateString()} đến ${selectedRangeDate?.to?.toLocaleDateString()}`
-                    : selectedDate?.toLocaleDateString()}
-                </p>
-                <p><span className="font-medium">Giờ:</span> {selectedTime}</p>
-                <p><span className="font-medium">Cân nặng thú cưng:</span> {value.petWeight} kg</p>
-                <p><span className="font-medium">Số điện thoại:</span> {value.phone}</p>
-                {notes && <p><span className="font-medium">Ghi chú:</span> {notes}</p>}
-              </div>
-            </motion.div>
-          )}
+          {selectedTime &&
+            (selectedDate ||
+              (selectedRangeDate?.from && selectedRangeDate?.to)) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4"
+              >
+                <h3 className="text-lg font-semibold text-green-800 mb-2">
+                  Tóm Tắt Đặt Lịch
+                </h3>
+                <div className="space-y-1 text-green-700">
+                  <p>
+                    <span className="font-medium">Dịch vụ:</span> {data?.name}
+                  </p>
+                  <p>
+                    <span className="font-medium">Ngày:</span>{" "}
+                    {isDayMode
+                      ? `${selectedRangeDate?.from?.toLocaleDateString()} đến ${selectedRangeDate?.to?.toLocaleDateString()}`
+                      : selectedDate?.toLocaleDateString()}
+                  </p>
+                  <p>
+                    <span className="font-medium">Giờ:</span> {selectedTime}
+                  </p>
+                  <p>
+                    <span className="font-medium">Cân nặng thú cưng:</span>{" "}
+                    {value.petWeight} kg
+                  </p>
+                  <p>
+                    <span className="font-medium">Số điện thoại:</span>{" "}
+                    {value.phone}
+                  </p>
+                  {notes && (
+                    <p>
+                      <span className="font-medium">Ghi chú:</span> {notes}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            )}
         </motion.div>
-        { isOpen("confirm-modal") && 
-        <ConfirmModal onConfirm={handleSubmit} onClose={close}/>
-
-        }
+        {isOpen("confirm-modal") && (
+          <ConfirmModal onConfirm={handleSubmit} onClose={close} />
+        )}
       </div>
     </div>
   );

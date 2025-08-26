@@ -174,7 +174,7 @@ export default function NavBar() {
           className={[
             "mx-2  hover:scale-110",
             scrolling ? " absolute right-0" : " absolute right-0",
-            !authenticated && "animate-pulse",
+            authenticated === "unauthenticated" && "animate-spin",
           ].join(" ")}
           onClick={() => toggle()}
         >

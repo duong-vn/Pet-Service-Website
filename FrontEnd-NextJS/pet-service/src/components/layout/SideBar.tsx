@@ -35,19 +35,11 @@ export default function Sidebar() {
     if (res) dispatch(clearAuth());
 
     setLoading(false);
-    router.replace("/");
   };
 
   const handleClose = () => {
     close();
   };
-  if (loading) {
-    return (
-      <>
-        <LoadingScreen />
-      </>
-    );
-  }
 
   return (
     <>
@@ -63,7 +55,7 @@ export default function Sidebar() {
       {/* The sidebar */}
       <div
         className={[
-          "fixed bg-secondary-light top-0 right-0 z-50 min-w-40 md:min-w-60 shadow-xl dark:bg-secondary-dark back  h-full transform transition-transform  duration-300 ease-in-out ",
+          "fixed bg-secondary-light top-0 right-0 z-50 min-w-[30dvh] shadow-xl dark:bg-secondary-dark back  h-full transform transition-transform  duration-300 ease-in-out ",
           isOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
       >
@@ -79,11 +71,13 @@ export default function Sidebar() {
             X
           </div>
         </div>
-
-        {/* Userpill */}
-        <div className="p-6 flex items-center  border-background-light dark:border-neutral-dark">
-          <UserPill />
-        </div>
+        {loading ? (
+          <div className="w-5 h-5 my-10 mx-auto rounded-full border border-t-transparent animate-spin"></div>
+        ) : (
+          <div className="p-6 flex items-center  border-background-light dark:border-neutral-dark">
+            <UserPill />
+          </div>
+        )}
 
         {/* items  */}
         <nav className=" border-b-2 border-t-2 rounded-3xl border-background-light flex flex-col justify-between   dark:border-neutral-dark">
@@ -117,7 +111,7 @@ export default function Sidebar() {
           </Link>
         </nav>
         <div>
-          {authenticated && (
+          {authenticated === "authenticated" && (
             <div
               onClick={handleLogout}
               className="mb-3 mt-1 p-5 flex transition-transform hover:translate-x-2 items-center text-red-600 hover:animate-pulse dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl"

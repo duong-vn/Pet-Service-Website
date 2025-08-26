@@ -5,30 +5,26 @@ import { tree } from "next/dist/build/templates/app-page";
 import { useState } from "react";
 
 interface IProps {
-    _id:string;
+  _id: string;
   onClose: () => void;
-  onConfirm: (_id:string) => void;
+  onConfirm: (_id: string) => void;
   title?: string;
   message?: string;
   itemName?: string;
-  
 }
 
-export default function DeleteModal({ 
-    _id,
-    
-  onClose, 
-  onConfirm, 
+export default function DeleteModal({
+  _id,
+
+  onClose,
+  onConfirm,
   title = "Xác nhận xóa",
   message = "Bạn có chắc chắn muốn xóa item này không?",
   itemName,
- 
 }: IProps) {
+  const [loading, setLoading] = useState(false);
 
-const [loading,setLoading] = useState(false)
-
-
-const doNothing =()=>{}
+  const doNothing = () => {};
   return (
     <>
       {/* Overlay */}
@@ -37,17 +33,11 @@ const doNothing =()=>{}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={loading?onClose:doNothing}
+        onClick={loading ? onClose : doNothing}
       />
 
       {/* Content */}
-      <motion.div
-        className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-neutral-900"
-        initial={{ opacity: 0, scale: 0.95, y: -20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: -20 }}
-        transition={{ duration: 0.2 }}
-      >
+      <div className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-neutral-900">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -70,9 +60,7 @@ const doNothing =()=>{}
 
         {/* Message */}
         <div className="mb-6">
-          <p className="text-gray-600 dark:text-gray-300">
-            {message}
-          </p>
+          <p className="text-gray-600 dark:text-gray-300">{message}</p>
           {itemName && (
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="font-medium">Item:</span> {itemName}
@@ -95,12 +83,11 @@ const doNothing =()=>{}
           </button>
           <button
             type="button"
-            onClick={async ()=>{
-              setLoading(true)
-              await onConfirm(_id)
-              setLoading(false)
-            }
-            }
+            onClick={async () => {
+              setLoading(true);
+              await onConfirm(_id);
+              setLoading(false);
+            }}
             disabled={loading}
             className="rounded-xl bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -114,7 +101,7 @@ const doNothing =()=>{}
             )}
           </button>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }

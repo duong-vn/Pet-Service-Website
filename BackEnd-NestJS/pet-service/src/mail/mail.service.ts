@@ -164,8 +164,8 @@ export class MailService {
       service.type === ServiceType.HOTEL
         ? Math.ceil(duration / 1440) + ' ' + 'ngày'
         : service.duration + ' phút';
-
-    console.log('localstring', price.toLocaleString('vi-VN'));
+    const priceString =
+      typeof price === 'string' ? price : price.toLocaleString() + 'đ';
 
     const sendEmailPayload: ISendEmailPayload = {
       costumer: user,
@@ -177,7 +177,7 @@ export class MailService {
       duration: finalDuration,
       startTime,
       endTime,
-      price: Number(price).toLocaleString('vi-VN'),
+      price: priceString,
       note: note,
       orderedAt: createdAt
         .toLocaleString('sv-SE', {

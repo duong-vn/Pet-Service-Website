@@ -17,12 +17,13 @@ import { FaArrowRight } from "react-icons/fa";
 import "../register/form.css";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { setAuth } from "@/lib/authSlice";
+import { GiDogHouse } from "react-icons/gi";
 export default function LoginPage() {
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const searchParams = useSearchParams()
-  const next = useRef(searchParams.get('next')??'/').current
+  const searchParams = useSearchParams();
+  const next = useRef(searchParams.get("next") ?? "/").current;
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -66,8 +67,14 @@ export default function LoginPage() {
     }
   };
 
-  if (loading) return <LoadingScreen />;
-  if (!authenticated) {
+  if (loading || authenticated === "checking") {
+    return (
+      <div className="min-h-[100vh] flex justify-center items-center">
+        <LoadingScreen />{" "}
+      </div>
+    );
+  }
+  if (authenticated === "unauthenticated") {
     return (
       <main>
         <div className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 text-primary-light">
@@ -88,8 +95,8 @@ export default function LoginPage() {
             />
           </motion.div>
 
-          <div className="w-full max-w-md rounded-3xl ring-2 ring-neutral-dark  dark:text-neutral-light bg-secondary-dark p-6 shadow-2xl">
-            <div className="flex flex-col items-center">
+          <div className="w-full max-w-md rounded-3xl  ring-2 ring-neutral-dark  dark:text-neutral-light bg-secondary-dark p-6 shadow-2xl">
+            <div className="flex flex-col text-primary-light items-center">
               <h1 className="text-2xl font-bold">Đăng nhập</h1>
               <p className="mt-1 text-sm text-muted-foreground text-center">
                 Sử dụng tài khoản Google để tiếp tục.
@@ -100,9 +107,14 @@ export default function LoginPage() {
               <Login onSuccess={onSuccess} setErr={setErr} />
             </div>
 
-            <div className="text-center pt-4">----------hoặc----------</div>
+            <div className="text-center pt-4 text-primary-light">
+              ----------hoặc----------
+            </div>
 
-            <form className="space-y-2" onSubmit={handleSubmit}>
+            <form
+              className="space-y-2 text-primary-light"
+              onSubmit={handleSubmit}
+            >
               <label className="flex flex-col">
                 Email:
                 <input
@@ -152,7 +164,7 @@ export default function LoginPage() {
             </form>
             <Link
               href="/auth/forget-password"
-              className="mt-3 cursor-pointer hover:underline"
+              className="mt-3 cursor-pointer text-primary-light hover:underline"
             >
               Quên mật khẩu?
             </Link>
@@ -160,10 +172,16 @@ export default function LoginPage() {
 
           <Link
             href="/auth/register"
-            className="flex items-center justify-end text-sm mt-5 hover:underline text-neutral-light"
+            className="flex border p-2 rounded-3xl items-center justify-end text-sm mt-5 bg-transparent hover:bg-primary-dark hover:border-secondary-dark hover:scale-105 transition-transform border-transparent text-primary-light"
           >
-            <FaArrowRight size={20} className="mx-2" />
+            <FaArrowRight size={20} className="mx-2 " />
             Bạn chưa có tài khoản? Đăng kí tại đây
+          </Link>
+          <Link
+            href="/"
+            className="fixed block top-10 left-10 text-sm mt-5 hover:underline hover:scale-150 transition-transform text-primary-light"
+          >
+            <GiDogHouse size={30} className="mx-2 " />
           </Link>
         </div>
       </main>

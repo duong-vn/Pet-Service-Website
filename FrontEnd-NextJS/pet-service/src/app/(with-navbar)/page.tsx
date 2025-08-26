@@ -30,11 +30,16 @@ import { IService, ServiceType } from "@/types/back-end";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import { FaArrowsAltV } from "react-icons/fa";
 import PriceRow from "@/components/layout/PriceRow";
+import Portal from "@/components/layout/Portal";
 
 export default function Home() {
-  const { data: listServices, isLoading, isError, error } = useServices({current:1,pageSize:6});
+  const {
+    data: listServices,
+    isLoading,
+    isError,
+    error,
+  } = useServices({ current: 1, pageSize: 6 });
   const [openFaq, setOpenFaq] = useState<number | null>(0);
- 
 
   if (isError) {
     handleError(error);
@@ -52,9 +57,6 @@ export default function Home() {
     }
   };
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
   return (
     <>
       {/* HERO */}
@@ -91,8 +93,12 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-4 ">
         <h3 className="text-2xl md:text-3xl font-bold mb-6">Dịch vụ nổi bật</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listServices &&
-            listServices.result &&
+          {!(!isLoading && listServices && listServices.result) ? (
+            <div className="col-span-3">
+              {" "}
+              <LoadingScreen />{" "}
+            </div>
+          ) : (
             (
               [
                 ServiceType.BATH,
@@ -107,23 +113,22 @@ export default function Home() {
               );
               if (!service) return null;
               return (
-                <motion.article
-                whileHover={{ scale: 1.02 }}
-                key={service._id}
-              >
-                <ServiceCard
-                _id={service._id}
-                
-                  img={service.picture}
-                  title={service.name}
-                  priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
-                  priceEnd={service.priceEnd.toLocaleString() + "đ"}
-                  items={service.description}
-                  icon={iconOf(service.type)}
-                />
+                <motion.article whileHover={{ scale: 1.02 }} key={service._id}>
+                  <ServiceCard
+                    _id={service._id}
+                    img={service.picture}
+                    title={service.name}
+                    priceStart={
+                      service.priceStart.toLocaleString("vi-VN") + "đ"
+                    }
+                    priceEnd={service.priceEnd.toLocaleString() + "đ"}
+                    items={service.description}
+                    icon={iconOf(service.type)}
+                  />
                 </motion.article>
               );
-            })}
+            })
+          )}
         </div>
       </section>
 
@@ -140,16 +145,16 @@ export default function Home() {
             {listServices &&
               listServices.result &&
               listServices.result.map((service: IService) => (
-                <motion.article
-                whileHover={{ scale: 1.02 }}
-                key={service._id}
-              > <PriceRow
-             
-              name={service.name}
-              priceStart={service.priceStart.toLocaleString("vi-VN") + "đ"}
-              priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
-            /></motion.article>
-               
+                <motion.article whileHover={{ scale: 1.02 }} key={service._id}>
+                  {" "}
+                  <PriceRow
+                    name={service.name}
+                    priceStart={
+                      service.priceStart.toLocaleString("vi-VN") + "đ"
+                    }
+                    priceEnd={service.priceEnd.toLocaleString("vi-VN") + "đ"}
+                  />
+                </motion.article>
               ))}
           </div>
         </div>
@@ -215,11 +220,10 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <motion.article
-                whileHover={{ scale: 1.02 }}
-               
-              > <CTA /></motion.article>
-     
+      <motion.article whileHover={{ scale: 1.02 }}>
+        {" "}
+        <CTA />
+      </motion.article>
     </>
   );
 }
@@ -235,7 +239,7 @@ const FAQS = [
   },
   {
     q: "Có hỗ trợ đón – trả thú cưng không?",
-    a: "Một số khu vực nội thành có hỗ trợ với phụ phí nhỏ. Liên hệ hotline để biết chi tiết.",
+    a: "Trong vòng bán kính 2km sẽ miễn phí, một số khu vực nội thành có hỗ trợ với phụ phí nhỏ. Liên hệ hotline để biết chi tiết.",
   },
   {
     q: "Thanh toán như thế nào?",

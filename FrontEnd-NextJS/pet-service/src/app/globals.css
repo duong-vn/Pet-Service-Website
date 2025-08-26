@@ -43,3 +43,20 @@ body {
 
   overflow-x: hidden;
 }
+
+/* Remove yellow autofill background and keep theme colors */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  -webkit-text-fill-color: inherit !important;
+  caret-color: inherit !important;
+  transition: background-color 99999s ease-in-out 0s !important;
+}
+
+/* Ensure no background color override when focused */
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+}

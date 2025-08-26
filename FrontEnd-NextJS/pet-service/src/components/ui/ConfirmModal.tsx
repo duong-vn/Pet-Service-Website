@@ -5,32 +5,26 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { LuDog } from "react-icons/lu";
 
-
 interface IProps {
- 
   onClose: () => void;
   onConfirm: () => void;
   title?: string;
   message?: string;
+  smallInfo?: string;
   itemName?: string;
-  
 }
 
-export default function ConfirmModal({ 
-
-    
-  onClose, 
-  onConfirm, 
+export default function ConfirmModal({
+  onClose,
+  onConfirm,
   title = "Xác nhận",
   message = "Bạn có chắc chắn muốn đặt lịch?",
+  smallInfo = "*Sẽ có nhân viên liên hệ để xác nhận",
   itemName,
- 
 }: IProps) {
+  const [loading, setLoading] = useState(false);
 
-const [loading,setLoading] = useState(false)
-
-
-const doNothing =()=>{}
+  const doNothing = () => {};
   return (
     <>
       {/* Overlay */}
@@ -39,19 +33,16 @@ const doNothing =()=>{}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={loading?onClose:doNothing}
+        onClick={loading ? onClose : doNothing}
       />
 
       {/* Content */}
-      <div
-        className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-neutral-900"
-       
-      >
+      <div className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-neutral-900">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="rounded-full bg-red-100 p-2 dark:bg-red-900/20">
-              <LuDog  className="h-5 w-5 text-green-300 dark:text-green-600" />
+              <LuDog className="h-5 w-5 text-green-300 dark:text-green-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               {title}
@@ -69,16 +60,14 @@ const doNothing =()=>{}
 
         {/* Message */}
         <div className="mb-6">
-          <p className="text-gray-600 dark:text-gray-300">
-            {message}
-          </p>
+          <p className="text-gray-600 dark:text-gray-300">{message}</p>
           {itemName && (
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="font-medium">Item:</span> {itemName}
             </p>
           )}
           <p className="mt-3 text-sm text-red-600 dark:text-red-400">
-            ⚠️ Hành động này không thể hoàn tác
+            {smallInfo}
           </p>
         </div>
 
@@ -94,12 +83,11 @@ const doNothing =()=>{}
           </button>
           <button
             type="button"
-            onClick={async ()=>{
-              setLoading(true)
-              await onConfirm()
-              setLoading(false)
-            }
-            }
+            onClick={async () => {
+              setLoading(true);
+              await onConfirm();
+              setLoading(false);
+            }}
             disabled={loading}
             className="rounded-xl bg-primary-dark px-4 py-2 text-white hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed"
           >

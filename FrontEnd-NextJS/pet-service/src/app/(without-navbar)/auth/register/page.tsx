@@ -13,8 +13,9 @@ import { isRegisterable } from "@/apiServices/auth/services";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import LoadingScreen from "@/components/ui/LoadingScreen";
+import { GiDogHouse } from "react-icons/gi";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -62,11 +63,10 @@ export default function LoginPage() {
   };
   if (loading)
     return (
-      <>
-        <LoadingScreen />
-      </>
+      <div className="min-h-[100vh] flex justify-center items-center">
+        <LoadingScreen />{" "}
+      </div>
     );
-
   return (
     <main className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 text-neutral-light">
       <motion.div
@@ -220,11 +220,17 @@ export default function LoginPage() {
       </div>
       <Link
         href="/auth/login"
-        className="flex items-center justify-end text-sm mt-5 hover:underline dark:text-primary-light "
+        className="flex border p-2 rounded-3xl items-center justify-end text-sm mt-5 bg-transparent hover:bg-primary-dark hover:border-secondary-dark hover:scale-105 transition-transform border-transparent text-primary-light"
       >
         {" "}
         <FaArrowLeft size={20} className="mx-2" />
         Đăng nhập
+      </Link>
+      <Link
+        href="/"
+        className="fixed block top-10 left-10 text-sm mt-5 hover:underline hover:scale-150 transition-transform text-primary-light"
+      >
+        <GiDogHouse size={30} className="mx-2 " />
       </Link>
     </main>
   );

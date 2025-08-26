@@ -9,7 +9,8 @@ export default function NotFound() {
         <div className="text-6xl font-extrabold tracking-tight">404</div>
         <h1 className="mt-2 text-2xl font-semibold">Không tìm thấy nội dung</h1>
         <p className="mt-2 text-gray-600">
-          Trang bạn yêu cầu có thể đã bị xoá, đổi tên, hoặc tạm thời không khả dụng.
+          Trang bạn yêu cầu có thể đã bị xoá, đổi tên, hoặc tạm thời không khả
+          dụng.
         </p>
 
         <div className="mt-6 flex items-center justify-center gap-3">

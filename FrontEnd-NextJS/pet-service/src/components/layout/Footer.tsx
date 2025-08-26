@@ -38,7 +38,10 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/booking" className="hover:underline">
+              <Link
+                href="/appointmentsappointments"
+                className="hover:underline"
+              >
                 Đặt lịch
               </Link>
             </li>

@@ -1,16 +1,11 @@
 import { motion } from "framer-motion";
-interface IProps
-{
+interface IProps {
   icon: React.ReactNode;
   title: string;
   desc: string;
 }
 
-export default function BenefitCard({
-  icon,
-  title,
-  desc,
-}: IProps) {
+export default function BenefitCard({ icon, title, desc }: IProps) {
   return (
     <motion.div
       whileHover={{ y: -2 }}
