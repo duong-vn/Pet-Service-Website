@@ -28,12 +28,12 @@ export const PERMISSIONS = {
 
   // APPOINTMENTS
   APPOINTMENTS_DELETE: "appointments:delete",
+  APPOINTMENTS_PATCH: "appointments:patch",
 
   // PRICE-RULES
-  PRICE_RULES_PATCH : "price-rules:patch",
-  PRICE_RULES_POST  : "price-rules:post",
-  PRICE_RULES_DELETE : 'price-rules:delete'
-
+  PRICE_RULES_PATCH: "price-rules:patch",
+  PRICE_RULES_POST: "price-rules:post",
+  PRICE_RULES_DELETE: "price-rules:delete",
 } as const;
 
 export type PermissionKey = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];

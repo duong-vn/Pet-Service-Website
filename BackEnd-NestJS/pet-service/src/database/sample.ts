@@ -129,6 +129,12 @@ export const INIT_PERMISSIONS = [
     key: 'appointments:delete',
     module: 'APPOINTMENTS',
   },
+  {
+    _id: new Types.ObjectId().toString(),
+    name: 'Sửa lịch hẹn',
+    key: 'appointments:patch',
+    module: 'APPOINTMENTS',
+  },
   // PRICE-RULES
   {
     _id: new Types.ObjectId().toString(),
@@ -201,6 +207,7 @@ export const INIT_ROLES = [
 
       // APPOINTMENTS: có quyền xóa lịch hẹn (duyệt/hủy)
       idOf('appointments:delete'),
+      idOf('appointments:patch'),
     ],
   },
   {
