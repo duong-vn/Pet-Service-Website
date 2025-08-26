@@ -34,7 +34,7 @@ export class CreateAppointmentDto {
   @IsNotEmpty({ message: 'petWeight là bắt buộc.' })
   @Type(() => Number)
   @IsNumber({}, { message: 'petWeight phải là số.' })
-  @Min(0.5, { message: 'petWeight tối thiểu 0.5kg.' })
+  @Min(0, { message: 'petWeight tối thiểu 0kg.' })
   @Max(100, { message: 'petWeight tối đa 100kg.' })
   petWeight!: number;
 

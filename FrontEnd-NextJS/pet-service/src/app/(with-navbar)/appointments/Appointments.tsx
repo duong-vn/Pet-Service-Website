@@ -294,6 +294,12 @@ export default function Appointments({ service }: { service: string | null }) {
                     ? briefPrice
                     : briefPrice.toLocaleString("vi-VN")}
                 </div>
+                {data && (
+                  <div className="mt-1 text-sm">
+                    Thời lượng:{" "}
+                    {isDayMode ? `${datePicked} ngày` : `${data.duration} phút`}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -307,6 +313,11 @@ export default function Appointments({ service }: { service: string | null }) {
             {/* Time Picker */}
             <div>
               <label htmlFor="time" className="block text-sm font-medium mb-2">
+                {isDayMode ? (
+                  <p>*Giờ đón thú cưng</p>
+                ) : (
+                  <p className="opacity-50">*Giờ bắt đầu dịch vụ</p>
+                )}
                 Chọn Giờ *
               </label>
 
