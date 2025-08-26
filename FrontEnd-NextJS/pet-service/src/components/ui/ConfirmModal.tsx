@@ -1,26 +1,28 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Trash2, X } from "lucide-react";
-import { tree } from "next/dist/build/templates/app-page";
+import { X } from "lucide-react";
+
 import { useState } from "react";
+import { LuDog } from "react-icons/lu";
+
 
 interface IProps {
-    _id:string;
+ 
   onClose: () => void;
-  onConfirm: (_id:string) => void;
+  onConfirm: () => void;
   title?: string;
   message?: string;
   itemName?: string;
   
 }
 
-export default function DeleteModal({ 
-    _id,
+export default function ConfirmModal({ 
+
     
   onClose, 
   onConfirm, 
-  title = "Xác nhận xóa",
-  message = "Bạn có chắc chắn muốn xóa item này không?",
+  title = "Xác nhận",
+  message = "Bạn có chắc chắn muốn đặt lịch?",
   itemName,
  
 }: IProps) {
@@ -41,18 +43,15 @@ const doNothing =()=>{}
       />
 
       {/* Content */}
-      <motion.div
+      <div
         className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-neutral-900"
-        initial={{ opacity: 0, scale: 0.95, y: -20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: -20 }}
-        transition={{ duration: 0.2 }}
+       
       >
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="rounded-full bg-red-100 p-2 dark:bg-red-900/20">
-              <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <LuDog  className="h-5 w-5 text-green-300 dark:text-green-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               {title}
@@ -97,12 +96,12 @@ const doNothing =()=>{}
             type="button"
             onClick={async ()=>{
               setLoading(true)
-              await onConfirm(_id)
+              await onConfirm()
               setLoading(false)
             }
             }
             disabled={loading}
-            className="rounded-xl bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-xl bg-primary-dark px-4 py-2 text-white hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -110,11 +109,11 @@ const doNothing =()=>{}
                 Đang xóa...
               </div>
             ) : (
-              "Xóa"
+              "Xác nhận"
             )}
           </button>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }

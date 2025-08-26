@@ -14,10 +14,13 @@ import { motion } from "framer-motion";
 import { handleError } from "@/apiServices/services";
 import { getPrice } from "@/apiServices/services/services";
 import { postAppointments } from "@/apiServices/appointments/services";
+import { useModal } from "@/hooks/modal-hooks";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 interface IFo { petWeight: number; phone: string }
 
 export default function Appointments({ service }: { service?: string }) {
+  const {modal,open,close,isOpen} = useModal()
   const phone = useAppSelector((s) => s.auth.user?.phone);
   const [value, setValue] = useSession<IFo>("services-appointments", {
     petWeight: 0,
@@ -122,8 +125,7 @@ export default function Appointments({ service }: { service?: string }) {
     return isDayMode ? base * (datePicked || 0) : base;
   }, [data, value.petWeight, isDayMode, datePicked]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
     const res = await getPrice(service,value.petWeight)
 
@@ -191,7 +193,10 @@ if (isError) {
             Đặt Lịch Dịch Vụ
           </h1>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={(e)=>{
+              e.preventDefault()
+              open({type:"confirm-modal"})
+          }} className="space-y-6">
             {/* Service Info */}
             <div className="bg-blue-50 flex justify-between items-center p-4 rounded-3xl">
               <div>
@@ -240,7 +245,7 @@ if (isError) {
                 Chọn ngày từ hôm nay đến {maxDateStr}
                 {isDayMode && <div className="opacity-45">(Ấn 2 lần để reset)</div>}
                 <div className="text-xl">
-                  Giá: {briefPrice.toLocaleString("vi-VN")}đ
+                  Giá: {(typeof briefPrice=== 'string')? briefPrice:briefPrice.toLocaleString("vi-VN")}
                 </div>
               </div>
             </div>
@@ -365,6 +370,10 @@ if (isError) {
             </motion.div>
           )}
         </motion.div>
+        { isOpen("confirm-modal") && 
+        <ConfirmModal onConfirm={handleSubmit} onClose={close}/>
+
+        }
       </div>
     </div>
   );
