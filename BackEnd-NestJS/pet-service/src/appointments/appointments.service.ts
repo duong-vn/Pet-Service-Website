@@ -73,6 +73,14 @@ export class AppointmentsService {
       .sort(sort)
       .populate(population)
       .exec();
+    const counts: {
+      status: ['CONFIRM', 'PENDING', 'CANCELED', 'COMPLETED'];
+      count: number;
+    }[] = await this.appointmentModel.aggregate([
+      { $match: filter },
+      { $group: { _id: '$status', count: { $sum: 1 } } },
+      { $project: { _id: 0, status: '$_id', count: 1 } },
+    ]);
 
     return {
       meta: {
@@ -81,6 +89,7 @@ export class AppointmentsService {
         pages: totalPages,
         total: totalItems,
       },
+      counts,
       result,
     };
   }

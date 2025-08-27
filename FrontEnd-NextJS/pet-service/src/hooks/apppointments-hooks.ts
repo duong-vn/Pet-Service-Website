@@ -8,6 +8,7 @@ export interface IAppointments {
   service: {
     _id: string;
     picture: string;
+    name: string;
   };
   duration: number;
   petWeight: string;
@@ -27,9 +28,10 @@ export interface APParams {
   current: number;
   pageSize: number;
   filter?: {
-    status: IStatus;
+    status: IStatus[];
+    date?: string;
   };
-  sort?: string[];
+  sort?: string;
 }
 
 export function useAppointment(params: APParams) {
@@ -38,7 +40,7 @@ export function useAppointment(params: APParams) {
     queryFn: async () => {
       const resData = (
         await api.get(
-          `/api/appointments?populate=service&fields=service.picture&${buildAqp(
+          `/api/appointments?populate=service&fields=service.picture,service.name&${buildAqp(
             params
           )}`
         )
@@ -50,10 +52,14 @@ export function useAppointment(params: APParams) {
 
 const buildAqp = (params: APParams) => {
   const q = new URLSearchParams();
-  if (!!params.filter?.status) q.set("status", params.filter.status);
-  if (!!params.sort) q.set("sort", params.sort.join(","));
+  if (params.filter?.status)
+    q.set("status", String(params.filter.status.join(",")));
+  if (!!params.sort) q.set("sort", params.sort);
 
   q.set("current", String(params.current));
   q.set("pageSize", String(params.pageSize));
-  return q;
+  if (params?.filter?.date?.length && params?.filter?.date?.length > 0) {
+    return q.toString() + "&" + params.filter.date;
+  }
+  return q.toString();
 };

@@ -31,6 +31,12 @@ interface IFo {
   petWeight: number;
   phone: string;
 }
+export const toLocalDateString = (d: Date): string => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
 
 export default function Appointments({ service }: { service: string | null }) {
   const { modal, open, close, isOpen } = useModal();
@@ -48,12 +54,7 @@ export default function Appointments({ service }: { service: string | null }) {
   >();
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  const toLocalDateString = (d: Date): string => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  };
+
   const toMinutes = (hhmm: string) => {
     const [hh, mm] = hhmm.split(":").map(Number);
     return hh * 60 + mm;
@@ -149,6 +150,12 @@ export default function Appointments({ service }: { service: string | null }) {
 
   const handleSubmit = async () => {
     setLoading(true);
+    if (!!!service) {
+      toast.error(
+        "Có lỗi xảy ra hoặc bạn chưa chọn dịch vụ, vui lòng thử lại sau ít phút"
+      );
+      return;
+    }
     const res = await getPrice(service!, value.petWeight);
     let isEqual = false;
     if (res) {
@@ -278,13 +285,13 @@ export default function Appointments({ service }: { service: string | null }) {
               <div
                 className={[
                   "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 shadow-lg",
-                  service ? " block" : "hidden",
+                  service ? " block" : "block",
                 ].join(" ")}
               >
                 {isDayMode ? (
                   <DayPicker
                     mode="range"
-                    disabled={matcher || loading}
+                    disabled={matcher}
                     selected={selectedRangeDate}
                     onSelect={setSelectedRangeDate}
                     footer={
@@ -296,7 +303,7 @@ export default function Appointments({ service }: { service: string | null }) {
                 ) : (
                   <DayPicker
                     mode="single"
-                    disabled={matcher || loading}
+                    disabled={matcher}
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     footer={
@@ -389,7 +396,7 @@ export default function Appointments({ service }: { service: string | null }) {
 
               {!isDayMode && isDayLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+                  <div className="w-8 h-8 border-4 border-neutral-dark border-t-primary-dark rounded-full animate-spin"></div>
                   <span className="ml-3 text-gray-600 dark:text-gray-400">
                     Đang tải khung giờ...
                   </span>

@@ -27,7 +27,7 @@ export default function InfoComp({ serviceData }: { serviceData: any }) {
       <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 border border-gray-200 dark:border-neutral-700">
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-            <Weight className="size-5 text-blue-600 dark:text-blue-400" />
+            <Weight className="size-5 " />
           </div>
           <h3 className="font-semibold text-gray-900 dark:text-white">
             Thông tin cơ bản
@@ -66,7 +66,7 @@ export default function InfoComp({ serviceData }: { serviceData: any }) {
       <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 border border-gray-200 dark:border-neutral-700">
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
-            <Calendar className="size-5 text-green-600 dark:text-green-400" />
+            <Calendar className="size-5 text-primary-dark dark:text-green-400" />
           </div>
           <h3 className="font-semibold text-gray-900 dark:text-white">
             Thông tin tạo

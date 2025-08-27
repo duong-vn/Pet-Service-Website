@@ -122,6 +122,7 @@ export default function Sidebar() {
         </div>
         {can(permissions, PERMISSIONS.APPOINTMENTS_PATCH) && (
           <Link
+            prefetch
             href="/dashboard"
             className="flex items-end p-5 py-5 transition-transform my-auto hover:translate-x-2  dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl"
           >
