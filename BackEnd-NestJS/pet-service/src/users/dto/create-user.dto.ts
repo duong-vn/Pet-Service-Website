@@ -51,7 +51,7 @@ export class RegisterUserDto {
   @IsNotEmpty({ message: 'Password is required' })
   password: string;
   @IsNotEmpty({ message: 'Phone number is required' })
-  phone: number;
+  phone: string;
 
   @IsOptional()
   address: string;

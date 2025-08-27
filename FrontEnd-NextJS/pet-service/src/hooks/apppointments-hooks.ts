@@ -18,9 +18,11 @@ export interface IAppointments {
   price: string | number;
   status: IStatus;
   note: string;
+  phone: string;
   createdBy: {
     _id: string;
     email: string;
+    name: string;
   };
   createdAt: Date;
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { can } from "@/lib/authSlice";
 import { PERMISSIONS } from "@/types/permissions";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   APParams,
   IAppointments,
@@ -30,6 +30,12 @@ import { handleError } from "@/apiServices/services";
 import AppointmentsStats from "./AppointmentsStats";
 import { toLocalDateString } from "../../appointments/Appointments";
 import { setDate } from "date-fns";
+import { useModal } from "@/hooks/modal-hooks";
+import { FaTrashCan } from "react-icons/fa6";
+import { FaPencilAlt } from "react-icons/fa";
+import AppointmentModal from "./AppointmentModal";
+import { patchAppointments } from "@/apiServices/appointments/services";
+import { toast } from "sonner";
 
 const statusConfig: Record<
   IStatus,
@@ -37,49 +43,40 @@ const statusConfig: Record<
 > = {
   [IStatus.PENDING]: {
     label: "Chờ xác nhận",
-    color: "bg-secondary-light dark:bg-yellow-900/20 dark:text-yellow-300",
+    color: "bg-yellow-100 dark:bg-yellow-900/40 ",
     icon: <ClockIcon className="w-6 h-6" />,
     borderColor: "border-yellow-200 dark:border-yellow-700/30",
   },
   [IStatus.CONFIRMED]: {
     label: "Đã xác nhận",
-    color: "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300",
+    color: "bg-blue-100 dark:bg-blue-900/40 ",
     icon: <CheckCircle className="w-6 h-6" />,
     borderColor: "border-blue-200 dark:border-blue-700/30",
   },
   [IStatus.COMPLETED]: {
     label: "Hoàn thành",
-    color:
-      "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300",
+    color: "bg-green-100 dark:bg-green-900/40",
     icon: <CheckCircle className="w-6 h-6" />,
     borderColor: "border-green-200 dark:border-green-700/30",
   },
   [IStatus.CANCELED]: {
     label: "Đã hủy",
-    color: "bg-error text-black dark:bg-red-900/20 dark:text-red-300",
+    color: "bg-error/30  dark:bg-red-900/40 ",
     icon: <XCircle className="w-6 h-6" />,
-    borderColor: "border-red-200 dark:border-red-700/30",
+    borderColor: "border-error/30 dark:border-red-900/40",
   },
 };
 
 export default function AdminDashboardPage() {
   const [params, setParams] = useState<APParams>({
     current: 1,
-    pageSize: 8,
+    pageSize: 10,
     filter: {
       status: [IStatus.PENDING],
     },
     sort: "-date,startTime",
   });
-
-  const in7day = () => {
-    let In7Day = new Date();
-    In7Day = new Date(In7Day.setDate(In7Day.getDate() + 7));
-    const week = toLocalDateString(In7Day);
-    const today = toLocalDateString(new Date());
-
-    return `date>=${today}&date<${week}`;
-  };
+  const { modal, open, close } = useModal();
 
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
   const [filterStatus, setFilterStatus] = useState<{
@@ -97,7 +94,7 @@ export default function AdminDashboardPage() {
     error,
   } = useAppointment(params);
   const counts: { count: number; status: IStatus }[] = appointments?.counts;
-  console.log("filt", filterDate, "par", params.filter?.date);
+  const qc = useQueryClient();
   useEffect(() => {
     const filteredStatus = (Object.keys(filterStatus) as IStatus[]).filter(
       (s) => filterStatus[s]
@@ -120,6 +117,30 @@ export default function AdminDashboardPage() {
       }));
     }
   }, [filterStatus, filterDate, sort, setParams]);
+
+  const in7day = () => {
+    let In7Day = new Date();
+    In7Day = new Date(In7Day.setDate(In7Day.getDate() + 7));
+    const week = toLocalDateString(In7Day);
+    const today = toLocalDateString(new Date());
+
+    return `date>=${today}&date<${week}`;
+  };
+
+  const onUpdate = async (data: {
+    _id: string;
+    status: IStatus;
+    note: string;
+  }) => {
+    const { _id, ...rest } = data;
+    const res = await patchAppointments(_id, rest);
+    if (res) {
+      toast.success("Lưu thành công");
+      qc.invalidateQueries({ queryKey: ["appointments"] });
+    } else {
+      toast.error("Có lỗi, không lưu được");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -188,47 +209,40 @@ export default function AdminDashboardPage() {
                   onChange={(e) =>
                     setFilterStatus((f) => ({ ...f, [t]: e.target.checked }))
                   }
-                  className="size-4"
+                  className="size-5 rounded-full"
                 />
                 <span>{statusConfig[t].label}</span>
               </label>
             ))}
-            {/* <label className="inline-flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={!!filterDate[t]}
-                onChange={(e) =>
-                  setFilter((f) => ({ ...f, [t]: e.target.checked }))
-                }
-                className="size-4"
-              />
-              <span>{statusConfig[t].label}</span>
-            </label> */}
           </form>
-          <form className="space-x-2">
-            <select
-              value={sort}
-              onChange={(e) => {
-                setSort(e.target.value);
-              }}
-            >
-              <option value="">Sắp xếp</option>
-              <option value="date">Cũ nhất</option>
-              <option value="-date,startTime">Mới nhất</option>
-            </select>
-            <select
-              value={filterDate}
-              onChange={(e) => {
-                setFilterDate(e.target.value);
-              }}
-            >
-              <option value="">Tất cả</option>
-              <option value={"date=" + toLocalDateString(new Date())}>
-                Hôm nay
-              </option>
-              <option value={in7day()}>Trong 7 ngày tới</option>
-            </select>
-          </form>
+          <div>
+            <form className="space-x-2">
+              <select
+                value={sort}
+                onChange={(e) => {
+                  setSort(e.target.value);
+                }}
+                className="rounded-2xl py-1 px-2"
+              >
+                <option value="">Sắp xếp</option>
+                <option value="date">Cũ nhất</option>
+                <option value="-date,startTime">Mới nhất</option>
+              </select>
+              <select
+                value={filterDate}
+                onChange={(e) => {
+                  setFilterDate(e.target.value);
+                }}
+                className="rounded-2xl text-center py-1 px-2"
+              >
+                <option value="">Tất cả</option>
+                <option value={"date=" + toLocalDateString(new Date())}>
+                  Hôm nay
+                </option>
+                <option value={in7day()}>Trong 7 ngày tới</option>
+              </select>
+            </form>
+          </div>
         </div>
         {!list.length ? (
           <div className="text-center py-12">
@@ -241,7 +255,7 @@ export default function AdminDashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-2 px-10">
             {list.map((appointment: IAppointments, index: any) => {
               const status =
                 statusConfig[
@@ -251,24 +265,55 @@ export default function AdminDashboardPage() {
                 ];
 
               return (
-                <AppointmentCard
-                  key={appointment._id}
-                  appointment={appointment}
-                  index={index}
-                  status={status}
-                />
+                <div key={appointment._id} className="relative z-20">
+                  <AppointmentCard
+                    appointment={appointment}
+                    index={index}
+                    status={status}
+                  />
+                  {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
+                    <FaTrashCan
+                      className="absolute top-5 right-5 text-error cursor-pointer"
+                      onClick={() =>
+                        open({
+                          type: "delete-modal",
+                          _id: appointment._id,
+                        })
+                      }
+                    />
+                  )}
+                  {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
+                    <FaPencilAlt
+                      className="absolute bottom-16 right-5  cursor-pointer"
+                      onClick={() =>
+                        open({
+                          type: "update-modal",
+                          payload: { appointment, status },
+                        })
+                      }
+                    />
+                  )}
+                </div>
               );
             })}
           </div>
         )}
-        <Pagination
-          current={appointments?.meta.current}
-          limit={appointments?.meta.limit}
-          setParams={setParams}
-          totalItems={appointments?.meta.total}
-          totalPage={appointments?.meta.pages}
-        />
       </div>
+      <Pagination
+        current={appointments?.meta.current}
+        limit={appointments?.meta.limit}
+        setParams={setParams}
+        totalItems={appointments?.meta.total}
+        totalPage={appointments?.meta.pages}
+      />
+
+      {modal.type == "update-modal" && (
+        <AppointmentModal
+          close={close}
+          payload={modal.payload}
+          onUpdate={onUpdate}
+        />
+      )}
     </div>
   );
 }

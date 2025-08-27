@@ -37,9 +37,9 @@ export default function LoginLayout({
   }
   if (can(permissions, PERMISSIONS.APPOINTMENTS_PATCH)) {
     return (
-      <div className="min-h-screen">
+      <div>
         <AdminSidebar />
-        <main className="pl-64">{children}</main>
+        <main className="">{children}</main>
       </div>
     );
   }

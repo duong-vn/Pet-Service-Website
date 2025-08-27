@@ -126,11 +126,6 @@ export default function ServiceModal({ close, serviceData }: IProps) {
     } else {
       await postServices(payload);
     }
-    // TODO: gọi API create/update tại đây
-    // if (isUpdate) await updateService(serviceData!.id, payload, file?)
-    // else await createService(payload, file?)
-
-    // Tạm thời log payload để kiểm tra
     qc.invalidateQueries({ queryKey: ["services"] });
     setLoading(false);
     console.log(isUpdate ? "Update service" : "Create service", payload);

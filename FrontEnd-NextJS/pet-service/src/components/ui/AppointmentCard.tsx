@@ -11,6 +11,7 @@ import {
   Weight,
 } from "lucide-react";
 import { JSX } from "react";
+import { FaTrashCan } from "react-icons/fa6";
 
 export default function AppointmentCard({
   appointment,
@@ -28,12 +29,7 @@ export default function AppointmentCard({
 }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return date.toLocaleDateString("vi-VN");
   };
 
   const formatTime = (timeString: string) => {
@@ -59,7 +55,7 @@ export default function AppointmentCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06 }}
-      className={`bg-white dark:bg-gray-800 rounded-3xl shadow-lg border-2 ${status.borderColor} overflow-hidden hover:shadow-xl transition-all duration-300`}
+      className={`bg-white dark:bg-gray-800 rounded-3xl shadow-lg border-2 ${status.borderColor} overflow-hidden hover:shadow-xl transition-transform duration-300`}
     >
       {/* Status Header */}
       <div
@@ -70,6 +66,7 @@ export default function AppointmentCard({
             {status.icon}
             <span className="font-semibold">{status.label}</span>
           </div>
+          {formatDate(appointment.date)}
         </div>
       </div>
 
@@ -77,7 +74,7 @@ export default function AppointmentCard({
       <div className="p-6 space-y-4">
         {/* Service Info */}
         <div className="flex items-start gap-4">
-          <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+          <div className="w-36 h-36 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
             {appointment.service?.picture ? (
               <img
                 src={appointment.service.picture}
@@ -95,40 +92,33 @@ export default function AppointmentCard({
             <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">
               {appointment?.service?.name ?? "Lịch hẹn dịch vụ"}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Ngày: {formatDate(appointment.date)}
-            </p>
-          </div>
-        </div>
+            <div className="grid grid-cols-2 gap-y-4 ">
+              <div className="flex items-center col-span-2 gap-2 text-sm">
+                <Clock className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700 dark:text-gray-300">
+                  {formatTime(appointment.startTime)} - {appointment.endTime}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700 dark:text-gray-300">
+                  {formatDuration(appointment.duration)}
+                </span>
+              </div>
 
-        {/* Details Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex items-center gap-2 text-sm">
-            <Clock className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">
-              {formatTime(appointment.startTime)} - {appointment.endTime}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm">
-            <Weight className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">
-              {appointment.petWeight} kg
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm">
-            <Calendar className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">
-              {formatDuration(appointment.duration)}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm">
-            <DollarSign className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300 font-medium">
-              {formatPrice(appointment.price)}
-            </span>
+              <div className="flex items-center gap-2 text-sm">
+                <DollarSign className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700 dark:text-gray-300 font-medium">
+                  {formatPrice(appointment.price)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <Weight className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700 dark:text-gray-300">
+                  {appointment.petWeight} kg
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -137,24 +127,34 @@ export default function AppointmentCard({
           <div className="flex items-center gap-2 text-sm">
             <User className="w-4 h-4 text-gray-500" />
             <span className="text-gray-700 dark:text-gray-300">
-              {appointment.createdBy?.email || "Không có thông tin"}
+              {appointment.phone ?? "Không có sđt"} -{" "}
+              {appointment?.createdBy?.name || "không có tên"}
             </span>
           </div>
 
-          {appointment.note && (
-            <div className="flex items-start gap-2 text-sm mt-2">
-              <FileText className="w-4 h-4 text-gray-500 mt-0.5" />
-              <span className="text-gray-600 dark:text-gray-400">
-                {appointment.note}
-              </span>
-            </div>
-          )}
+          <div className="flex items-start w-full gap-2 text-sm mt-2 ">
+            <FileText className="w-4 h-4 text-gray-500 mt-0.5" />
+            <span className="text-gray-600 dark:text-gray-400 hover:break-all cursor-default ">
+              {appointment.note?.length > 0 ? (
+                <div className="group relative">
+                  {" "}
+                  <span className="group-hover:hidden">Xem chú thích</span>
+                  <span className="group-hover:block hidden">
+                    {" "}
+                    {appointment.note}
+                  </span>
+                </div>
+              ) : (
+                "Không có chú thích"
+              )}
+            </span>
+          </div>
         </div>
 
         {/* Created Date */}
         <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-500 dark:text-gray-500">
-            Tạo lúc: {new Date(appointment.createdAt).toLocaleString("vi-VN")}
+          <p className="text-xs ">
+            Đặt lúc: {new Date(appointment.createdAt).toLocaleString("vi-VN")}
           </p>
         </div>
       </div>

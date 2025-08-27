@@ -175,6 +175,13 @@ const idOf = (key: (typeof INIT_PERMISSIONS)[number]['key']) =>
 /** 2) ROLES (name, description, isActive, permission[]) */
 export const INIT_ROLES = [
   {
+    _id: new Types.ObjectId('689f6e674d5811bd2021bbab'),
+    name: BANNED_ROLE,
+    description: 'BỊ BÂN',
+    isActive: true,
+    permissions: [], // BÂn
+  },
+  {
     _id: new Types.ObjectId('689f6e674d5811bd20a1bbab'),
     name: ADMIN_ROLE,
     description: 'Toàn quyền quản trị hệ thống',

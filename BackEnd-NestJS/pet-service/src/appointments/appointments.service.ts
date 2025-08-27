@@ -46,6 +46,7 @@ export class AppointmentsService {
         createdBy: {
           _id: user._id,
           email: user.email,
+          name: user.name,
         },
       });
     } catch (error) {

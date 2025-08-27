@@ -11,3 +11,14 @@ export const postAppointments = async (payload: any) => {
     return null;
   }
 };
+export const patchAppointments = async (_id: string, payload: any) => {
+  try {
+    const appointment = (
+      await api.patch("/api/appointments/status/" + _id, payload)
+    ).data.data;
+    return appointment;
+  } catch (error) {
+    handleError(error);
+    return null;
+  }
+};

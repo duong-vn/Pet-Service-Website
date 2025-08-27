@@ -7,6 +7,7 @@ import { IUser } from 'src/users/users.interface';
 import { IPayload } from '../auth.service';
 import { RolesService } from 'src/roles/roles.service';
 import { permission } from 'process';
+import { BANNED_ROLE } from 'src/database/sample';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -23,7 +24,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: IPayload) {
     const { _id, name, email, role } = payload;
-
     return {
       _id,
       email,

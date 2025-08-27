@@ -73,7 +73,7 @@ export default function Sidebar() {
         {loading ? (
           <div className="w-5 h-5 my-10 mx-auto rounded-full border border-t-transparent animate-spin"></div>
         ) : (
-          <div className="p-6 flex items-center  border-background-light dark:border-neutral-dark">
+          <div className="p-6 flex items-center justify-center border-background-light dark:border-neutral-dark">
             <UserPill />
           </div>
         )}
