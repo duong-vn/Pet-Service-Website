@@ -22,3 +22,13 @@ export const patchAppointments = async (_id: string, payload: any) => {
     return null;
   }
 };
+
+export const deleteAppointments = async (_id: string) => {
+  try {
+    const appointment = (await api.delete("/api/appointments/" + _id)).data;
+    return appointment;
+  } catch (error) {
+    handleError(error);
+    return null;
+  }
+};

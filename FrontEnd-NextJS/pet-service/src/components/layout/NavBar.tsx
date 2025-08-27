@@ -70,7 +70,7 @@ export default function NavBar() {
   return (
     <header
       className={[
-        " w-full top-0 z-30 sticky mb-5 ",
+        " w-full top-0 z-30 sticky mb-5 pointer-events-none",
         "transition-trasnform duration-500",
         "ease-out will-change-transform ",
         hidden ? "-translate-y-[calc(100%+1.5rem)]" : "-translate-y-0  ",
@@ -79,7 +79,7 @@ export default function NavBar() {
       <nav className=" container  pt-3  mx-auto  max-w-screen-2xl flex justify-center items-center  ">
         <div
           className={[
-            "flex min-w-[250] max-h-[52] items-center",
+            "flex  min-w-[250] pointer-events-auto max-h-[52] items-center",
             "justify-between rounded-3xl ",
             "line-height-1  backdrop-blur-2xl  ",
             " duration-400 ",
@@ -172,7 +172,7 @@ export default function NavBar() {
         {/* hamburger icon */}
         <div
           className={[
-            "mx-2  hover:scale-110",
+            "mx-2 pointer-events-auto hover:scale-110",
             scrolling ? " absolute right-0" : " absolute right-0",
             authenticated === "unauthenticated" && "animate-spin",
           ].join(" ")}

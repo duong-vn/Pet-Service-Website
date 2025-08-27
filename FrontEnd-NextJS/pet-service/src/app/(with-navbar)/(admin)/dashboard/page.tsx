@@ -34,8 +34,12 @@ import { useModal } from "@/hooks/modal-hooks";
 import { FaTrashCan } from "react-icons/fa6";
 import { FaPencilAlt } from "react-icons/fa";
 import AppointmentModal from "./AppointmentModal";
-import { patchAppointments } from "@/apiServices/appointments/services";
+import {
+  deleteAppointments,
+  patchAppointments,
+} from "@/apiServices/appointments/services";
 import { toast } from "sonner";
+import DeleteModal from "@/components/ui/DeleteModal";
 
 const statusConfig: Record<
   IStatus,
@@ -70,10 +74,7 @@ const statusConfig: Record<
 export default function AdminDashboardPage() {
   const [params, setParams] = useState<APParams>({
     current: 1,
-    pageSize: 10,
-    filter: {
-      status: [IStatus.PENDING],
-    },
+    pageSize: 8,
     sort: "-date,startTime",
   });
   const { modal, open, close } = useModal();
@@ -81,9 +82,7 @@ export default function AdminDashboardPage() {
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
   const [filterStatus, setFilterStatus] = useState<{
     [k in IStatus]?: Boolean;
-  }>({
-    PENDING: true,
-  });
+  }>({});
   const [filterDate, setFilterDate] = useState<string>("");
 
   const [sort, setSort] = useState<string>("-date,startTime");
@@ -135,11 +134,22 @@ export default function AdminDashboardPage() {
     const { _id, ...rest } = data;
     const res = await patchAppointments(_id, rest);
     if (res) {
-      toast.success("Lưu thành công");
-      qc.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Lưu thành công!");
+      // qc.invalidateQueries({ queryKey: ["appointments"] });
     } else {
       toast.error("Có lỗi, không lưu được");
     }
+  };
+
+  const onDelete = async (_id: string) => {
+    const res = await deleteAppointments(_id);
+    if (res) {
+      toast.success("Xóa thành công!");
+      // qc.invalidateQueries({ queryKey: ["appointments"] });
+    } else {
+      toast.error("Có lỗi, không xóa được");
+    }
+    close();
   };
 
   if (isLoading) {
@@ -273,7 +283,7 @@ export default function AdminDashboardPage() {
                   />
                   {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
                     <FaTrashCan
-                      className="absolute top-5 right-5 text-error cursor-pointer"
+                      className="absolute top-20 right-5 text-error cursor-pointer"
                       onClick={() =>
                         open({
                           type: "delete-modal",
@@ -284,7 +294,7 @@ export default function AdminDashboardPage() {
                   )}
                   {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
                     <FaPencilAlt
-                      className="absolute bottom-16 right-5  cursor-pointer"
+                      className="absolute bottom-20 right-5  cursor-pointer"
                       onClick={() =>
                         open({
                           type: "update-modal",
@@ -312,6 +322,14 @@ export default function AdminDashboardPage() {
           close={close}
           payload={modal.payload}
           onUpdate={onUpdate}
+        />
+      )}
+      {modal.type == "delete-modal" && (
+        <DeleteModal
+          itemName="lịch hẹn"
+          onClose={close}
+          onConfirm={onDelete}
+          _id={modal._id}
         />
       )}
     </div>

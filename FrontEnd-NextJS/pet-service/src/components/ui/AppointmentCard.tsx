@@ -52,9 +52,9 @@ export default function AppointmentCard({
   return (
     <motion.div
       key={appointment._id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: index * 0.01 }}
       className={`bg-white dark:bg-gray-800 rounded-3xl shadow-lg border-2 ${status.borderColor} overflow-hidden hover:shadow-xl transition-transform duration-300`}
     >
       {/* Status Header */}
