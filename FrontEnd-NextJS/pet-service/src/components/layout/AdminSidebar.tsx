@@ -75,7 +75,7 @@ export default function AdminSidebar() {
             can(permissions, PERMISSIONS.ROLES_PATCH) ||
             can(permissions, PERMISSIONS.ROLES_DELETE)) && (
             <Link
-              href="/dashboard/users"
+              href="/dashboard/roles"
               className="block rounded-xl px-3 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10 border border-transparent hover:border-black/10 dark:hover:border-white/10"
             >
               Vai trò

@@ -1,3 +1,5 @@
+import React from "react";
+
 type Role = {
   _id: string;
   name: string;
@@ -9,45 +11,80 @@ type Role = {
 };
 
 export default function RolesList({ roles }: { roles: Role[] }) {
+  if (!roles?.length) {
+    return (
+      <div className="rounded-xl border bg-background p-8 text-center text-sm text-muted-foreground">
+        Chưa có vai trò nào.
+      </div>
+    );
+  }
+
+  // Khung list: 1 cột trên mobile, 2 cột từ lg trở lên
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {roles.map((role) => (
-        <div
-          key={role._id}
-          className="rounded-xl border bg-background p-5 shadow-sm flex flex-col gap-2"
-        >
-          {" "}
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold text-lg">{role.name}</h2>
+    <ul
+      className="
+        grid grid-cols-1 lg:grid-cols-2 gap-2
+        rounded-xl border overflow-hidden
+      "
+    >
+      {roles.map((role, i) => (
+        <RoleRow key={role._id} role={role} index={i} />
+      ))}
+    </ul>
+  );
+}
+
+function RoleRow({ role, index }: { role: Role; index: number }) {
+  const statusClasses = role.isActive
+    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+    : "bg-muted text-muted-foreground border-border";
+
+  return (
+    <li
+      className={`
+        p-4 sm:p-5
+        bg-primary-light/40
+        border-b
+        lg:border-b
+            rounded-2xl  
+        hover:bg-muted/50 transition-colors
+      `}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-base font-semibold leading-6 truncate">
+              {role.name}
+            </h2>
             <span
-              className={`px-2 py-1 rounded text-xs font-semibold ${
-                role.isActive
-                  ? "bg-green-100 text-green-700"
-                  : "bg-gray-200 text-gray-500"
-              }`}
+              className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium ${statusClasses}`}
             >
               {role.isActive ? "Hoạt động" : "Ngưng"}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground mb-2">
-            {role.description}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {role.permissions.map((p) => (
-              <span
-                key={p._id}
-                className="bg-primary-light/10 dark:bg-primary-dark/20 text-xs px-2 py-1 rounded border border-primary-light dark:border-primary-dark"
-              >
-                {p.key}
-              </span>
-            ))}
-          </div>
-          <div className="mt-2 text-xs text-gray-400">
-            Tạo: {new Date(role.createdAt).toLocaleDateString()} | Cập nhật:{" "}
-            {new Date(role.updatedAt).toLocaleDateString()}
+
+          {role.description && (
+            <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+              {role.description}
+            </p>
+          )}
+
+          <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
+            <span>
+              Tạo: {new Date(role.createdAt).toLocaleDateString("vi-VN")}
+            </span>
+            <span className="opacity-40">•</span>
+            <span>
+              Cập nhật: {new Date(role.updatedAt).toLocaleDateString("vi-VN")}
+            </span>
           </div>
         </div>
-      ))}
-    </div>
+
+        {/* Khu action ở bên phải nếu cần (Xem quyền/Sửa/Xoá) */}
+        {/* <div className="shrink-0 flex items-center gap-2">
+          <button className="text-xs underline">Xem quyền</button>
+        </div> */}
+      </div>
+    </li>
   );
 }

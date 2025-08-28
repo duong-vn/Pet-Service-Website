@@ -42,19 +42,16 @@ export default function PriceRuleModal({
   const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = (): boolean => {
-    // Validate name
     if (!name.trim()) {
       toast.error("Tên gói không được để trống");
       return false;
     }
 
-    // Validate minWeight
     if (Number(minWeight) < 0) {
       toast.error("Cân nặng tối thiểu không được âm");
       return false;
     }
 
-    // Validate maxWeight
     if (Number(maxWeight) <= Number(minWeight)) {
       toast.error("Cân nặng tối đa phải lớn hơn tối thiểu");
       return false;
@@ -63,7 +60,6 @@ export default function PriceRuleModal({
       return false;
     }
 
-    // Validate price
     if (typeof price === "number" && price < 0) {
       toast.error("Giá không được âm");
       return false;

@@ -11,7 +11,6 @@ import {
   Weight,
 } from "lucide-react";
 import { JSX } from "react";
-import { FaTrashCan } from "react-icons/fa6";
 
 export default function AppointmentCard({
   appointment,
