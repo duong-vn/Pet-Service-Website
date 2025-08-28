@@ -20,10 +20,9 @@ export default function BootstrapAuth() {
         const data = res.data;
 
         setAT(data.access_token);
-        console.log("AT", data.access_token);
+
         dispatch(setAuth(data.user as IUser));
       } catch (e: any) {
-        console.log("1");
         const hadAT = !!getAT();
 
         setAT(null);

@@ -136,7 +136,7 @@ export default function PermissionsUI() {
                   {(perms as Permission[]).map((p) => (
                     <PermissionRow
                       key={p._id}
-                      isChecked={selected.has(p._id)}
+                      isChecked={savable ? selected.has(p._id) : true}
                       onToogle={onToogle}
                       p={p}
                     />

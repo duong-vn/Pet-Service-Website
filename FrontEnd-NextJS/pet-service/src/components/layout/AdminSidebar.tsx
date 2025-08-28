@@ -14,17 +14,27 @@ export default function AdminSidebar() {
     <>
       {" "}
       {!open && (
+        <>
+          <div
+            className="fixed ml-2 bottom-1/2 hover:scale-105 will-change-transform cursor-pointer ring-black  transition-transform ring-transparent hover:ring-2 dark:ring-white rounded-full"
+            onClick={() => setOpen(true)}
+          >
+            <MdKeyboardArrowRight size={40} />
+          </div>
+        </>
+      )}
+      {open && (
         <div
-          className="fixed ml-2 hover:scale-105 will-change-transform cursor-pointer ring-black  transition-transform ring-transparent hover:ring-2 dark:ring-white rounded-full"
-          onClick={() => setOpen(true)}
-        >
-          <MdKeyboardArrowRight size={40} />
-        </div>
+          className="fixed z-30 inset-0"
+          onClick={() => {
+            setOpen(false);
+          }}
+        />
       )}
       <aside
         className={[
           !open ? "-translate-x-[calc(100%)]" : "translate-x-0",
-          "fixed left-0 z-30  transition-transform duration-300 will-change-transform  w-64 rounded-e-3xl border-r border-black/10 dark:border-white/10 bg-white/90 dark:bg-white/5 backdrop-blur px-4 py-6",
+          "fixed left-0 bottom-1/2 z-30  transition-transform duration-300 will-change-transform  w-64 rounded-e-3xl border-r border-black/10 dark:border-white/10 bg-white/90 dark:bg-white/5 backdrop-blur px-4 py-6",
         ].join(" ")}
       >
         <div className="mb-6 px-2 flex justify-between items-center">
@@ -35,16 +45,6 @@ export default function AdminSidebar() {
               Quản trị hệ thống
             </p>
           </div>
-          {open && (
-            <div
-              className=" absolute -right-12 top-2 cursor-pointer hover:scale-105 dark:ring-white  ring-black transition-transform ring-transparent hover:ring-2  rounded-full
-
-              "
-              onClick={() => setOpen(false)}
-            >
-              <MdKeyboardArrowLeft className="" size={40} />
-            </div>
-          )}
         </div>
 
         <nav className="space-y-1">

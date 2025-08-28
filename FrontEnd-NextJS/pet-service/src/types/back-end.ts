@@ -51,3 +51,22 @@ export enum MODULES {
   PERMISSIONS = "PERMISSIONS",
   APPOINTMENTS = "APPOINTMENTS",
 }
+
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  age: string;
+  picture: string;
+  gender: string;
+  address: String;
+  phone: string;
+  public_id: string;
+  role: {
+    _id: string;
+    name: string;
+  };
+  createdAt: Date;
+  provider: string;
+  emailVerifiedAt: Date | null;
+}

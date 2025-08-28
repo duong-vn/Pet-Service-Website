@@ -35,6 +35,9 @@ export class CreateUserDto {
   address: string;
 
   @IsOptional()
+  role: mongoose.Schema.Types.ObjectId;
+
+  @IsOptional()
   age: number;
 
   @IsOptional()
@@ -55,7 +58,8 @@ export class RegisterUserDto {
 
   @IsOptional()
   address: string;
-
+  @IsOptional()
+  role: mongoose.Schema.Types.ObjectId;
   @IsOptional()
   age: number;
   @IsOptional()

@@ -123,7 +123,7 @@ export default function RolesUI() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Danh sách roles</h1>
 
-      {/* ===== Form nháp Role (lưu session) ===== */}
+      {/* form */}
       <section className="rounded-xl border bg-background p-4 md:p-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base md:text-lg font-semibold">
@@ -195,7 +195,7 @@ export default function RolesUI() {
           </label>
 
           {/* isActive */}
-          <div className="col-span-2 flex justify-between">
+          <div className="md:col-span-2 flex justify-between">
             <label className="">
               <div className="text-sm">Trạng thái</div>
               <div className="mt-1 flex items-center gap-3">
