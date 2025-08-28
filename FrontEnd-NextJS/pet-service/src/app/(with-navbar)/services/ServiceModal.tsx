@@ -69,7 +69,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
     setLoading(true);
     if (Number(priceStart) > Number(priceEnd)) {
       toast.error("Giá đầu phải nhỏ hơn giá cuối!");
-      console.log(">>pricestart ", priceStart, ">>>price end", priceEnd);
+
       await delay(1000);
       setLoading(false);
       return;
@@ -113,7 +113,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
     }
     qc.invalidateQueries({ queryKey: ["services"] });
     setLoading(false);
-    console.log(isUpdate ? "Update service" : "Create service", payload);
+
     close();
   };
 

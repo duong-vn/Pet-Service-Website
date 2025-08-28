@@ -25,7 +25,6 @@ export class CreateUserDto {
   picture: string;
 
   @IsNotEmpty({ message: 'Provider is required' })
-  @IsIn(providers)
   provider: string;
 
   @IsNotEmpty({ message: 'Password is required' })

@@ -7,8 +7,13 @@ export class CloudController {
   constructor(private cloudService: CloudService) {}
   @Public()
   @Post('sign')
-  upload(@Body('folder') folder: string) {
-    return this.cloudService.sign(folder);
+  upload(
+    @Body('folder') folder: string,
+    @Body('public_id')
+    publicId?: string,
+  ) {
+    console.log('PT', publicId);
+    return this.cloudService.sign(folder, publicId);
   }
 
   @Delete('delete')

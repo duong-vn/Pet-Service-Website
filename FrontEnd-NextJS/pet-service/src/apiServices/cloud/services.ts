@@ -9,6 +9,7 @@ interface ISign {
   signature: string;
   cloudName: string;
   apiKey: string;
+  public_id?: string;
   uploadPreset: string;
 }
 interface IResData {
@@ -16,14 +17,24 @@ interface IResData {
   secure_url: string;
 }
 
-export const postSign = async (folder: string): Promise<ApiResponse<ISign>> => {
+export const postSign = async (
+  folder: string,
+  publicId?: string
+): Promise<ApiResponse<ISign>> => {
   const res = await axios.post<ApiResponse<ISign>>(
     `${BASE_URL}/api/cloud/sign`,
-    { folder }
+    {
+      folder,
+      public_id: publicId,
+    }
   );
   return res.data;
 };
-export const postCloud = async (file: File, sign: ISign): Promise<IResData> => {
+export const postCloud = async (
+  file: File,
+  sign: ISign,
+  public_id?: string
+): Promise<IResData> => {
   const { timestamp, signature, folder, cloudName, apiKey, uploadPreset } =
     sign;
   const form = new FormData();
@@ -33,26 +44,37 @@ export const postCloud = async (file: File, sign: ISign): Promise<IResData> => {
   form.append("signature", signature);
   form.append("api_key", apiKey);
   form.append("upload_preset", uploadPreset);
-
+  if (public_id) {
+    form.append("public_id", public_id);
+    console.log("appended", public_id);
+  }
+  console.log("public id in file thing", public_id);
   const res = await axios.post(CLOUD_URL, form);
-  return res.data;
+  const { public_id: pi, secure_url } = res.data;
+  const pl = pi
+    .replace(/\/+$/, "")
+    .slice(pi.replace(/\/+$/, "").lastIndexOf("/") + 1);
+
+  return {
+    public_id: pl,
+    secure_url,
+  };
 };
 
 export const uploadToCloud = async (
   folder: string,
-  file: File
+  file: File,
+  public_id?: string
 ): Promise<IResData> => {
-  try{ 
-    
-    const sign = await postSign(folder);
-    return await postCloud(file, sign.data);
-  
-  }catch(error){
-      handleError(error)
-      return {
-        public_id:'/images/placeholders/meo.webp',
-        secure_url:''
-      }
-    }
- 
+  try {
+    console.log("soon", public_id);
+    const sign = await postSign(folder, public_id);
+    return await postCloud(file, sign.data, public_id);
+  } catch (error) {
+    handleError(error);
+    return {
+      public_id: "",
+      secure_url: "/images/placeholders/meo.webp",
+    };
+  }
 };

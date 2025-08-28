@@ -28,7 +28,6 @@ export default function UsersList({
   permissions,
   open,
 }: Props) {
-  console.log("users", users);
   return (
     <div className="bg-white dark:bg-neutral-900 rounded-xl shadow overflow-hidden">
       <table className="w-full">
@@ -37,133 +36,112 @@ export default function UsersList({
             <th className="px-4 py-3 text-sm font-semibold">Người dùng</th>
             <th className="px-4 py-3 text-sm font-semibold">Email</th>
             <th className="px-4 py-3 text-sm font-semibold">Vai trò</th>
-            <th className="px-4 py-3 text-sm hidden md:block font-semibold">
+            <th className="px-4 py-3 text-sm max-md:hidden font-semibold">
               Xác thực
             </th>
+            <th className="px-4 py-3 text-sm  font-semibold"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-neutral-800">
           {users.map((u: IUser) => {
             return (
-              <ContextMenu key={u._id}>
-                <ContextMenuTrigger>
-                  <tr
-                    key={u._id}
-                    className="hover:bg-gray-50 dark:hover:bg-neutral-800/40"
-                  >
-                    <td className="px-4 py-3">
-                      <div className=" flex items-center gap-3">
-                        <img
-                          src={u?.picture ?? "/images/placeholders/User.png"}
-                          alt={u.name}
-                          className="w-10 h-10  rounded-full object-cover"
-                        />
-                        <div>
-                          <div className="font-medium hidden md:flex">
-                            {u.name}
-                          </div>
-                          <div className="text-xs hidden md:block text-muted-foreground">
-                            Sđt: {u.phone ?? "-"} • Tuổi{u.age ?? "-"} tuổi •
-                            Giới tính: {u.gender ?? "-"}
-                          </div>
-                          <div className="text-xs  hidden md:blocktext-muted-foreground">
-                            địa chỉ: {u.address || "-"}
-                          </div>
-                        </div>
+              <tr
+                key={u._id}
+                className="hover:bg-gray-50 dark:hover:bg-neutral-800/40"
+              >
+                <td className="px-4 py-3">
+                  <div className=" flex items-center gap-3">
+                    <img
+                      src={u?.picture ?? "/images/placeholders/User.png"}
+                      alt={u.name}
+                      className="w-10 h-10  rounded-full object-cover"
+                    />
+                    <div>
+                      <div className="font-medium hidden md:flex">{u.name}</div>
+                      <div className="text-xs hidden md:block text-muted-foreground">
+                        Sđt: {u.phone ?? "-"} • Tuổi{u.age ?? "-"} tuổi • Giới
+                        tính: {u.gender ?? "-"}
                       </div>
-                    </td>
-                    <td className="px-4  overflow- py-3 text-sm text-muted-foreground">
-                      {u.email}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-1">
-                        {u?.role?.name ?? "Không có tên vai trò"}
+                      <div className="text-xs  hidden md:blocktext-muted-foreground">
+                        địa chỉ: {u.address || "-"}
                       </div>
-                    </td>
-                    <td className="px-4 py-3 hidden md:block">
-                      {/* emailVerifiedAt: only care if null or not */}
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          u.emailVerifiedAt
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
+                    </div>
+                  </div>
+                </td>
+                <td className="px-4  overflow- py-3 text-sm text-muted-foreground">
+                  <ContextMenu key={u._id}>
+                    <ContextMenuTrigger>{u.email}</ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem
+                        className="cursor-pointer"
+                        onClick={() =>
+                          open({
+                            type: "delete-modal",
+                            _id: u._id,
+                          })
+                        }
                       >
-                        {u.emailVerifiedAt ? "Đã xác thực" : "Chưa"}
-                      </span>
-                    </td>
-
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => {
-                            // prepare draft for edit
-                            setDraft({
-                              _id: u._id,
-                              name: u?.name || "",
-                              email: u?.email || "",
-                              provider: u?.provider || "",
-                              password: "",
-                              public_id: u.public_id || "",
-                              picture: u.picture || "",
-                              address: u.address || "",
-                              age: u.age ?? undefined,
-                              phone: u.phone || "",
-                              gender: u.gender || undefined,
-                              // convert role object to roles array of ids
-                              role: u.role._id,
-                            });
-                            open({ type: "edit-modal" });
-                          }}
-                          className="p-2 rounded hover:bg-muted"
-                          title="Sửa"
-                        >
-                          <FaEdit />
-                        </button>
-
-                        <button
-                          onClick={() =>
-                            open({ type: "delete-modal", _id: u._id })
-                          }
-                          className="p-2 rounded hover:bg-muted text-error"
-                          title="Xóa"
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </ContextMenuTrigger>
-                <ContextMenuContent>
-                  <ContextMenuItem
-                    className="cursor-pointer"
-                    onClick={() =>
-                      open({
-                        type: "delete-modal",
-                        _id: u._id,
-                      })
-                    }
+                        {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
+                          <div className=" flex justify-center space-x-2 items-center">
+                            <FaTrashCan className=" text-error cursor-pointer" />
+                            <span>Xóa</span>
+                          </div>
+                        )}
+                      </ContextMenuItem>
+                      <ContextMenuItem
+                        className="cursor-pointer"
+                        onClick={() => setDraft(u)}
+                      >
+                        {can(permissions, PERMISSIONS.USERS_PATCH) && (
+                          <div className=" flex justify-center space-x-2 items-center">
+                            <FaPencilAlt />
+                            <span>Sửa</span>
+                          </div>
+                        )}
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex flex-wrap gap-1">
+                    {u?.role?.name ?? "Không có tên vai trò"}
+                  </div>
+                </td>
+                <td className="px-4 py-3 hidden md:block">
+                  {/* emailVerifiedAt: only care if null or not */}
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      u.emailVerifiedAt
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
                   >
-                    {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
-                      <div className=" flex justify-center space-x-2 items-center">
-                        <FaTrashCan className=" text-error cursor-pointer" />
-                        <span>Xóa</span>
-                      </div>
-                    )}
-                  </ContextMenuItem>
-                  <ContextMenuItem
-                    className="cursor-pointer"
-                    onClick={() => setDraft(u)}
-                  >
-                    {can(permissions, PERMISSIONS.USERS_PATCH) && (
-                      <div className=" flex justify-center space-x-2 items-center">
-                        <FaPencilAlt />
-                        <span>Sửa</span>
-                      </div>
-                    )}
-                  </ContextMenuItem>
-                </ContextMenuContent>
-              </ContextMenu>
+                    {u.emailVerifiedAt ? "Đã xác thực" : "Chưa"}
+                  </span>
+                </td>
+
+                <td className="px-4 max-md:hidden py-3">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setDraft(u);
+                      }}
+                      className="p-2 rounded hover:bg-muted"
+                      title="Sửa"
+                    >
+                      <FaEdit />
+                    </button>
+
+                    <button
+                      onClick={() => open({ type: "delete-modal", _id: u._id })}
+                      className="p-2 rounded hover:bg-muted text-error"
+                      title="Xóa"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </td>
+              </tr>
             );
           })}
         </tbody>

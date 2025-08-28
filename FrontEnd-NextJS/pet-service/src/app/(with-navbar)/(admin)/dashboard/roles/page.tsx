@@ -65,8 +65,8 @@ export default function RolesUI() {
       searchParams.get("permissions") ?? JSON.stringify(draft.permissions)
     );
     setDraft((prev: RoleDraft) => ({ ...prev, permissions }));
-    const _id = searchParams.get("_id") ?? draft._id;
-    setDraft((prev: RoleDraft) => ({ ...prev, _id }));
+    // const _id = searchParams.get("_id") ?? draft._id;
+    // setDraft((prev: RoleDraft) => ({ ...prev, _id }));
   }, [searchParams]);
 
   const onUpdate = async () => {

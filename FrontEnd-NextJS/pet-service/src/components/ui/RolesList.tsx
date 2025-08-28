@@ -9,6 +9,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { can } from "@/lib/authSlice";
 import { PERMISSIONS } from "@/types/permissions";
 import { FaPencilAlt } from "react-icons/fa";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Role = {
   _id: string;
@@ -33,6 +34,9 @@ export default function RolesList({
   open: any;
   permissions: any;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const isUserChoosing = !!searchParams.get("role");
   if (!roles?.length) {
     return (
       <div className="rounded-xl border bg-background p-8 text-center text-sm text-muted-foreground">
@@ -50,8 +54,23 @@ export default function RolesList({
     >
       {roles.map((role, i) => (
         <ContextMenu key={role._id}>
-          <ContextMenuTrigger>
+          <ContextMenuTrigger className="relative">
             <RoleRow role={role} />
+            {isUserChoosing && (
+              <div
+                onClick={() => {
+                  const url = searchParams.get("next");
+                  const rolee = JSON.stringify({
+                    _id: role._id,
+                    name: role.name,
+                  });
+                  router.push(`${url}?role=${rolee}`);
+                }}
+                className="absolute hover:scale-125 transition-transform bg-primary-light/80 hover:bg-primary-light right-10 top-5 border rounded-3xl p-2 cursor-pointer dark:bg-primary-dark dark:hover:bg-primary-dark/80"
+              >
+                chọn
+              </div>
+            )}
           </ContextMenuTrigger>
           <ContextMenuContent>
             <ContextMenuItem

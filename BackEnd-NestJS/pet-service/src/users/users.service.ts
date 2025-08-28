@@ -238,14 +238,7 @@ export class UsersService {
     if (foundUser?.email === ADMIN_ROLE) {
       throw new BadRequestException('Cannot delete an admin');
     }
-    await this.userModel.updateOne(
-      { _id: id },
-      {
-        deletedBy: {
-          _id: user._id,
-        },
-      },
-    );
+    await this.userModel.deleteOne({ _id: id });
   }
 
   updateUserTokenAndGetPublic = async (

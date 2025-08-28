@@ -2,22 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import crypto from 'crypto';
 import { v2 as cloudinary } from 'cloudinary';
+import { openSync } from 'fs';
 @Injectable()
 export class CloudService {
   constructor(private configService: ConfigService) {}
-  // delete() {
-  //   const params = {
-  //     folder: 'zozo/services',
-  //     timestamp: 1755161843, // ví dụ; dùng số epoch giây
-  //     upload_preset: 'zozo',
-  //   };
 
-  //   const apiSecret = 'ukLKjxB0DQVetUAylEAA4Jtxj8A';
-  //   const sig = cloudinary.utils.api_sign_request(params, apiSecret);
-
-  //   console.log('SDK signature:', sig);
-  //   return sig === '8541acb3b06df5d5f121813d45b9504204c2a984';
-  // }
   delete(public_id: string) {
     cloudinary.config({
       cloud_name: this.configService.getOrThrow('CLOUDINARY_CLOUD_NAME'),
@@ -28,21 +17,39 @@ export class CloudService {
     return cloudinary.uploader.destroy(public_id);
   }
 
-  sign(folder: string) {
+  sign(folder: string, publicId?: string) {
     const timestamp = Math.floor(Date.now() / 1000);
     const upload_preset = this.configService.getOrThrow(
       'CLOUDINARY_UPLOAD_PRESET',
     );
+    // let toSign;
+    // console.log('do', publicId);
 
-    const toSign = `folder=${folder}&timestamp=${timestamp}&upload_preset=${upload_preset}`;
+    // if (publicId) {
+    //   toSign = `folder=${folder}&public_id=${publicId}&timestamp=${timestamp}&upload_preset=${upload_preset}`;
+    // }
+    // {
+    //   toSign = `folder=${folder}&timestamp=${timestamp}&upload_preset=${upload_preset}`;
+    // }
 
+    const toSign: Record<string, any> = {
+      timestamp,
+      folder,
+      upload_preset,
+    };
+    if (publicId) toSign.public_id = publicId;
+    const tosign = Object.keys(toSign)
+      .sort()
+      .map((k) => `${k}=${toSign[k]}`)
+      .join('&');
     const signature = crypto
       .createHash('sha1')
-      .update(toSign + this.configService.getOrThrow('CLOUDINARY_API_SECRET')!)
+      .update(tosign + this.configService.getOrThrow('CLOUDINARY_API_SECRET')!)
       .digest('hex');
 
     return {
       timestamp,
+      public_id: publicId,
       folder,
       signature,
       cloudName: this.configService.getOrThrow('CLOUDINARY_CLOUD_NAME'),
