@@ -19,12 +19,15 @@ import { FaCalendarDays } from "react-icons/fa6";
 import { MdHomeRepairService } from "react-icons/md";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { BiHide } from "react-icons/bi";
+import { FaArrowLeft } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function NavBar() {
   const { toggle } = useSidebar();
   const [hidden, setHidden] = useState(false);
   const [scrolling, setScrolling] = useState(false);
   const lastY = useRef(0);
+  const router = useRouter();
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const iconClass = useRef(
     `transition-transform duration-100 
@@ -77,6 +80,15 @@ export default function NavBar() {
       ].join(" ")}
     >
       <nav className=" container  pt-3  mx-auto  max-w-screen-2xl flex justify-center items-center  ">
+        <div className="fixed left-2 translate-y-0 pointer-events-auto">
+          <FaArrowLeft
+            className="hover:scale-105 transition-transform will-change-transform cursor-pointer"
+            onClick={() => {
+              router.back();
+            }}
+            size={24}
+          />
+        </div>
         <div
           className={[
             "flex  min-w-[250] pointer-events-auto max-h-[52] items-center",

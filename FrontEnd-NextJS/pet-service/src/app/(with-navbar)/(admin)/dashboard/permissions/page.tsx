@@ -1,11 +1,10 @@
 "use client";
-import Pagination from "@/components/layout/Pagination";
+
 import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import LoadingScreen from "@/components/ui/LoadingScreen";
-import { Switch } from "@/components/ui/switch";
 import { MODULES } from "@/types/back-end";
 
 import { api } from "@/utils/axiosInstance";
@@ -15,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import PermissionRow from "./PermissionRow";
+import { useRouter } from "next/navigation";
 
 interface Permission {
   _id: string;
@@ -37,6 +37,8 @@ export default function PermissionsUI() {
       return resData.data;
     },
   });
+
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [selected, setSelected] = useState<Set<string>>(() => {
@@ -46,7 +48,7 @@ export default function PermissionsUI() {
       return new Set<string>();
     }
   });
-
+  const savable = searchParams.get("next");
   const grouped = useMemo(() => {
     if (isLoading) return {};
     const modules = permissions.result.reduce((g: any, p: Permission) => {
@@ -144,6 +146,20 @@ export default function PermissionsUI() {
             </Collapsible>
           ))}
       </div>
+      {savable && (
+        <div
+          onClick={() => {
+            const permissions = JSON.stringify([...selected]);
+            const url = encodeURIComponent(permissions);
+            router.push(`${savable}&permissions=${url}`);
+          }}
+          className="  mx-auto py-2 px-3 mr-3 text-center w-[50%] 
+            dark:bg-secondary-dark dark:hover:bg-primary-dark
+        bg-primary-light/80 border cursor-pointer border-primary-dark rounded-2xl hover:scale-105 transition-transform hover:bg-primary-light"
+        >
+          Lưu
+        </div>
+      )}
 
       {/* Pagination giữ nguyên của bạn */}
       <div className="flex items-center justify-center py-2"></div>

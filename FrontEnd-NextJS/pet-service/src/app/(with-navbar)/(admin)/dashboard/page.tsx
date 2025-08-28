@@ -187,7 +187,7 @@ export default function AdminDashboardPage() {
     <div className="min-h-[60vh]   px-4 py-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl  mb-4  bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl  mb-4  bg-clip-text ">
             Bảng điều khiển quản trị
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
@@ -211,7 +211,7 @@ export default function AdminDashboardPage() {
         </h2>
         {/* filter, sort*/}
         <div className="flex justify-between">
-          <form className="space-x-2">
+          <form className=" flex items-center justify-center flex-wrap space-x-2">
             {(Object.values(IStatus) as IStatus[]).map((t) => (
               <label
                 key={t}
@@ -229,34 +229,33 @@ export default function AdminDashboardPage() {
               </label>
             ))}
           </form>
-          <div>
-            <form className="space-x-2">
-              <select
-                value={sort}
-                onChange={(e) => {
-                  setSort(e.target.value);
-                }}
-                className="rounded-2xl py-1 px-2"
-              >
-                <option value="">Sắp xếp</option>
-                <option value="date">Cũ nhất</option>
-                <option value="-date,startTime">Mới nhất</option>
-              </select>
-              <select
-                value={filterDate}
-                onChange={(e) => {
-                  setFilterDate(e.target.value);
-                }}
-                className="rounded-2xl text-center py-1 px-2"
-              >
-                <option value="">Tất cả</option>
-                <option value={"date=" + toLocalDateString(new Date())}>
-                  Hôm nay
-                </option>
-                <option value={in7day()}>Trong 7 ngày tới</option>
-              </select>
-            </form>
-          </div>
+
+          <form className=" flex flex-wrap justify-center items-center space-x-2 space-y-2 md:space-y-0">
+            <select
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value);
+              }}
+              className="rounded-2xl py-1 px-2"
+            >
+              <option value="">Sắp xếp</option>
+              <option value="date">Cũ nhất</option>
+              <option value="-date,startTime">Mới nhất</option>
+            </select>
+            <select
+              value={filterDate}
+              onChange={(e) => {
+                setFilterDate(e.target.value);
+              }}
+              className="rounded-2xl  py-1 px-2"
+            >
+              <option value="">Tất cả</option>
+              <option value={"date=" + toLocalDateString(new Date())}>
+                Hôm nay
+              </option>
+              <option value={in7day()}>Tuần tới</option>
+            </select>
+          </form>
         </div>
         {!list.length ? (
           <div className="text-center py-12">
@@ -269,7 +268,7 @@ export default function AdminDashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-2 px-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-2 md:px-10">
             {list.map((appointment: IAppointments, index: any) => {
               const status =
                 statusConfig[

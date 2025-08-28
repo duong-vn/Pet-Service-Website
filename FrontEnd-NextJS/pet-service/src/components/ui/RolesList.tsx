@@ -1,4 +1,14 @@
 import React from "react";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "./context-menu";
+import { FaTrashCan } from "react-icons/fa6";
+import { can } from "@/lib/authSlice";
+import { PERMISSIONS } from "@/types/permissions";
+import { FaPencilAlt } from "react-icons/fa";
 
 type Role = {
   _id: string;
@@ -10,7 +20,19 @@ type Role = {
   updatedAt: string;
 };
 
-export default function RolesList({ roles }: { roles: Role[] }) {
+export default function RolesList({
+  roles,
+  setDraft,
+  onDelete,
+  open,
+  permissions,
+}: {
+  roles: Role[];
+  setDraft: (any: any) => void;
+  onDelete: (_id: string) => void;
+  open: any;
+  permissions: any;
+}) {
   if (!roles?.length) {
     return (
       <div className="rounded-xl border bg-background p-8 text-center text-sm text-muted-foreground">
@@ -19,7 +41,6 @@ export default function RolesList({ roles }: { roles: Role[] }) {
     );
   }
 
-  // Khung list: 1 cột trên mobile, 2 cột từ lg trở lên
   return (
     <ul
       className="
@@ -28,13 +49,46 @@ export default function RolesList({ roles }: { roles: Role[] }) {
       "
     >
       {roles.map((role, i) => (
-        <RoleRow key={role._id} role={role} index={i} />
+        <ContextMenu key={role._id}>
+          <ContextMenuTrigger>
+            <RoleRow role={role} />
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem
+              className="cursor-pointer"
+              onClick={() =>
+                open({
+                  type: "delete-modal",
+                  _id: role._id,
+                })
+              }
+            >
+              {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
+                <div className=" flex justify-center space-x-2 items-center">
+                  <FaTrashCan className=" text-error cursor-pointer" />
+                  <span>Xóa</span>
+                </div>
+              )}
+            </ContextMenuItem>
+            <ContextMenuItem
+              className="cursor-pointer"
+              onClick={() => setDraft(role)}
+            >
+              {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
+                <div className=" flex justify-center space-x-2 items-center">
+                  <FaPencilAlt />
+                  <span>Sửa</span>
+                </div>
+              )}
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
       ))}
     </ul>
   );
 }
 
-function RoleRow({ role, index }: { role: Role; index: number }) {
+function RoleRow({ role }: { role: Role }) {
   const statusClasses = role.isActive
     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
     : "bg-muted text-muted-foreground border-border";
@@ -81,9 +135,6 @@ function RoleRow({ role, index }: { role: Role; index: number }) {
         </div>
 
         {/* Khu action ở bên phải nếu cần (Xem quyền/Sửa/Xoá) */}
-        {/* <div className="shrink-0 flex items-center gap-2">
-          <button className="text-xs underline">Xem quyền</button>
-        </div> */}
       </div>
     </li>
   );

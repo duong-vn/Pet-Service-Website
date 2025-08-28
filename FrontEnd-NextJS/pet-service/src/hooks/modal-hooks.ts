@@ -5,8 +5,8 @@ type Modal =
   | { type: "image"; src: string }
   | { type: "create-modal" }
   | { type: "update-modal"; payload: any }
-  | {type:"delete-modal"; _id:string;public_id?:string}
-  | {type:"confirm-modal"}
+  | { type: "delete-modal"; _id: string; public_id?: string }
+  | { type: "confirm-modal"; payload: any };
 
 export function useModal() {
   const [modal, setModal] = useState<Modal>({ type: null });
@@ -23,7 +23,6 @@ export function useModal() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
-
 
   const close = useCallback(() => {
     setModal({ type: null });
