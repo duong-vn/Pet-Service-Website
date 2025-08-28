@@ -14,24 +14,9 @@ interface IProps {
   serviceData?: IService;
 }
 
-export const handleNumStringForForm = async (
-  e: ChangeEvent<HTMLInputElement>,
-  setValue: (value: string) => void,
-  setLoading: (value: boolean) => void
-) => {
-  if (e.target.value === "") {
-    setValue(e.target.value);
-    return;
-  }
-  if (!isNumericString(e.target.value)) {
-    toast.error("Phải nhập chuỗi số");
-
-    setLoading(true);
-    await delay(1000);
-    setLoading(false);
-  } else {
-    setValue(e.target.value);
-  }
+export const handleNumStringForForm = (e: ChangeEvent<HTMLInputElement>) => {
+  const result = e.target.value.replace(/\D+/g, "");
+  return result;
 };
 
 export default function ServiceModal({ close, serviceData }: IProps) {
@@ -139,7 +124,6 @@ export default function ServiceModal({ close, serviceData }: IProps) {
         className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
         onClick={close}
       />
 
@@ -168,7 +152,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
               <span className="text-sm">Tên dịch vụ</span>
               <input
                 disabled={loading}
-                className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
+                className="mt-1 w-full rounded-xl bg-white border p-2 dark:bg-neutral-800"
                 placeholder="Ví dụ: Tắm cơ bản"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -194,13 +178,12 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                 <span className="text-sm">1440 = 1 ngày</span>
                 <input
                   type="text"
-                  min={0}
                   disabled={loading}
-                  className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
+                  className="mt-1 w-full rounded-xl  border p-2 "
                   value={duration}
-                  onChange={async (e) =>
-                    await handleNumStringForForm(e, setDuration, setLoading)
-                  }
+                  onChange={(e) => {
+                    setDuration(handleNumStringForForm(e));
+                  }}
                   required
                 />
               </label>
@@ -228,11 +211,9 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                   type="text"
                   disabled={loading}
                   min={0}
-                  className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
+                  className="mt-1 w-full rounded-xl border p-2 bg-white dark:bg-neutral-800"
                   value={priceStart}
-                  onChange={async (e) =>
-                    await handleNumStringForForm(e, setPriceStart, setLoading)
-                  }
+                  onChange={(e) => setPriceStart(handleNumStringForForm(e))}
                   required
                 />
               </label>
@@ -242,11 +223,9 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                   type="text"
                   min={0}
                   disabled={loading}
-                  className="mt-1 w-full rounded-xl border p-2 dark:bg-neutral-800"
+                  className="mt-1 w-full rounded-xl bg-white border p-2 dark:bg-neutral-800"
                   value={priceEnd}
-                  onChange={async (e) =>
-                    await handleNumStringForForm(e, setPriceEnd, setLoading)
-                  }
+                  onChange={(e) => setPriceEnd(handleNumStringForForm(e))}
                   required
                 />
               </label>

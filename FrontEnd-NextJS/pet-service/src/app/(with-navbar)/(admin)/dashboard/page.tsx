@@ -40,6 +40,12 @@ import {
 } from "@/apiServices/appointments/services";
 import { toast } from "sonner";
 import DeleteModal from "@/components/ui/DeleteModal";
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+} from "@/components/ui/context-menu";
 
 const statusConfig: Record<
   IStatus,
@@ -275,35 +281,49 @@ export default function AdminDashboardPage() {
                 ];
 
               return (
-                <div key={appointment._id} className="relative z-20">
-                  <AppointmentCard
-                    appointment={appointment}
-                    index={index}
-                    status={status}
-                  />
-                  {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
-                    <FaTrashCan
-                      className="absolute top-20 right-5 text-error cursor-pointer"
+                <ContextMenu key={appointment._id}>
+                  <ContextMenuTrigger>
+                    <AppointmentCard
+                      appointment={appointment}
+                      index={index}
+                      status={status}
+                    />
+                  </ContextMenuTrigger>
+                  <ContextMenuContent>
+                    <ContextMenuItem
+                      className="cursor-pointer"
                       onClick={() =>
                         open({
                           type: "delete-modal",
                           _id: appointment._id,
                         })
                       }
-                    />
-                  )}
-                  {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
-                    <FaPencilAlt
-                      className="absolute bottom-20 right-5  cursor-pointer"
+                    >
+                      {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
+                        <div className=" flex justify-center space-x-2 items-center">
+                          <FaTrashCan className=" text-error cursor-pointer" />
+                          <span>Xóa</span>
+                        </div>
+                      )}
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                      className="cursor-pointer"
                       onClick={() =>
                         open({
                           type: "update-modal",
                           payload: { appointment, status },
                         })
                       }
-                    />
-                  )}
-                </div>
+                    >
+                      {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
+                        <div className=" flex justify-center space-x-2 items-center">
+                          <FaPencilAlt />
+                          <span>Sửa</span>
+                        </div>
+                      )}
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
               );
             })}
           </div>

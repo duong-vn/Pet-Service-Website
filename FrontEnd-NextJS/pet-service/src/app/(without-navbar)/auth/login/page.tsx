@@ -77,7 +77,7 @@ export default function LoginPage() {
   if (authenticated === "unauthenticated") {
     return (
       <main>
-        <div className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 text-primary-light">
+        <div className="min-h-[100dvh] flex items-center flex-col pt-10 px-4 ">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -111,29 +111,26 @@ export default function LoginPage() {
               ----------hoặc----------
             </div>
 
-            <form
-              className="space-y-2 text-primary-light"
-              onSubmit={handleSubmit}
-            >
-              <label className="flex flex-col">
+            <form className="space-y-2" onSubmit={handleSubmit}>
+              <label className="flex text-white flex-col">
                 Email:
                 <input
                   type="email"
                   required
                   disabled={loading}
-                  className="rounded-xl mt-1 p-2 "
+                  className="rounded-xl bg-white mt-1 p-2 "
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </label>
 
-              <label className="flex flex-col">
+              <label className="flex flex-col text-white">
                 Password:
                 <div className="relative mt-1">
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    className="rounded-xl w-full p-2 font-sans font-semibold"
+                    className="rounded-xl w-full bg-white p-2 font-sans font-semibold"
                     value={password}
                     disabled={loading}
                     onChange={(e) => setPassword(e.target.value)}

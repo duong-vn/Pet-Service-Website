@@ -184,9 +184,7 @@ export default function PriceRuleModal({
                 min="0"
                 max="99"
                 value={minWeight}
-                onChange={async (e) =>
-                  await handleNumStringForForm(e, setMinWeight, setIsLoading)
-                }
+                onChange={(e) => setMinWeight(handleNumStringForForm(e))}
                 className={`w-full bg-white px-4 py-3 rounded-xl border transition-colors 
                   dark:text-white
                      border-gray-300 dark:border-neutral-600  dark:bg-neutral-800
@@ -205,7 +203,7 @@ export default function PriceRuleModal({
                 min="1"
                 max="100"
                 value={maxWeight}
-                onChange={(e) => setMaxWeight(e.target.value)}
+                onChange={(e) => setMaxWeight(handleNumStringForForm(e))}
                 className={`w-full px-4 py-3 rounded-xl border bg-white
                       dark:text-white dark:bg-neutral-800
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
