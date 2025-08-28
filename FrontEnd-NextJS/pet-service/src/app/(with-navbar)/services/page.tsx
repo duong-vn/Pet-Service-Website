@@ -140,8 +140,8 @@ export default function ServicesUI() {
         </div>
 
         {/* Bộ lọc dạng thanh ngang */}
-        <div className="w-full overflow-x-auto mb-4 ">
-          <div className="flex min-h-16 px-3 gap-6 items-center justify-between py-2  bg-white/80 dark:bg-white/10 rounded-xl border border-black/10 dark:border-white/10 shadow">
+        <div className="w-full  mb-4 ">
+          <div className="flex flex-wrap min-h-16 px-3 gap-6 items-center justify-between py-2  bg-white/80 dark:bg-white/10 rounded-xl border border-black/10 dark:border-white/10 shadow">
             {/* Pet filter */}
             <div className="flex gap-4 items-center">
               <span className="font-semibold text-sm">Thú cưng:</span>
@@ -175,7 +175,7 @@ export default function ServicesUI() {
               </label>
             </div>
             {/* Service type filter */}
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 flex-wrap items-center">
               <span className="font-semibold text-sm">Loại dịch vụ:</span>
               {[
                 ServiceType.BATH,

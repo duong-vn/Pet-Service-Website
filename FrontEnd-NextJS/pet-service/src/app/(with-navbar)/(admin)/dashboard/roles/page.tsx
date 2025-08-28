@@ -4,8 +4,8 @@ import LoadingScreen from "@/components/ui/LoadingScreen";
 import RolesList from "@/components/ui/RolesList";
 import { api } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "@/hooks/session-hooks";
 // chỉnh path đúng file hook của bạn
 
@@ -25,7 +25,7 @@ const DEFAULT_DRAFT: RoleDraft = {
 
 export default function RolesUI() {
   const router = useRouter();
-
+  const searchParams = useSearchParams();
   // --- form nháp: lưu vào sessionStorage ---
   const [draft, setDraft, clearDraft] = useSession<RoleDraft>(
     "role_form",
@@ -43,6 +43,13 @@ export default function RolesUI() {
       return resData.data;
     },
   });
+
+  useEffect(() => {
+    const permissions = JSON.parse(
+      searchParams.get("permissions") ?? JSON.stringify(draft.permissions)
+    );
+    setDraft((prev: RoleDraft) => ({ ...prev, permissions }));
+  }, [searchParams]);
 
   if (isLoading) {
     return (
