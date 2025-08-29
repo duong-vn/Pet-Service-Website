@@ -325,7 +325,6 @@ export default function AdminDashboardPage() {
       </div>
       <Pagination
         current={appointments?.meta.current}
-        limit={appointments?.meta.limit}
         setParams={setParams}
         totalItems={appointments?.meta.total}
         totalPage={appointments?.meta.pages}

@@ -237,7 +237,6 @@ export default function RolesUI() {
         <RolesList
           roles={roles.result}
           setDraft={updateDraft}
-          onDelete={onDelete}
           permissions={userPermissions}
           open={open}
         />
@@ -247,7 +246,6 @@ export default function RolesUI() {
       <div>
         <Pagination
           current={roles.meta.current}
-          limit={roles.meta.pageSize}
           setParams={setParams}
           totalItems={roles.meta.total}
           totalPage={roles.meta.pages}
