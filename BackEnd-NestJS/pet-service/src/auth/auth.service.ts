@@ -72,7 +72,10 @@ export class AuthService {
     const refreshCookieOpts = {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
-      sameSite: 'none' as const,
+      sameSite:
+        this.configService.get('NODE_ENV') === 'production'
+          ? ('none' as const)
+          : ('lax' as const),
       path: '/api/auth/refresh',
       maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
     };
@@ -118,7 +121,10 @@ export class AuthService {
     const refreshCookieOpts = {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
-      sameSite: 'none' as const,
+      sameSite:
+        this.configService.get('NODE_ENV') === 'production'
+          ? ('none' as const)
+          : ('lax' as const),
       path: '/api/auth/refresh',
       maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
     };
@@ -148,7 +154,6 @@ export class AuthService {
     if (user && user.password) {
       const isValid = await this.userService.isMatchHashed(pass, user.password);
       if (isValid) {
-        // console.log('>>>role', role, 'type of role', typeof role);
         return user;
       } else {
         throw new BadRequestException('Sai thông tin email hoặc mật khẩuu');
@@ -256,7 +261,10 @@ export class AuthService {
       const refreshCookieOpts = {
         httpOnly: true,
         secure: this.configService.get('NODE_ENV') === 'production',
-        sameSite: 'none' as const,
+        sameSite:
+          this.configService.get('NODE_ENV') === 'production'
+            ? ('none' as const)
+            : ('lax' as const),
         path: '/api/auth/refresh',
         maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
       };
@@ -284,16 +292,7 @@ export class AuthService {
         },
       };
     } catch (error) {
-      const refreshCookieOpts = {
-        httpOnly: true,
-        secure: this.configService.get('NODE_ENV') === 'production',
-        sameSite: 'none' as const,
-        path: '/api/auth/refresh',
-        maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
-      };
-      res.clearCookie('refresh_token', { ...refreshCookieOpts });
-      console.log('deleted' + error.message);
-      throw new UnauthorizedException('deleted lols 2' + error.message);
+      throw new UnauthorizedException(error.message);
     }
   }
   async logout(res: Response, user: IUser) {
@@ -301,10 +300,14 @@ export class AuthService {
       const refreshCookieOpts = {
         httpOnly: true,
         secure: this.configService.get('NODE_ENV') === 'production',
-        sameSite: 'none' as const,
+        sameSite:
+          this.configService.get('NODE_ENV') === 'production'
+            ? ('none' as const)
+            : ('lax' as const),
         path: '/api/auth/refresh',
         maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
       };
+
       res.clearCookie('refresh_token', { ...refreshCookieOpts });
       await this.userService.updateUserTokenAndGetPublic(
         null,

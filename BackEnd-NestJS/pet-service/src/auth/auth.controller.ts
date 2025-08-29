@@ -68,7 +68,6 @@ export class AuthController {
   @HttpCode(200)
   refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refresh_token = req.cookies['refresh_token'];
-
     return this.authService.processNewToken(refresh_token, res);
   }
 

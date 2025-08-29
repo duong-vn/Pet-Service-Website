@@ -19,7 +19,6 @@ export const getUser = async (): Promise<IUser> => {
   const res = await api.get<ApiResponse<IUser>>("/api/auth/get-user");
   const user: IUser = res.data.data;
 
-  console.log("bootstrap user", user);
   return user;
 };
 
@@ -31,7 +30,7 @@ export const handleGoogleLogin = async (
     { id_token },
     { withCredentials: true }
   );
-  console.log(login);
+
   return login.data;
 };
 

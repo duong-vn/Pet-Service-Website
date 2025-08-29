@@ -50,12 +50,14 @@ export default function ServiceCard({
           <Link
             href={`/services/${_id}`}
             className="text-primary-dark dark:text-primary-light text-sm underline-offset-4 hover:underline"
+            prefetch
           >
             Xem chi tiết
           </Link>
           <Link
             href={`/appointments?service=${_id}`}
             className="rounded-xl bg-primary-dark dark:bg-primary-light text-white dark:text-black px-4 py-2 text-sm font-medium hover:opacity-90 transition"
+            prefetch
           >
             Đặt lịch
           </Link>

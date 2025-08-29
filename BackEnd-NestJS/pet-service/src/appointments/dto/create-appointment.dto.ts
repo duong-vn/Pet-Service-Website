@@ -66,7 +66,8 @@ export class CreateAppointmentDto {
 
   @IsNotEmpty({ message: 'Price is required' })
   price: number | string;
-
+  @IsNotEmpty({ message: 'Phone is required' })
+  phone: string;
   @IsOptional()
   @IsString({ message: 'note phải là chuỗi.' })
   @MaxLength(200, { message: 'note tối đa 200 ký tự.' })

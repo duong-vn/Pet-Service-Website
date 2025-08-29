@@ -57,13 +57,20 @@ export class UsersService {
 
   async create(dto: CreateUserDto | RegisterUserDto) {
     const hashedPassword = this.getHash(dto.password);
-    const role = await this.roleModel
-      .findOne({ name: USER_ROLE })
-      .select('_id');
+    const { role } = dto;
+
+    let newRole;
+    if (!role) {
+      newRole = (await this.roleModel
+        .findOne({ name: USER_ROLE })
+        .select('_id')) as any;
+    } else {
+      newRole = role;
+    }
 
     let newUser = await this.userModel.create({
       ...dto,
-      role,
+      role: newRole,
       password: hashedPassword,
       emailVerifiedAt: null,
       provider: 'local',
@@ -87,10 +94,11 @@ export class UsersService {
       .find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .select('-password')
+      .select(['-password', '-refreshToken'])
       // @ts-ignore: Unreachable code error
       .sort(sort)
       .populate(population)
+      .populate({ path: 'role', select: ['name'] })
       .exec();
 
     return {
@@ -143,7 +151,13 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto, user: IUser) {
-    // return `This action updates a #${id} user`;
+    if (
+      updateUserDto &&
+      updateUserDto.password &&
+      updateUserDto?.password?.trim().length > 0
+    ) {
+      updateUserDto.password = this.getHash(updateUserDto.password!);
+    }
     checkMongoId(id);
 
     return await this.userModel.updateOne(
@@ -230,14 +244,7 @@ export class UsersService {
     if (foundUser?.email === ADMIN_ROLE) {
       throw new BadRequestException('Cannot delete an admin');
     }
-    await this.userModel.updateOne(
-      { _id: id },
-      {
-        deletedBy: {
-          _id: user._id,
-        },
-      },
-    );
+    await this.userModel.deleteOne({ _id: id });
   }
 
   updateUserTokenAndGetPublic = async (

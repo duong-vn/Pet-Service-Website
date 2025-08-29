@@ -25,6 +25,20 @@ import { FaPencilAlt } from "react-icons/fa";
 import DeleteModal from "@/components/ui/DeleteModal";
 import { deleteServices } from "@/apiServices/services/services";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 
 const src2 = "/images/ui/bang_gia_tam.jpg";
 const src1 = "/images/ui/bang_gia_khach_san.jpg";
@@ -101,170 +115,106 @@ export default function ServicesUI() {
   };
 
   return (
-    <div className="pb-16">
-      {/* Hero đầu */}
-      <section className="mx-auto mt-6 w-[92%] max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="grid grid-cols-1 gap-4 md:grid-cols-3"
-        >
-          {/* Header chính - Tiêu đề + Nút tạo dịch vụ */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex  flex-col justify-center items-center  rounded-3xl bg-gradient-to-br from-secondary-light to-primary-light p-8 text-secondary-dark shadow-lg dark:from-primary-dark dark:to-secondary-dark dark:text-primary-light"
-          >
-            <div className="text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">Dịch vụ</h1>
-              <p className="text-lg md:text-xl opacity-80 mb-6">
-                Chăm sóc thú cưng chuyên nghiệp
-              </p>
-            </div>
-
+    <div className="pb-8">
+      <section className="mx-auto mt-4 w-[96%] max-w-7xl">
+        {/*tiêu đề */}
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold">Dịch vụ</h1>
+            <p className="text-base md:text-lg opacity-80">
+              Chăm sóc thú cưng chuyên nghiệp
+            </p>
             {can(permissions, PERMISSIONS.SERVICES_POST) && (
               <button
                 onClick={() => open({ type: "create-modal" })}
-                className="group relative px-4 py-4 bg-white/90 dark:bg-black/90 backdrop-blur rounded-2xl border-2 border-transparent hover:border-secondary-dark dark:hover:border-primary-light transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="px-4 py-2 bg-primary-light dark:bg-primary-dark text-white rounded-xl font-semibold shadow hover:scale-105 transition-all"
               >
-                <span className="text-base font-semibold text-secondary-dark dark:text-primary-light group-hover:text-secondary-dark dark:group-hover:text-primary-light transition-colors">
-                  + Tạo dịch vụ mới
-                </span>
+                + Tạo dịch vụ mới
               </button>
             )}
-          </motion.div>
-
-          {/* Ảnh lớn bên phải - Khách sạn */}
-          <div
-            className="relative overflow-hidden rounded-3xl md:h-64 xl:h-72 cursor-pointer group"
-            onClick={() => open({ type: "image", src: src1 })}
-          >
-            <Image
-              src={src1}
-              alt="Dịch vụ chăm sóc thú cưng"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              priority
-            />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
-            <div className="absolute bottom-4 left-4 text-white drop-shadow-lg">
-              <h2 className="text-xl md:text-2xl font-bold mb-1">
-                Khách sạn thú cưng
-              </h2>
-              <p className="text-sm opacity-90">
-                Theo dõi 24/7, chăm sóc tận tâm
-              </p>
-            </div>
           </div>
 
-          {/* Ảnh nhỏ bên phải - Tắm gội */}
-          <div
-            className="relative h-56 overflow-hidden rounded-3xl md:h-64 xl:h-72 cursor-pointer group"
-            onClick={() => open({ type: "image", src: src2 })}
-          >
-            <Image
-              src={src2}
-              alt="Dịch vụ tắm gội"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              priority
-            />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
-            <div className="absolute bottom-4 left-4 text-white drop-shadow-lg">
-              <h3 className="text-lg font-bold text-white md:text-xl mb-1">
-                Tắm & Tỉa lông
-              </h3>
-              <p className="text-sm opacity-90">Sạch thơm, khô ráo, đẹp lông</p>
+          {/* xem bảng giá  */}
+
+          {/* Tạo đvu  */}
+        </div>
+
+        {/* Bộ lọc dạng thanh ngang */}
+        <div className="w-full  mb-4 ">
+          <div className="flex flex-wrap min-h-16 px-3 gap-6 items-center justify-between py-2  bg-white/80 dark:bg-white/10 rounded-xl border border-black/10 dark:border-white/10 shadow">
+            {/* Pet filter */}
+            <div className="flex gap-4 items-center">
+              <span className="font-semibold text-sm">Thú cưng:</span>
+              <label className="inline-flex items-center gap-1 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!petFilter[PetType.DOG]}
+                  onChange={(e) =>
+                    setPetFilter((f) => ({
+                      ...f,
+                      [PetType.DOG]: e.target.checked,
+                    }))
+                  }
+                  className="size-4"
+                />
+                <span>Chó</span>
+              </label>
+              <label className="inline-flex items-center gap-1 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!petFilter[PetType.CAT]}
+                  onChange={(e) =>
+                    setPetFilter((f) => ({
+                      ...f,
+                      [PetType.CAT]: e.target.checked,
+                    }))
+                  }
+                  className="size-4"
+                />
+                <span>Mèo</span>
+              </label>
             </div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Thanh tiêu đề + nút tạo dịch vụ */}
-
-      {/* Bộ lọc + danh sách dịch vụ */}
-      <section className="mx-auto mt-8 w-[92%] max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur p-4"
-        >
-          <h3 className="text-lg font-semibold mb-3">Bộ lọc</h3>
-          <div className="grid gap-3 md:grid-cols-2">
-            <div>
-              <p className="text-sm opacity-80 mb-2">Thú cưng</p>
-              <div className="flex flex-wrap gap-4">
-                <label className="inline-flex items-center gap-2 cursor-pointer">
+            {/* Service type filter */}
+            <div className="flex gap-4 flex-wrap items-center">
+              <span className="font-semibold text-sm">Loại dịch vụ:</span>
+              {[
+                ServiceType.BATH,
+                ServiceType.GROOMING,
+                ServiceType.HOTEL,
+                ServiceType.OTHER,
+              ].map((t) => (
+                <label
+                  key={t}
+                  className="inline-flex items-center gap-1 cursor-pointer"
+                >
                   <input
                     type="checkbox"
-                    checked={!!petFilter[PetType.DOG]}
+                    checked={!!typeFilter[t]}
                     onChange={(e) =>
-                      setPetFilter((f) => ({
+                      setTypeFilter((f) => ({
                         ...f,
-                        [PetType.DOG]: e.target.checked,
+                        [t]: e.target.checked,
                       }))
                     }
                     className="size-4"
                   />
-                  <span>Chó</span>
+                  <span>
+                    {t === ServiceType.BATH && "Tắm"}
+                    {t === ServiceType.GROOMING && "Tỉa lông"}
+                    {t === ServiceType.HOTEL && "Khách sạn"}
+                    {t === ServiceType.OTHER && "Khác"}
+                  </span>
                 </label>
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={!!petFilter[PetType.CAT]}
-                    onChange={(e) =>
-                      setPetFilter((f) => ({
-                        ...f,
-                        [PetType.CAT]: e.target.checked,
-                      }))
-                    }
-                    className="size-4"
-                  />
-                  <span>Mèo</span>
-                </label>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm opacity-80 mb-2">Loại dịch vụ</p>
-              <div className="flex flex-wrap gap-4">
-                {[
-                  ServiceType.BATH,
-                  ServiceType.GROOMING,
-                  ServiceType.HOTEL,
-                  ServiceType.OTHER,
-                ].map((t) => (
-                  <label
-                    key={t}
-                    className="inline-flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={!!typeFilter[t]}
-                      onChange={(e) =>
-                        setTypeFilter((f) => ({ ...f, [t]: e.target.checked }))
-                      }
-                      className="size-4"
-                    />
-                    <span>
-                      {t === ServiceType.BATH && "Tắm"}
-                      {t === ServiceType.GROOMING && "Tỉa lông"}
-                      {t === ServiceType.HOTEL && "Khách sạn"}
-                      {t === ServiceType.OTHER && "Khác"}
-                    </span>
-                  </label>
-                ))}
-              </div>
+              ))}
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        <div className="mt-6">
+        {/* Danh sách dịch vụ luôn hiển thị phía trên */}
+        <div className="mb-6">
           {isLoading ? (
-            <div className="min-h-[50vh] flex justify-center items-center">
-              <LoadingScreen />{" "}
+            <div className="min-h-[40vh] flex justify-center items-center">
+              <LoadingScreen />
             </div>
           ) : (
             <>
@@ -274,23 +224,25 @@ export default function ServicesUI() {
                     whileHover={{ scale: 1.02 }}
                     key={service._id}
                   >
-                    <div className="relative">
-                      <ServiceCard
-                        img={service.picture}
-                        title={service.name}
-                        priceStart={
-                          service.priceStart.toLocaleString("vi-VN") + "đ"
-                        }
-                        priceEnd={
-                          service.priceEnd.toLocaleString("vi-VN") + "đ"
-                        }
-                        items={service.description}
-                        icon={iconOf(service.type)}
-                        _id={service._id}
-                      />
-                      {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
-                        <FaTrashCan
-                          className="absolute top-5 right-5 text-error cursor-pointer"
+                    <ContextMenu>
+                      <ContextMenuTrigger>
+                        <ServiceCard
+                          img={service.picture}
+                          title={service.name}
+                          priceStart={
+                            service.priceStart.toLocaleString("vi-VN") + "đ"
+                          }
+                          priceEnd={
+                            service.priceEnd.toLocaleString("vi-VN") + "đ"
+                          }
+                          items={service.description}
+                          icon={iconOf(service.type)}
+                          _id={service._id}
+                        />
+                      </ContextMenuTrigger>
+                      <ContextMenuContent>
+                        <ContextMenuItem
+                          className="cursor-pointer"
                           onClick={() =>
                             open({
                               type: "delete-modal",
@@ -298,17 +250,32 @@ export default function ServicesUI() {
                               public_id: service.public_id,
                             })
                           }
-                        />
-                      )}
-                      {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
-                        <FaPencilAlt
-                          className="absolute bottom-16 right-5  cursor-pointer"
+                        >
+                          {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
+                            <div className=" flex justify-center space-x-2 items-center">
+                              <FaTrashCan className=" text-error cursor-pointer" />
+                              <span>Xóa</span>
+                            </div>
+                          )}
+                        </ContextMenuItem>
+                        <ContextMenuItem
+                          className="cursor-pointer"
                           onClick={() =>
-                            open({ type: "update-modal", payload: service })
+                            open({
+                              type: "update-modal",
+                              payload: service,
+                            })
                           }
-                        />
-                      )}
-                    </div>
+                        >
+                          {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
+                            <div className=" flex justify-center space-x-2 items-center">
+                              <FaPencilAlt />
+                              <span>Sửa</span>
+                            </div>
+                          )}
+                        </ContextMenuItem>
+                      </ContextMenuContent>
+                    </ContextMenu>
                   </motion.article>
                 ))}
               </div>
@@ -322,31 +289,84 @@ export default function ServicesUI() {
             </>
           )}
         </div>
-      </section>
 
-      {/* Modal tạo dịch vụ */}
-      <AnimatePresence>
-        {isOpen("create-modal") && (
-          <Portal>
-            <ServiceModal close={close} />
-          </Portal>
+        <Carousel className="">
+          <CarouselContent className="w-60">
+            <CarouselItem className="">
+              {" "}
+              <div
+                className="relative overflow-hidden rounded-2xl h-40 cursor-pointer group"
+                onClick={() => open({ type: "image", src: src2 })}
+              >
+                <Image
+                  src={src2}
+                  alt="Dịch vụ tắm gội"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  priority
+                />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                <div className="absolute bottom-2 left-2 text-white drop-shadow-lg">
+                  <h3 className="text-base font-bold mb-1">Tắm & Tỉa lông</h3>
+                  <p className="text-xs opacity-90">
+                    Sạch thơm, khô ráo, đẹp lông
+                  </p>
+                </div>
+              </div>
+            </CarouselItem>
+            <CarouselItem>
+              {" "}
+              <div
+                className="relative overflow-hidden rounded-2xl h-40 cursor-pointer group"
+                onClick={() => open({ type: "image", src: src1 })}
+              >
+                <Image
+                  src={src1}
+                  alt="Dịch vụ chăm sóc thú cưng"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  priority
+                />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                <div className="absolute bottom-2 left-2 text-white drop-shadow-lg">
+                  <h2 className="text-lg font-bold mb-1">Khách sạn thú cưng</h2>
+                  <p className="text-xs opacity-90">
+                    Theo dõi 24/7, chăm sóc tận tâm
+                  </p>
+                </div>
+              </div>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+
+        {/* Modal tạo dịch vụ */}
+        <AnimatePresence>
+          {isOpen("create-modal") && (
+            <Portal>
+              <ServiceModal close={close} />
+            </Portal>
+          )}
+          {modal.type === "delete-modal" && (
+            <Portal>
+              <DeleteModal
+                _id={modal._id}
+                onConfirm={deleteService}
+                onClose={close}
+              />
+            </Portal>
+          )}
+          {modal.type === "update-modal" && (
+            <Portal>
+              <ServiceModal close={close} serviceData={modal.payload} />
+            </Portal>
+          )}
+        </AnimatePresence>
+        {modal.type == "image" && (
+          <PreviewImage src={modal.src} close={close} />
         )}
-        {modal.type === "delete-modal" && (
-          <Portal>
-            <DeleteModal
-              _id={modal._id}
-              onConfirm={deleteService}
-              onClose={close}
-            />
-          </Portal>
-        )}
-        {modal.type === "update-modal" && (
-          <Portal>
-            <ServiceModal close={close} serviceData={modal.payload} />
-          </Portal>
-        )}
-      </AnimatePresence>
-      {modal.type == "image" && <PreviewImage src={modal.src} close={close} />}
+      </section>
     </div>
   );
 }

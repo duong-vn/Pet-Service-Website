@@ -16,27 +16,29 @@ import { MdHomeRepairService } from "react-icons/md";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { logout } from "@/apiServices/auth/services";
-import { clearAuth } from "@/lib/authSlice";
+import { can, clearAuth } from "@/lib/authSlice";
 import { useState } from "react";
-import LoadingScreen from "../ui/LoadingScreen";
-import { setTimeout } from "timers/promises";
-import { delay } from "@/apiServices/services";
+import { PERMISSIONS } from "@/types/permissions";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
   const { isOpen, close } = useSidebar();
   const authenticated = useAppSelector((s) => s.auth.authenticated);
+  const permissions = useAppSelector((s) => s.auth.user?.permissions);
   const [loading, setLoading] = useState(false);
-  const dispatch = useAppDispatch();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
   const handleLogout = async () => {
     setLoading(true);
     const res = await logout();
     if (res) dispatch(clearAuth());
 
     setLoading(false);
+    router.refresh();
   };
-
+  window.location.href;
   const handleClose = () => {
     close();
   };
@@ -74,7 +76,7 @@ export default function Sidebar() {
         {loading ? (
           <div className="w-5 h-5 my-10 mx-auto rounded-full border border-t-transparent animate-spin"></div>
         ) : (
-          <div className="p-6 flex items-center  border-background-light dark:border-neutral-dark">
+          <div className="p-6 flex items-center justify-center border-background-light dark:border-neutral-dark">
             <UserPill />
           </div>
         )}
@@ -121,6 +123,16 @@ export default function Sidebar() {
             </div>
           )}
         </div>
+        {can(permissions, PERMISSIONS.APPOINTMENTS_PATCH) && (
+          <Link
+            prefetch
+            href="/dashboard"
+            className="flex items-end p-5 py-5 transition-transform my-auto hover:translate-x-2  dark:hover:bg-primary-dark hover:bg-primary-light rounded-3xl"
+          >
+            <MdOutlineDashboardCustomize className="w-5 h-5 mr-3 text-black" />
+            <span className="font-medium text-black">Dashboard</span>
+          </Link>
+        )}
       </div>
     </>
   );

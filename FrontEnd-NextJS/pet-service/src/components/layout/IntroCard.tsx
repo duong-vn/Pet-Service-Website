@@ -8,7 +8,7 @@ export default function IntroCard() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ amount: 0.3, once: true }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="w-full max-w-7xl mx-auto px-4 -mt-16 relative z-10"
+      className="w-full max-w-7xl mx-auto md:px-4 md:-mt-16 relative z-10"
     >
       <div className="relative overflow-hidden rounded-3xl xl:rounded-[60px] bg-gradient-to-br from-neutral-light via-white to-neutral-light dark:from-secondary-dark dark:via-neutral-900 dark:to-secondary-dark shadow-2xl border border-gray-100/50 dark:border-neutral-700/50">
         <div className="relative p-8 md:p-10 xl:p-16">
@@ -91,7 +91,7 @@ export default function IntroCard() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="relative"
               >
-                <div className="relative overflow-hidden rounded-[30px] xl:rounded-full shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(255,255,255,0.1)]">
+                <div className="relative overflow-hidden rounded-full shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(255,255,255,0.1)]">
                   <Image
                     src="/images/ui/dog_showering.webp"
                     alt="Chó đang được tắm rửa tại ZOZO"

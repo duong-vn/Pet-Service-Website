@@ -36,7 +36,7 @@ export class ServicesService {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    console.log(filter);
+
     const defaultLimit = limit ?? 10;
     const offset = (current - 1) * defaultLimit;
 

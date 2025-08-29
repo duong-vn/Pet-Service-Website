@@ -9,7 +9,7 @@ import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function ServicePage() {
   const { _id } = useParams<{ _id: string }>();
-  console.log(_id);
+
   const { data, isLoading, isError, error } = useQuery({
     enabled: !!_id,
     queryFn: async () => {

@@ -31,8 +31,42 @@ export interface IService {
   type: ServiceType;
   public_id: string;
   variant: Variant;
-  createdAt:Date;
-  updatedAt:Date;
-  rules?:PriceRule[]
+  createdAt: Date;
+  updatedAt: Date;
+  rules?: PriceRule[];
 }
 
+export enum IStatus {
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  COMPLETED = "COMPLETED",
+  CANCELED = "CANCELED",
+}
+
+export enum MODULES {
+  USERS = "USERS",
+  SERVICES = "SERVICES",
+  PRICERULES = "PRICE-RULES",
+  ROLES = "ROLES",
+  PERMISSIONS = "PERMISSIONS",
+  APPOINTMENTS = "APPOINTMENTS",
+}
+
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  age: string;
+  picture: string;
+  gender: string;
+  address: String;
+  phone: string;
+  public_id: string;
+  role: {
+    _id: string;
+    name: string;
+  };
+  createdAt: Date;
+  provider: string;
+  emailVerifiedAt: Date | null;
+}

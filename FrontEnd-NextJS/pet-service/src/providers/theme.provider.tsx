@@ -7,7 +7,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       attribute="class" // thêm class 'dark' lên <html>
       defaultTheme="system" // theo hệ điều hành
       enableSystem
-      enableColorScheme
     >
       {children}
     </NextThemesProvider>

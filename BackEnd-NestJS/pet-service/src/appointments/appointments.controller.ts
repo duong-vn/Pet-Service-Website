@@ -14,7 +14,7 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import type { IUser } from 'src/users/users.interface';
-import { CanDelete } from 'src/core/service';
+import { CanDelete, CanPatch } from 'src/core/service';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -46,7 +46,7 @@ export class AppointmentsController {
   findOne(@Param('id') id: string) {
     return this.appointmentsService.findOne(id);
   }
-
+  @CanPatch('appointments')
   @Patch('status/:id')
   @HttpCode(200)
   update(

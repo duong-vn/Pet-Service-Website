@@ -42,19 +42,16 @@ export default function PriceRuleModal({
   const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = (): boolean => {
-    // Validate name
     if (!name.trim()) {
       toast.error("Tên gói không được để trống");
       return false;
     }
 
-    // Validate minWeight
     if (Number(minWeight) < 0) {
       toast.error("Cân nặng tối thiểu không được âm");
       return false;
     }
 
-    // Validate maxWeight
     if (Number(maxWeight) <= Number(minWeight)) {
       toast.error("Cân nặng tối đa phải lớn hơn tối thiểu");
       return false;
@@ -63,7 +60,6 @@ export default function PriceRuleModal({
       return false;
     }
 
-    // Validate price
     if (typeof price === "number" && price < 0) {
       toast.error("Giá không được âm");
       return false;
@@ -184,9 +180,7 @@ export default function PriceRuleModal({
                 min="0"
                 max="99"
                 value={minWeight}
-                onChange={async (e) =>
-                  await handleNumStringForForm(e, setMinWeight, setIsLoading)
-                }
+                onChange={(e) => setMinWeight(handleNumStringForForm(e))}
                 className={`w-full bg-white px-4 py-3 rounded-xl border transition-colors 
                   dark:text-white
                      border-gray-300 dark:border-neutral-600  dark:bg-neutral-800
@@ -205,7 +199,7 @@ export default function PriceRuleModal({
                 min="1"
                 max="100"
                 value={maxWeight}
-                onChange={(e) => setMaxWeight(e.target.value)}
+                onChange={(e) => setMaxWeight(handleNumStringForForm(e))}
                 className={`w-full px-4 py-3 rounded-xl border bg-white
                       dark:text-white dark:bg-neutral-800
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent`}

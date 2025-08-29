@@ -228,6 +228,7 @@ export default function ServiceDetailClient({
                 {/* CTA Button */}
                 <Link
                   href={`/appointments?service=${serviceData._id}`}
+                  prefetch
                   className=" block text-center w-full bg-gradient-to-r from-primary-light/80 to-primary-dark/80 text-white py-3 px-6 rounded-xl font-semibold hover:from-primary-light hover:to-primary-dark "
                 >
                   Đặt lịch ngay
@@ -299,7 +300,7 @@ export default function ServiceDetailClient({
                           <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-medium">
                             {rule.name}
                           </td>
-                          <td className="px-4 py-3 text-right text-sm font-semibold text-blue-600 dark:text-blue-400">
+                          <td className="px-4 py-3 text-right text-sm font-semibold ">
                             {typeof rule.price === "number"
                               ? formatPrice(rule.price)
                               : rule.price}
@@ -342,8 +343,8 @@ export default function ServiceDetailClient({
                   </table>
                 </div>
 
-                <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
+                <div className="mt-4 p-4 bg-neutral-light dark:bg-primary-dark rounded-xl border-2 border-secondary-dark ">
+                  <div className="flex items-center gap-2 text-background-dark ">
                     <Sparkles className="size-4" />
                     <span className="text-sm font-medium">
                       💡 Mẹo: Chọn gói phù hợp với cân nặng thú cưng để có giá

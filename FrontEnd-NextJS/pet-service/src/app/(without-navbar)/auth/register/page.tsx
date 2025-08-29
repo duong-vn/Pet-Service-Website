@@ -51,6 +51,7 @@ export default function RegisterPage() {
 
     const payload = {
       name,
+      picture: "/images/placeholders/User.png",
       email,
       password,
       phone,

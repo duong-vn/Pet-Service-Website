@@ -14,7 +14,7 @@ export class User {
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
   password: string | null;
-  @Prop({ reqired: true })
+  @Prop()
   provider: string;
 
   @Prop()

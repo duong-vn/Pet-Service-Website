@@ -25,7 +25,6 @@ export class CreateUserDto {
   picture: string;
 
   @IsNotEmpty({ message: 'Provider is required' })
-  @IsIn(providers)
   provider: string;
 
   @IsNotEmpty({ message: 'Password is required' })
@@ -33,6 +32,9 @@ export class CreateUserDto {
 
   @IsOptional()
   address: string;
+
+  @IsOptional()
+  role: mongoose.Schema.Types.ObjectId;
 
   @IsOptional()
   age: number;
@@ -51,11 +53,12 @@ export class RegisterUserDto {
   @IsNotEmpty({ message: 'Password is required' })
   password: string;
   @IsNotEmpty({ message: 'Phone number is required' })
-  phone: number;
+  phone: string;
 
   @IsOptional()
   address: string;
-
+  @IsOptional()
+  role: mongoose.Schema.Types.ObjectId;
   @IsOptional()
   age: number;
   @IsOptional()

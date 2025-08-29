@@ -14,7 +14,6 @@ export default function UserPill() {
   const searchParams = useSearchParams();
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const user = useAppSelector(simpleInfoSelector);
-  console.log(user);
 
   if (authenticated === "unauthenticated") {
     return (
@@ -44,7 +43,10 @@ export default function UserPill() {
 
   return (
     <div className="relative flex items-center bg-secondary-light  dark:bg-secondary-dark pr-3 gap-3 ring-1 ring-black/50 dark:ring-white/30  max-w-[250]  p-2 rounded-full  ">
-      <FaPencilAlt className="w-8 h-8 xl:hidden" />
+      <FaPencilAlt
+        onClick={() => router.push("/me")}
+        className="w-8 h-8 xl:hidden"
+      />
       <div className="relative flex-shrink-0 group  ">
         <Image
           src={user.picture ?? "/images/placeholders/User.png"}
@@ -53,9 +55,7 @@ export default function UserPill() {
           height={48}
           className="rounded-full object-cover  "
         />
-        <div className="absolute top-0 border-1 bg-background-dark/50 rounded-full  opacity-0 group-hover:opacity-100  transition-opacity  w-12 h-12 ">
-          <FaPencilAlt className="opacity-100 cursor-pointer  text-white  absolute top-1/2 -translate-y-1/2 right-1/2 translate-x-1/2 " />
-        </div>
+        <div className="absolute top-0 border-1 bg-background-dark/50 rounded-full  opacity-0 group-hover:opacity-100  transition-opacity  w-12 h-12 "></div>
       </div>
 
       <div className="truncate ">
@@ -63,11 +63,11 @@ export default function UserPill() {
         <h6 className="font-medium  text-sm ">Hello, {user.name}.</h6>{" "}
         <p> {user.email}</p>
       </div>
-      <div className=" absolute inset-0 group opacity-0 hover:opacity-100 hover:bg-black/30 rounded-full transition-all duration-300">
+      <div className=" absolute max-xl:hidden inset-0 group opacity-0 hover:opacity-100 hover:bg-black/30 rounded-full transition-all duration-300">
         <FaPencilAlt
           onClick={(e) => {
             e.stopPropagation();
-            router.push("/users/me");
+            router.push("/me");
           }}
           size={32}
           className="opacity-100 cursor-pointer text-white  absolute top-1/2 -translate-y-1/2 right-1/2 translate-x-1/2 "
