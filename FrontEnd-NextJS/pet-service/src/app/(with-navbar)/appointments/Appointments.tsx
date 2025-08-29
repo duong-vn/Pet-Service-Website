@@ -141,7 +141,9 @@ export default function Appointments({ service }: { service: string | null }) {
     if (!data?.rules?.length) return 0;
     const w = value.petWeight ?? 0;
     if (w >= 100) return "liên hệ";
-    const rule = data.rules.find((r) => w >= r.minWeight && w < r.maxWeight);
+    const rule = data.rules.find(
+      (r) => w >= Number(r.minWeight) && w < Number(r.maxWeight)
+    );
     const base = rule?.price ?? 0;
     if (typeof base === "string") return base;
     return isDayMode ? base * (datePicked || 0) : base;
