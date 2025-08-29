@@ -554,11 +554,16 @@ export default function Appointments({ service }: { service: string | null }) {
                     <span className="font-medium">Số điện thoại:</span>{" "}
                     {value.phone}
                   </p>
-                  {notes && (
-                    <p>
-                      <span className="font-medium">Ghi chú:</span> {notes}
-                    </p>
-                  )}
+
+                  <p>
+                    <span className="font-medium">Ghi chú:</span> {notes ?? ""}
+                  </p>
+                  <p>
+                    <span className="font-medium">Giá:</span>{" "}
+                    {briefPrice && typeof briefPrice === "string"
+                      ? briefPrice
+                      : briefPrice.toLocaleString() + "đ"}
+                  </p>
                 </div>
               </motion.div>
             )}
