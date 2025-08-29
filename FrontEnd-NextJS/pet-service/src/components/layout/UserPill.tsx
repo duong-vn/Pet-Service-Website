@@ -40,7 +40,7 @@ export default function UserPill() {
   }
 
   return (
-    <div className="relative flex items-center bg-secondary-light  dark:bg-secondary-dark pr-3 gap-3 ring-1 ring-black/50 dark:ring-white/30  max-w-[250]  p-2 rounded-full  ">
+    <div className="relative flex items-center bg-secondary-light  dark:bg-secondary-dark pr-3 gap-3 ring-1 ring-black/50 dark:ring-white/30  max-w-64  p-2 rounded-full  ">
       <FaPencilAlt
         onClick={() => router.push("/me")}
         className="w-8 h-8 xl:hidden"
@@ -53,13 +53,15 @@ export default function UserPill() {
           height={48}
           className="rounded-full object-cover  "
         />
-        <div className="absolute top-0 border-1 bg-background-dark/50 rounded-full  opacity-0 group-hover:opacity-100  transition-opacity  w-12 h-12 "></div>
+        <div className="absolute top-0 border bg-background-dark/50 rounded-full  opacity-0 group-hover:opacity-100  transition-opacity  w-12 h-12 "></div>
       </div>
 
-      <div className="truncate ">
+      <div className="min-w-0 truncate ">
         {" "}
-        <h6 className="font-medium  text-sm ">Hello, {user.name}.</h6>{" "}
-        <p> {user.email}</p>
+        <h6 className="font-medium truncate  text-sm ">
+          Hello, {user.name}.
+        </h6>{" "}
+        <p className="truncate"> {user.email}</p>
       </div>
       <div className=" absolute max-xl:hidden inset-0 group opacity-0 hover:opacity-100 hover:bg-black/30 rounded-full transition-all duration-300">
         <FaPencilAlt

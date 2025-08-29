@@ -32,6 +32,7 @@ export default function HomeLayout({
           {" "}
           <SidebarContextProvider>
             <NavBar />
+
             <Sidebar />
           </SidebarContextProvider>
           <div className="min-h-screen"> {children}</div>

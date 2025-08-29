@@ -219,65 +219,66 @@ export default function ServicesUI() {
           ) : (
             <>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {listServices.result.map((service: IService) => (
-                  <motion.article
-                    whileHover={{ scale: 1.02 }}
-                    key={service._id}
-                  >
-                    <ContextMenu>
-                      <ContextMenuTrigger>
-                        <ServiceCard
-                          img={service.picture}
-                          title={service.name}
-                          priceStart={
-                            service.priceStart.toLocaleString("vi-VN") + "đ"
-                          }
-                          priceEnd={
-                            service.priceEnd.toLocaleString("vi-VN") + "đ"
-                          }
-                          items={service.description}
-                          icon={iconOf(service.type)}
-                          _id={service._id}
-                        />
-                      </ContextMenuTrigger>
-                      <ContextMenuContent>
-                        <ContextMenuItem
-                          className="cursor-pointer"
-                          onClick={() =>
-                            open({
-                              type: "delete-modal",
-                              _id: service._id,
-                              public_id: service.public_id,
-                            })
-                          }
-                        >
-                          {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
-                            <div className=" flex justify-center space-x-2 items-center">
-                              <FaTrashCan className=" text-error cursor-pointer" />
-                              <span>Xóa</span>
-                            </div>
-                          )}
-                        </ContextMenuItem>
-                        <ContextMenuItem
-                          className="cursor-pointer"
-                          onClick={() =>
-                            open({
-                              type: "update-modal",
-                              payload: service,
-                            })
-                          }
-                        >
-                          {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
-                            <div className=" flex justify-center space-x-2 items-center">
-                              <FaPencilAlt />
-                              <span>Sửa</span>
-                            </div>
-                          )}
-                        </ContextMenuItem>
-                      </ContextMenuContent>
-                    </ContextMenu>
-                  </motion.article>
-                ))}
+                {listServices?.result &&
+                  listServices.result.map((service: IService) => (
+                    <motion.article
+                      whileHover={{ scale: 1.02 }}
+                      key={service._id}
+                    >
+                      <ContextMenu>
+                        <ContextMenuTrigger>
+                          <ServiceCard
+                            img={service.picture}
+                            title={service.name}
+                            priceStart={
+                              service.priceStart.toLocaleString("vi-VN") + "đ"
+                            }
+                            priceEnd={
+                              service.priceEnd.toLocaleString("vi-VN") + "đ"
+                            }
+                            items={service.description}
+                            icon={iconOf(service.type)}
+                            _id={service._id}
+                          />
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          <ContextMenuItem
+                            className="cursor-pointer"
+                            onClick={() =>
+                              open({
+                                type: "delete-modal",
+                                _id: service._id,
+                                public_id: service.public_id,
+                              })
+                            }
+                          >
+                            {can(permissions, PERMISSIONS.SERVICES_DELETE) && (
+                              <div className=" flex justify-center space-x-2 items-center">
+                                <FaTrashCan className=" text-error cursor-pointer" />
+                                <span>Xóa</span>
+                              </div>
+                            )}
+                          </ContextMenuItem>
+                          <ContextMenuItem
+                            className="cursor-pointer"
+                            onClick={() =>
+                              open({
+                                type: "update-modal",
+                                payload: service,
+                              })
+                            }
+                          >
+                            {can(permissions, PERMISSIONS.SERVICES_PATCH) && (
+                              <div className=" flex justify-center space-x-2 items-center">
+                                <FaPencilAlt />
+                                <span>Sửa</span>
+                              </div>
+                            )}
+                          </ContextMenuItem>
+                        </ContextMenuContent>
+                      </ContextMenu>
+                    </motion.article>
+                  ))}
               </div>
               <Pagination
                 current={listServices.meta.current}

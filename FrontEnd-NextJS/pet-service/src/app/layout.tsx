@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { ReduxProvider } from "@/providers/Redux.provider";
 import BootstrapAuth from "@/components/features/auth/BoostrapAuth";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "ZOZO Pet's Service",
@@ -22,11 +23,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={` font-normal antialiased bg-background-dark `}>
-        <ReduxProvider>
-          <Toaster richColors position="top-left" />
-          {children}
-          <BootstrapAuth />
-        </ReduxProvider>
+        <Suspense fallback={null}>
+          <ReduxProvider>
+            <Toaster richColors position="top-left" />
+            {children}
+            <BootstrapAuth />
+          </ReduxProvider>
+        </Suspense>
       </body>
     </html>
   );

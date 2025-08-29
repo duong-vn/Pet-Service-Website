@@ -42,7 +42,9 @@ export default function Sidebar() {
       <div
         className={[
           "  bg-black/50 xl:bg-black/30 transition-opacity duration-300 overflow-hidden ",
-          isOpen ? "opacity-100 z-40 fixed inset-0 " : "opacity-0 z-0",
+          isOpen
+            ? "opacity-100 z-40 fixed inset-0 "
+            : "opacity-0 z-0 pointer-events-none",
         ].join(" ")}
         onClick={handleClose}
       ></div>
@@ -50,7 +52,7 @@ export default function Sidebar() {
       {/* The sidebar */}
       <div
         className={[
-          "fixed bg-secondary-light top-0 right-0 z-50 min-w-[30dvh] shadow-xl dark:bg-secondary-dark back  h-full transform transition-transform  duration-300 ease-in-out ",
+          "fixed bg-secondary-light top-0 right-0 z-50  shadow-xl dark:bg-secondary-dark   h-full transform transition-transform  duration-300 ease-in-out ",
           isOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
       >
