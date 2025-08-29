@@ -4,7 +4,7 @@ export default function HeroCard() {
   return (
     <div className="transition-color duration-700 xl:p-6 w-screen bg-gradient-to-b from-primary-light  to-background-light dark:from-primary-dark  dark:to-background-dark dark:bg-primary-dark flex justify-between items-center rounded-3xl overflow-hidden">
       <Image
-        src="/images/icons/cool_dog.png"
+        src="https://res.cloudinary.com/dmgtkwdee/image/upload/v1756456993/cool_dog_dnaa9w.webp"
         alt="cool dog"
         width={300}
         height={300}
@@ -20,7 +20,7 @@ export default function HeroCard() {
       />
 
       <Image
-        src="/images/icons/other.png"
+        src="https://res.cloudinary.com/dmgtkwdee/image/upload/v1756456993/other_v2chiu.webp"
         alt="other"
         width={300}
         height={300}
