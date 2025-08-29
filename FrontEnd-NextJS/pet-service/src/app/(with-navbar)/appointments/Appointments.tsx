@@ -208,8 +208,9 @@ export default function Appointments({ service }: { service: string | null }) {
         setLoading(false);
       }
       router.replace("/appointments/done");
+    } else {
+      toast.error("Đang có lỗi hiện chưa tạo được");
     }
-    toast.error("Đang có lỗi hiện chưa tạo được");
     setLoading(false);
   };
 
