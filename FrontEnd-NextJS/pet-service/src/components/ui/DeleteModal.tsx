@@ -1,7 +1,5 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Trash2, X } from "lucide-react";
-import { tree } from "next/dist/build/templates/app-page";
 import { useState } from "react";
 
 interface IProps {

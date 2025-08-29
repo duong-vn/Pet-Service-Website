@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { useEffect } from "react";
 import { FaLongArrowAltDown } from "react-icons/fa";
 
 interface IProps {

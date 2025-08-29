@@ -35,8 +35,7 @@ export const postCloud = async (
   sign: ISign,
   public_id?: string
 ): Promise<IResData> => {
-  const { timestamp, signature, folder, cloudName, apiKey, uploadPreset } =
-    sign;
+  const { timestamp, signature, folder, apiKey, uploadPreset } = sign;
   const form = new FormData();
   form.append("timestamp", timestamp);
   form.append("folder", folder);

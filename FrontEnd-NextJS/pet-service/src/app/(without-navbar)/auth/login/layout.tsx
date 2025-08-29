@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import Login from "@/components/features/auth/login";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export const metadata: Metadata = {
   title: "ZOZO Pet's Service",

@@ -2,18 +2,9 @@
 import Link from "next/link";
 import ThemeToggle from "../ui/ThemeToggle";
 import { useEffect, useRef, useState } from "react";
-import UserPill from "./UserPill";
 import SidebarBtn from "../ui/SidebarBtn";
 import { useSidebar } from "@/context/SidebarContext";
-import {
-  FaHome,
-  FaUser,
-  FaShoppingCart,
-  FaCog,
-  FaSignOutAlt,
-  FaTimes,
-  FaChevronUp,
-} from "react-icons/fa";
+import { FaShoppingCart, FaChevronUp } from "react-icons/fa";
 import { GiDogHouse } from "react-icons/gi";
 import { FaCalendarDays } from "react-icons/fa6";
 import { MdHomeRepairService } from "react-icons/md";

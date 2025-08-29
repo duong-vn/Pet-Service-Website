@@ -1,9 +1,4 @@
-import {
-  Action,
-  combineReducers,
-  configureStore,
-  ThunkAction,
-} from "@reduxjs/toolkit";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import authReducer from "@/lib/authSlice";
 
 export type Permission = string;

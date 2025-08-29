@@ -34,5 +34,5 @@ export default function BootstrapAuth() {
     })();
   }, []);
 
-  return null; // component bootstrap, không render gì
+  return null;
 }

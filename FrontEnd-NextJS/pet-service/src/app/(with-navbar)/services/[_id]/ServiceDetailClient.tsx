@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
@@ -8,14 +8,8 @@ import {
   Scissors,
   Star,
   Sparkles,
-  Clock,
-  Dog,
-  Cat,
-  Edit,
-  Trash2,
   ArrowLeft,
   Weight,
-  Calendar,
   User,
 } from "lucide-react";
 import Image from "next/image";
@@ -23,23 +17,19 @@ import Image from "next/image";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { can } from "@/lib/authSlice";
 import { PERMISSIONS } from "@/types/permissions";
-import { IService, PetType, ServiceType, Variant } from "@/types/back-end";
+import { IService, ServiceType } from "@/types/back-end";
 import { useModal } from "@/hooks/modal-hooks";
-import ServiceModal from "../ServiceModal";
 import DeleteModal from "@/components/ui/DeleteModal";
 import Portal from "@/components/layout/Portal";
 import LoadingScreen from "@/components/ui/LoadingScreen";
-import { handleError } from "@/apiServices/services";
-import { api } from "@/utils/axiosInstance";
 import {
   deletePriceRules,
-  deleteServices,
   patchPriceRules,
   postPriceRules,
 } from "@/apiServices/services/services";
 import InfoComp from "./InfoComp";
 import Link from "next/link";
-import ModalPriceRule, { PriceRule } from "./PriceRuleModal";
+import { PriceRule } from "./PriceRuleModal";
 import PriceRuleModal from "./PriceRuleModal";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -52,11 +42,11 @@ export default function ServiceDetailClient({
   serviceData,
 }: ServiceDetailClientProps) {
   const router = useRouter();
-  const { modal, open, close, isOpen } = useModal();
+  const { modal, open, close } = useModal();
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
   const qc = useQueryClient();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const iconOf = (t: ServiceType) => {
     switch (t) {
@@ -281,7 +271,7 @@ export default function ServiceDetailClient({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                      {serviceData.rules.map((rule: PriceRule, index) => (
+                      {serviceData.rules.map((rule: PriceRule) => (
                         <tr
                           key={rule._id}
                           className="hover:bg-background-light/70 bg-background-light dark:bg-background-dark dark:hover:bg-background-dark/50 "

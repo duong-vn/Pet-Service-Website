@@ -1,5 +1,4 @@
 import { Calendar } from "lucide-react";
-import { FaArrowsAltV } from "react-icons/fa";
 
 export default function PriceRow({
   name,

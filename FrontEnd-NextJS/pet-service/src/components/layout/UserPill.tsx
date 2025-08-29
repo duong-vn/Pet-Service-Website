@@ -1,10 +1,8 @@
 "use client";
-import { useRef } from "react";
 
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
-import { RootState } from "@/store/store";
+import { useAppSelector } from "@/hooks/redux-hooks";
 import { simpleInfoSelector } from "@/lib/authSlice";
 import { FaPencilAlt } from "react-icons/fa";
 

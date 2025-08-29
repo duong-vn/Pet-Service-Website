@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface IProps {
   current: number;
-  limit: number;
+
   setParams: (params: any) => void;
   totalItems: number;
   totalPage: number;
@@ -12,7 +12,7 @@ interface IProps {
 
 export default function Pagination({
   current,
-  limit,
+
   totalItems,
   setParams,
   totalPage,

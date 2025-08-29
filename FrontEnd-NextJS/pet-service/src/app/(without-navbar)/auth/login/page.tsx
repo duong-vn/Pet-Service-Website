@@ -1,10 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { CredentialResponse, googleLogout } from "@react-oauth/google";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getUser, handleGoogleLogin } from "@/apiServices/services";
+import { handleGoogleLogin } from "@/apiServices/services";
 import { setAT } from "@/lib/authToken";
 import Login from "@/components/features/auth/login";
 import { motion } from "framer-motion";
@@ -21,7 +21,7 @@ import { GiDogHouse } from "react-icons/gi";
 export default function LoginPage() {
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  const [, setErr] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const next = useRef(searchParams.get("next") ?? "/").current;
 

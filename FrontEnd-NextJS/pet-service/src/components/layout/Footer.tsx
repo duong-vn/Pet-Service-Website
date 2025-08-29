@@ -15,7 +15,7 @@ export default function Footer() {
               height={50}
               className="rounded-full"
             />
-            <h2 className="text-xl font-display">ZOZO Pet's Service</h2>
+            <h2 className="text-xl font-display">ZOZO Pets Service</h2>
           </div>
           <p className="mt-4 text-sm leading-relaxed ">
             Nền tảng đặt lịch dịch vụ chăm sóc thú cưng nhanh chóng và tiện lợi.
@@ -80,7 +80,7 @@ export default function Footer() {
 
       {/* Copyright */}
       <div className="border-t border-primary-dark/20 dark:border-primary-light/20 py-4 text-center text-sm">
-        © {new Date().getFullYear()} ZOZO Pet's Service. All rights reserved.
+        © {new Date().getFullYear()} ZOZO Pets Service. All rights reserved.
       </div>
     </footer>
   );

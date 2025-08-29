@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { can } from "@/lib/authSlice";
 import { PERMISSIONS } from "@/types/permissions";
-import { MdKeyboardArrowLeft } from "react-icons/md";
+
 import { useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 

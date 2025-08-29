@@ -3,14 +3,7 @@
 import { useSidebar } from "@/context/SidebarContext";
 import UserPill from "./UserPill";
 import Link from "next/link";
-import {
-  FaHome,
-  FaUser,
-  FaShoppingCart,
-  FaCog,
-  FaSignOutAlt,
-  FaTimes,
-} from "react-icons/fa";
+import { FaHome, FaShoppingCart, FaSignOutAlt } from "react-icons/fa";
 import { FaCalendarDays } from "react-icons/fa6";
 import { MdHomeRepairService } from "react-icons/md";
 

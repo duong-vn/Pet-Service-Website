@@ -1,14 +1,7 @@
 import { IAppointments } from "@/hooks/apppointments-hooks";
 import { IStatus } from "@/types/back-end";
-import { motion } from "framer-motion";
-import {
-  Calendar,
-  Clock,
-  DollarSign,
-  FileText,
-  User,
-  Weight,
-} from "lucide-react";
+
+import { Calendar, FileText, User } from "lucide-react";
 import { JSX, useState } from "react";
 
 type Props = {

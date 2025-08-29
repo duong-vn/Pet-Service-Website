@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { can } from "@/lib/authSlice";
 import { PERMISSIONS } from "@/types/permissions";
-import { X, Bath, Scissors, Sparkles, Star } from "lucide-react";
+import { Bath, Scissors, Sparkles, Star } from "lucide-react";
 
 import PreviewImage from "@/components/layout/PreviewImage";
 import { useModal } from "@/hooks/modal-hooks";
@@ -282,7 +282,6 @@ export default function ServicesUI() {
               <Pagination
                 current={listServices.meta.current}
                 setParams={setParams}
-                limit={listServices.meta.limit}
                 totalItems={listServices.meta.totalItems}
                 totalPage={listServices.meta.totalPage}
               />

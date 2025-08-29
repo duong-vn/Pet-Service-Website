@@ -37,7 +37,6 @@ export default function RolesUI() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { modal, open, close } = useModal();
-  const [, rerender] = useState(0);
 
   const [draft, setDraft, clearDraft] = useSession<RoleDraft>(
     "role_form",
@@ -65,15 +64,12 @@ export default function RolesUI() {
       searchParams.get("permissions") ?? JSON.stringify(draft.permissions)
     );
     setDraft((prev: RoleDraft) => ({ ...prev, permissions }));
-    // const _id = searchParams.get("_id") ?? draft._id;
-    // setDraft((prev: RoleDraft) => ({ ...prev, _id }));
   }, [searchParams]);
 
   const onUpdate = async () => {
     const { _id } = draft;
     if (!_id || _id.length < 1) {
       toast.error("Không có id sao cập nhật được");
-      // clearDraft();
     }
 
     const res = await patchRoles(draft as any);
@@ -101,7 +97,7 @@ export default function RolesUI() {
 
   const onDelete = async (_id: string) => {
     try {
-      const res = await api.delete("/api/roles/" + _id);
+      await api.delete("/api/roles/" + _id);
       toast.success("Xóa thành công");
       qc.invalidateQueries({ queryKey: ["roles"] });
       close();

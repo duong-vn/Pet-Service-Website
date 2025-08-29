@@ -24,7 +24,6 @@ import {
   Weight,
   FileText,
   CheckCircle2,
-  ArrowRight,
 } from "lucide-react";
 
 interface IFo {
@@ -39,7 +38,7 @@ export const toLocalDateString = (d: Date): string => {
 };
 
 export default function Appointments({ service }: { service: string | null }) {
-  const { modal, open, close, isOpen } = useModal();
+  const { open, close, isOpen } = useModal();
   const phone = useAppSelector((s) => s.auth.user?.phone);
   const [value, setValue] = useSession<IFo>("services-appointments", {
     petWeight: 0,
@@ -175,14 +174,19 @@ export default function Appointments({ service }: { service: string | null }) {
     }
 
     const date = isDayMode
-      ? toLocalDateString(selectedRangeDate?.from!)
+      ? selectedRangeDate?.from
+        ? toLocalDateString(selectedRangeDate.from)
+        : undefined
       : selectedDate
       ? toLocalDateString(selectedDate)
       : undefined;
-    const duration = isDayMode ? 1440 * datePicked : data?.duration;
+
+    const duration = isDayMode ? 1440 * datePicked : data?.duration ?? 0;
+
     const endTime = isDayMode
       ? minutesToTimeString(toMinutes(selectedTime) + 30)
-      : minutesToTimeString(toMinutes(selectedTime) + data?.duration!);
+      : minutesToTimeString(toMinutes(selectedTime) + (data?.duration ?? 0));
+
     const payload = {
       service,
       petWeight: value.petWeight,

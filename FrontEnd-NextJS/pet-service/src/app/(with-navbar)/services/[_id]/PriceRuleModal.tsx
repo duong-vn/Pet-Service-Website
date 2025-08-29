@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { X, Weight, DollarSign, Tag, Save, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { handleNumStringForForm } from "../ServiceModal";

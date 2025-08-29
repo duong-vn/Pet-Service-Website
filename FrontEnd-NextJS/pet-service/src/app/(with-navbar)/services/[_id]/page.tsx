@@ -1,9 +1,9 @@
 "use client";
-import { handleError, isResOk } from "@/apiServices/services";
+import { handleError } from "@/apiServices/services";
 import NotFound from "@/components/layout/NotFound";
-import { api, BASE_URL } from "@/utils/axiosInstance";
+import { api } from "@/utils/axiosInstance";
 import ServiceDetailClient from "./ServiceDetailClient";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 

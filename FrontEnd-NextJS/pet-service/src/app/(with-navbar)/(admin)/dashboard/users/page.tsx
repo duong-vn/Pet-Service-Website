@@ -88,7 +88,9 @@ export default function UsersUI() {
           ...prev,
           role: roles,
         }));
-      } catch (e) {}
+      } catch (e) {
+        handleError(e);
+      }
     }
     const _id = searchParams.get("_id");
     if (_id) setDraft((prev: UserDraft) => ({ ...prev, _id }));
@@ -363,7 +365,6 @@ export default function UsersUI() {
         <UsersList
           users={users?.result ?? []}
           setDraft={updateDraft}
-          onDelete={onDelete}
           permissions={userPermissions}
           open={open}
         />
@@ -372,7 +373,6 @@ export default function UsersUI() {
       <div className="pb-2">
         <Pagination
           current={users?.meta?.current ?? 1}
-          limit={users?.meta?.pageSize ?? 10}
           setParams={setParams}
           totalItems={users?.meta?.total ?? 0}
           totalPage={users?.meta?.pages ?? 0}

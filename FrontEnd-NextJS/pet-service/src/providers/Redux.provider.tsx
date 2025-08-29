@@ -1,5 +1,5 @@
 "use client";
-import { authSlice } from "@/lib/authSlice";
+
 import { store } from "@/store/store";
 import { ReactNode } from "react";
 import { Provider } from "react-redux";

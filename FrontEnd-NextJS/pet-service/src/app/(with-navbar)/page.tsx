@@ -1,36 +1,31 @@
 "use client";
 
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  CheckCircle,
   Scissors,
   Bath,
   Timer,
   Sparkles,
   Shield,
-  Phone,
-  Calendar,
   Star,
   ChevronDown,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import BenefitCard from "@/components/ui/BenefitCard";
 import ServiceCard from "@/components/ui/ServiceCard";
 import HeroCard from "@/components/layout/HeroCard";
 import IntroCard from "@/components/layout/IntroCard";
 import StepsAppointment from "@/components/layout/StepsAppointment";
-import Link from "next/link";
+
 import CTA from "@/components/ui/CTA";
 import { useServices } from "@/hooks/services-hook";
-import { api } from "@/utils/axiosInstance";
+
 import { handleError } from "@/apiServices/services";
 import { IService, ServiceType } from "@/types/back-end";
 import LoadingScreen from "@/components/ui/LoadingScreen";
-import { FaArrowsAltV } from "react-icons/fa";
+
 import PriceRow from "@/components/layout/PriceRow";
-import Portal from "@/components/layout/Portal";
 
 export default function Home() {
   const {

@@ -1,6 +1,5 @@
 import { api } from "@/utils/axiosInstance";
 import { handleError } from "../services";
-import { toast } from "sonner";
 
 export const patchRoles = async (payload: {
   _id: string;

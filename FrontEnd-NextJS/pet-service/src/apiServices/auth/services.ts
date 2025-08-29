@@ -1,12 +1,8 @@
 import { api } from "@/utils/axiosInstance";
-import axios, { AxiosError } from "axios";
-
 import { toast } from "sonner";
-import { ApiResponse, handleError, isResOk } from "../services";
-import { BASE_URL } from "@/utils/axiosInstance";
+
 import { setAT } from "@/lib/authToken";
-import { useAppDispatch } from "@/hooks/redux-hooks";
-import { clearAuth } from "@/lib/authSlice";
+import { handleError } from "../services";
 
 export const localLogin = async (email: string, password: string) => {
   try {
@@ -29,26 +25,6 @@ export const localLogin = async (email: string, password: string) => {
     handleError(error);
   }
 };
-// export const localLogin = async (email: string, password: string) => {
-//   const res = await api.post(
-//     `/api/auth/login/local`,
-//     {
-//       username: email,
-//       password,
-//     },
-//     { withCredentials: true }
-//   );
-//   if (isResOk(res.status)) {
-//     const data = res.data;
-//     const { access_token } = data.data;
-
-//     setAT(access_token);
-//     toast.success("Đăng nhập thành công");
-//     return true;
-//   }
-//   toast.error(res.data.message);
-//   return false;
-// };
 
 interface IRegister {
   name: string;
@@ -110,7 +86,7 @@ export const isVerified = async (token: string) => {
 
 export const resetPassword = async (token: string, password: string) => {
   try {
-    const res = await api.post("/api/auth/reset-password", { token, password });
+    await api.post("/api/auth/reset-password", { token, password });
     toast.success("Đặt lại mật khẩu thành công");
     return true;
   } catch (error: any) {

@@ -59,7 +59,7 @@ export interface IUser {
   age: string;
   picture: string;
   gender: string;
-  address: String;
+  address: string;
   phone: string;
   public_id: string;
   role: {

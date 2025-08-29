@@ -30,4 +30,5 @@ const PermissionRow = React.memo(
     );
   }
 );
+PermissionRow.displayName = "PermissionRow";
 export default PermissionRow;

@@ -1,6 +1,4 @@
 import { IAppointments } from "@/hooks/apppointments-hooks";
-import { IStatus } from "@/types/back-end";
-import { formatDate, formatDuration } from "date-fns";
 import { motion } from "framer-motion";
 import {
   Calendar,

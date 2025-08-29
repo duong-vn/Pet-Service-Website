@@ -1,9 +1,9 @@
 "use client";
-import Link from "next/link";
+
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { can } from "@/lib/authSlice";
 import { PERMISSIONS } from "@/types/permissions";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   APParams,
   IAppointments,
@@ -12,16 +12,11 @@ import {
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import {
   Calendar,
-  Clock,
-  User,
-  Weight,
-  DollarSign,
-  FileText,
   CheckCircle,
   XCircle,
   Clock as ClockIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
+
 import { IStatus } from "@/types/back-end";
 import { JSX, useEffect, useState } from "react";
 import Pagination from "@/components/layout/Pagination";
@@ -29,7 +24,6 @@ import AppointmentCard from "@/components/ui/AppointmentCard";
 import { handleError } from "@/apiServices/services";
 import AppointmentsStats from "./AppointmentsStats";
 import { toLocalDateString } from "../../appointments/Appointments";
-import { setDate } from "date-fns";
 import { useModal } from "@/hooks/modal-hooks";
 import { FaTrashCan } from "react-icons/fa6";
 import { FaPencilAlt } from "react-icons/fa";
@@ -87,7 +81,7 @@ export default function AdminDashboardPage() {
 
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
   const [filterStatus, setFilterStatus] = useState<{
-    [k in IStatus]?: Boolean;
+    [k in IStatus]?: boolean;
   }>({});
   const [filterDate, setFilterDate] = useState<string>("");
 

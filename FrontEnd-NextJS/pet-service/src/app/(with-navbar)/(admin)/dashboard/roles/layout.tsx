@@ -1,16 +1,9 @@
 "use client";
-import type { Metadata } from "next";
 
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import Login from "@/components/features/auth/login";
 import { useAppSelector } from "@/hooks/redux-hooks";
-import UserPill from "@/components/layout/UserPill";
 import LoadingScreen from "@/components/ui/LoadingScreen";
-import { useRouter } from "next/navigation";
 import { PERMISSIONS } from "@/types/permissions";
 import { can } from "@/lib/authSlice";
-import ForbiddenPage from "@/app/(without-navbar)/forbidden/page";
-import AdminSidebar from "@/components/layout/AdminSidebar";
 
 export default function LoginLayout({
   children,

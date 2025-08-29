@@ -24,13 +24,13 @@ type Role = {
 export default function RolesList({
   roles,
   setDraft,
-  onDelete,
+
   open,
   permissions,
 }: {
   roles: Role[];
   setDraft: (any: any) => void;
-  onDelete: (_id: string) => void;
+
   open: any;
   permissions: any;
 }) {
@@ -52,7 +52,7 @@ export default function RolesList({
         rounded-xl border overflow-hidden
       "
     >
-      {roles.map((role, i) => (
+      {roles.map((role) => (
         <ContextMenu key={role._id}>
           <ContextMenuTrigger className="relative">
             <RoleRow role={role} />

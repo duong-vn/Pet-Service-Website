@@ -9,9 +9,7 @@ import { useEffect, useState } from "react";
 export default function VerifyEmailPage() {
   const [token, setToken] = useState(false);
   const dispatch = useAppDispatch();
-  const [msg, setMsg] = useState(
-    "Vui lòng kiểm tra email của bạn để xác nhận."
-  );
+  const [msg] = useState("Vui lòng kiểm tra email của bạn để xác nhận.");
   const router = useRouter();
 
   const verify = async (token: string) => {
@@ -29,7 +27,7 @@ export default function VerifyEmailPage() {
       router.prefetch("/");
 
       (async () => {
-        const data = await verify(hash);
+        await verify(hash);
       })().then(() => {
         router.replace("/");
       });

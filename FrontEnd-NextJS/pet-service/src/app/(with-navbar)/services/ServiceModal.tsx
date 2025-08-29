@@ -1,9 +1,9 @@
-import { delay, isNumericString } from "@/apiServices/services";
+import { delay } from "@/apiServices/services";
 import { IService, PetType, ServiceType, Variant } from "@/types/back-end";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { LuImagePlus } from "react-icons/lu";
 import { uploadToCloud } from "@/apiServices/cloud/services";
 import { patchService, postServices } from "@/apiServices/services/services";
@@ -33,7 +33,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
   const [priceStart, setPriceStart] = useState<string>(
     serviceData?.priceStart.toString() ?? ""
   );
-  const [picture, setPicture] = useState<string>(
+  const [picture] = useState<string>(
     serviceData?.picture ?? "/images/placeholders/meo.webp"
   );
   const [priceEnd, setPriceEnd] = useState<string>(
@@ -51,7 +51,12 @@ export default function ServiceModal({ close, serviceData }: IProps) {
   const previewUrl = useMemo(() => {
     if (file) return URL.createObjectURL(file);
     return picture;
-  }, [file]);
+  }, [file, picture]);
+  useEffect(() => {
+    return () => {
+      if (file) URL.revokeObjectURL(previewUrl);
+    };
+  }, [file, previewUrl]);
 
   useEffect(() => {
     return () => {

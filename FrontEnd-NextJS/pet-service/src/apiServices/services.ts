@@ -1,5 +1,4 @@
 import { IUser } from "@/lib/authSlice";
-import { PetType, ServiceType, Variant } from "@/types/back-end";
 
 import { api, BASE_URL } from "@/utils/axiosInstance";
 import axios from "axios";

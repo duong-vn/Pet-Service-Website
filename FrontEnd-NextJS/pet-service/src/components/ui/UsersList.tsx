@@ -16,7 +16,7 @@ import { FaTrashCan } from "react-icons/fa6";
 type Props = {
   users: IUser[];
   setDraft: (patch: Partial<any>) => void;
-  onDelete: (id: string) => void;
+
   permissions: any;
   open: (opts: any) => void;
 };
@@ -24,7 +24,7 @@ type Props = {
 export default function UsersList({
   users,
   setDraft,
-  onDelete,
+
   permissions,
   open,
 }: Props) {

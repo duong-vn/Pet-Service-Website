@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 export default function Portal({ children }: { children: ReactNode }) {
