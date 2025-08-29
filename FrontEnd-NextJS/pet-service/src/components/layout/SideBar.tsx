@@ -38,7 +38,7 @@ export default function Sidebar() {
     setLoading(false);
     router.refresh();
   };
-  window.location.href;
+
   const handleClose = () => {
     close();
   };
