@@ -63,7 +63,7 @@ export default function UserPill() {
         <h6 className="font-medium  text-sm ">Hello, {user.name}.</h6>{" "}
         <p> {user.email}</p>
       </div>
-      <div className=" absolute inset-0 group opacity-0 hover:opacity-100 hover:bg-black/30 rounded-full transition-all duration-300">
+      <div className=" absolute max-xl:hidden inset-0 group opacity-0 hover:opacity-100 hover:bg-black/30 rounded-full transition-all duration-300">
         <FaPencilAlt
           onClick={(e) => {
             e.stopPropagation();
