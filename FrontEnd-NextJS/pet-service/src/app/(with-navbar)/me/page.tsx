@@ -6,6 +6,7 @@ import LoadingScreen from "@/components/ui/LoadingScreen";
 import { api } from "@/utils/axiosInstance";
 import { toast } from "sonner";
 import { uploadToCloud } from "@/apiServices/cloud/services";
+import { LuImagePlus } from "react-icons/lu";
 
 type User = {
   _id: string;
@@ -211,8 +212,14 @@ export default function MePage() {
               className="w-full h-full object-cover"
             />
           </div>
-          <label></label>
+          <label
+            className="flex items-center hover:scale-105 cursor-pointer transition-transform"
+            htmlFor="pictureInput"
+          >
+            <LuImagePlus size={30} /> <span className="">Thêm ảnh</span>
+          </label>
           <input
+            id="pictureInput"
             type="file"
             accept="image/*"
             onChange={(e) => {
@@ -225,6 +232,7 @@ export default function MePage() {
                 picture: pre,
               }));
             }}
+            className="hidden"
           />
           <div className="text-sm text-muted-foreground mt-2"></div>
         </div>
