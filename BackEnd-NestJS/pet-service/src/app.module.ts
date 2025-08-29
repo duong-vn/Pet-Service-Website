@@ -19,6 +19,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { PriceRuleModule } from './price-rule/price-rule.module';
+import { HealthController } from './health/health.controller';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -52,6 +54,7 @@ import { PriceRuleModule } from './price-rule/price-rule.module';
     AppointmentsModule,
     CloudModule,
     PriceRuleModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
