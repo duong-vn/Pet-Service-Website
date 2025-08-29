@@ -22,15 +22,6 @@ export class CloudService {
     const upload_preset = this.configService.getOrThrow(
       'CLOUDINARY_UPLOAD_PRESET',
     );
-    // let toSign;
-    // console.log('do', publicId);
-
-    // if (publicId) {
-    //   toSign = `folder=${folder}&public_id=${publicId}&timestamp=${timestamp}&upload_preset=${upload_preset}`;
-    // }
-    // {
-    //   toSign = `folder=${folder}&timestamp=${timestamp}&upload_preset=${upload_preset}`;
-    // }
 
     const toSign: Record<string, any> = {
       timestamp,

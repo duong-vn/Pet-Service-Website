@@ -25,10 +25,13 @@ async function bootstrap() {
 
   //config cors
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [
+      configService.getOrThrow<string>('FE_BASE_URL') ??
+        'http://localhost:3000',
+    ],
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
     preflightContinue: false,
-    credentials: true, // Allow cookies to be sent
+    credentials: true,
   });
 
   app.use(helmet());

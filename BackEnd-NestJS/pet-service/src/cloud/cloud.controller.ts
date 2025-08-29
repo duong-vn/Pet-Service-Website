@@ -12,7 +12,6 @@ export class CloudController {
     @Body('public_id')
     publicId?: string,
   ) {
-    console.log('PT', publicId);
     return this.cloudService.sign(folder, publicId);
   }
 
