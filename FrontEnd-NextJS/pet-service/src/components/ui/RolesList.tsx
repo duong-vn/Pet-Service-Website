@@ -60,10 +60,13 @@ export default function RolesList({
               <div
                 onClick={() => {
                   const url = searchParams.get("next");
-                  const rolee = JSON.stringify({
-                    _id: role._id,
-                    name: role.name,
-                  });
+                  const rolee = encodeURIComponent(
+                    JSON.stringify({
+                      _id: role._id,
+                      name: role.name,
+                    })
+                  );
+
                   router.push(`${url}?role=${rolee}`);
                 }}
                 className="absolute hover:scale-125 transition-transform bg-primary-light/80 hover:bg-primary-light right-10 top-5 border rounded-3xl p-2 cursor-pointer dark:bg-primary-dark dark:hover:bg-primary-dark/80"

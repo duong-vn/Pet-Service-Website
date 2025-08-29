@@ -141,6 +141,7 @@ export default function AdminDashboardPage() {
     const res = await patchAppointments(_id, rest);
     if (res) {
       toast.success("Lưu thành công!");
+      qc.invalidateQueries({ queryKey: ["appointments", params] });
     } else {
       toast.error("Có lỗi, không lưu được");
     }
@@ -150,6 +151,8 @@ export default function AdminDashboardPage() {
     const res = await deleteAppointments(_id);
     if (res) {
       toast.success("Xóa thành công!");
+      qc.invalidateQueries({ queryKey: ["appointments", params] });
+      setParams((prev) => ({ ...prev, current: 1 }));
     } else {
       toast.error("Có lỗi, không xóa được");
     }

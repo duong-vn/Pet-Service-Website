@@ -151,7 +151,13 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto, user: IUser) {
-    // return `This action updates a #${id} user`;
+    if (
+      updateUserDto &&
+      updateUserDto.password &&
+      updateUserDto?.password?.trim().length > 0
+    ) {
+      updateUserDto.password = this.getHash(updateUserDto.password!);
+    }
     checkMongoId(id);
 
     return await this.userModel.updateOne(

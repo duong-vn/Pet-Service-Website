@@ -292,19 +292,7 @@ export class AuthService {
         },
       };
     } catch (error) {
-      const refreshCookieOpts = {
-        httpOnly: true,
-        secure: this.configService.get('NODE_ENV') === 'production',
-        sameSite:
-          this.configService.get('NODE_ENV') === 'production'
-            ? ('none' as const)
-            : ('lax' as const),
-        path: '/api/auth/refresh',
-        maxAge: Number(this.configService.getOrThrow('COOKIE_EXPIRE')),
-      };
-
-      res.clearCookie('refresh_token', { ...refreshCookieOpts });
-      throw new UnauthorizedException('deleted lols 2' + error.message);
+      throw new UnauthorizedException(error.message);
     }
   }
   async logout(res: Response, user: IUser) {

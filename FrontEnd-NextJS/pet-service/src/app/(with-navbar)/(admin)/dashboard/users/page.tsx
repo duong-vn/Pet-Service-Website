@@ -25,7 +25,6 @@ type UserDraft = {
   name: string;
   email: string;
   provider: string;
-  password: string;
   public_id?: string;
   picture?: string;
   address?: string;
@@ -44,11 +43,11 @@ const DEFAULT_DRAFT: UserDraft = {
   name: "",
   email: "",
   provider: "local",
-  password: "",
   role: {
     _id: "68983db643ac6b12fbd53b9f",
     name: "user",
   },
+  phone: "",
   gender: "",
   isActive: true,
 };
@@ -63,7 +62,7 @@ export default function UsersUI() {
     "user_form",
     DEFAULT_DRAFT
   );
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const userPermissions = useAppSelector((s) => s.auth.user?.permissions);
 
@@ -131,9 +130,9 @@ export default function UsersUI() {
   const onUpdate = async () => {
     try {
       if (!draft._id) return toast.error("Missing id");
-      let payload = { ...draft, password };
+      let payload: Partial<UserDraft | any> = { ...draft, password: undefined };
       if (file) {
-        const res = await uploadToCloud("/images/users", file);
+        const res = await uploadToCloud("images/users", file, draft.public_id);
 
         if (!res) {
           return;
@@ -145,6 +144,11 @@ export default function UsersUI() {
           public_id: res.public_id,
         };
       }
+
+      if (password && password?.trim().length > 0) {
+        payload.password = password?.trim();
+      }
+      console.log("payload b4 patch", payload);
       await api.patch("/api/users/" + draft._id, payload);
       toast.success("Cập nhật user thành công");
       qc.invalidateQueries({ queryKey: ["users"] });
@@ -295,7 +299,10 @@ export default function UsersUI() {
                 />
               </div>
               <div>
-                <label className="flex items-center" htmlFor="pictureInput">
+                <label
+                  className="flex items-center hover:scale-105 cursor-pointer transition-transform"
+                  htmlFor="pictureInput"
+                >
                   <LuImagePlus size={30} /> <span className="">Thêm ảnh</span>
                 </label>
                 <input
@@ -321,7 +328,7 @@ export default function UsersUI() {
                 clearDraft();
                 setDraft(DEFAULT_DRAFT as any);
               }}
-              className="px-3 py-1 rounded border"
+              className="px-3 py-1 cursor-pointer rounded border"
             >
               Xóa nháp
             </button>
@@ -331,7 +338,7 @@ export default function UsersUI() {
                 onClick={() =>
                   open({ type: "update-modal", payload: onUpdate })
                 }
-                className="px-3 py-1 rounded bg-primary-light text-white"
+                className="px-3 cursor-pointer py-1 rounded bg-primary-light  hover:bg-primary-light text-white"
               >
                 Cập nhật
               </button>
@@ -340,7 +347,7 @@ export default function UsersUI() {
                 onClick={() =>
                   open({ type: "update-modal", payload: onConfirm })
                 }
-                className="px-3 py-1 rounded bg-primary-light text-white"
+                className="px-3 cursor-pointer py-1 rounded bg-primary-light/80 hover:bg-primary-light text-white"
               >
                 Tạo mới
               </button>

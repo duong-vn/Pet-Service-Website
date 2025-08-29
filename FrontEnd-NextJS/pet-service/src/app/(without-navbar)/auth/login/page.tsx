@@ -118,7 +118,7 @@ export default function LoginPage() {
                   type="email"
                   required
                   disabled={loading}
-                  className="rounded-xl bg-white mt-1 p-2 "
+                  className="rounded-xl bg-white text-black mt-1 p-2 "
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -130,7 +130,7 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    className="rounded-xl w-full bg-white p-2 font-sans font-semibold"
+                    className="rounded-xl w-full bg-white text-black p-2 font-sans font-semibold"
                     value={password}
                     disabled={loading}
                     onChange={(e) => setPassword(e.target.value)}

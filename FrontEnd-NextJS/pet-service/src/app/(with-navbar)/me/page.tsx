@@ -30,6 +30,7 @@ export default function MePage() {
       return res.data.data as User;
     },
   });
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File>();
 
   const [form, setForm] = useState<Partial<User> | null>(null);
@@ -74,6 +75,7 @@ export default function MePage() {
   }
 
   const onSave = async () => {
+    setLoading(true);
     let picture = form?.picture;
     let public_id = form?.public_id;
     if (file) {
@@ -91,16 +93,16 @@ export default function MePage() {
       address: form.address,
       phone: form.phone,
       picture,
-      public_id, // nếu bạn upload riêng, đổi thành URL trước khi gửi
+      public_id,
     };
     mutation.mutate(payload);
+    setLoading(false);
   };
 
-  // Hoạt động ở cả React Query v4 (loading) lẫn v5 (pending)
   const saving = mutation.isPending;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="p-6 max-w-3xl mx-auto  ">
       <h1 className="text-2xl  mb-4">Hồ sơ của tôi</h1>
 
       <div className="grid grid-cols-3 gap-6">
@@ -120,7 +122,7 @@ export default function MePage() {
           <div>
             <label className="text-sm">Email (readonly)</label>
             <input
-              className="w-full p-2 border rounded bg-gray-50"
+              className="w-full p-2 border rounded"
               value={form.email ?? ""}
               readOnly
             />
@@ -194,7 +196,7 @@ export default function MePage() {
               onClick={onSave}
               disabled={!!saving}
             >
-              {saving ? "Đang lưu..." : "Lưu"}
+              {saving || loading ? "Đang lưu..." : "Lưu"}
             </button>
           </div>
         </div>
@@ -209,6 +211,7 @@ export default function MePage() {
               className="w-full h-full object-cover"
             />
           </div>
+          <label></label>
           <input
             type="file"
             accept="image/*"
@@ -219,7 +222,7 @@ export default function MePage() {
               const pre = URL.createObjectURL(f);
               setForm((prev) => ({
                 ...(prev ?? {}),
-                picture: pre, // preview base64
+                picture: pre,
               }));
             }}
           />

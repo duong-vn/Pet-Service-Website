@@ -20,12 +20,14 @@ import { can, clearAuth } from "@/lib/authSlice";
 import { useState } from "react";
 import { PERMISSIONS } from "@/types/permissions";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
   const { isOpen, close } = useSidebar();
   const authenticated = useAppSelector((s) => s.auth.authenticated);
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
@@ -34,8 +36,9 @@ export default function Sidebar() {
     if (res) dispatch(clearAuth());
 
     setLoading(false);
+    router.refresh();
   };
-
+  window.location.href;
   const handleClose = () => {
     close();
   };
