@@ -19,7 +19,7 @@ export default function ServiceCard({
   _id: string;
 }) {
   return (
-    <div className="rounded-3xl overflow-hidden border border-black/10 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur shadow-sm">
+    <div className="rounded-3xl overflow-hidden  border border-black/10 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur shadow-sm">
       <div className="relative h-44 w-full">
         <Image src={img} alt={title} fill className="object-cover" />
         <span className="absolute text-black bg-white rounded-ss-3xl px-2 pt-1 dark:text-white  dark:bg-background-dark bottom-0 right-0 ">
@@ -34,9 +34,6 @@ export default function ServiceCard({
           <h5 className="font-semibold truncate hover:overflow-visible ">
             {title}
           </h5>
-          <span className="text-primary-dark dark:text-primary-light font-bold">
-            {priceStart}-{priceEnd}
-          </span>
         </div>
         {items.length > 0 && (
           <ul className="mt-3 space-y-1 text-sm opacity-80">

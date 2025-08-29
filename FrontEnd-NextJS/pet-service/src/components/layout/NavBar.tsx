@@ -82,13 +82,13 @@ export default function NavBar() {
         </div>
         <div
           className={[
-            "flex  min-w-[250] pointer-events-auto max-h-[52] items-center",
+            "flex  min-w-[50vw] max-w-[60vw] pointer-events-auto max-h-[52] items-center",
             "justify-between rounded-3xl ",
             "line-height-1  backdrop-blur-2xl  ",
             " duration-400 ",
             scrolling
-              ? " ring-1 shadow-lg  ring-black/30 dark:ring-white/30 xl:min-w-[400] bg-primary-light/0"
-              : " bg-primary-light dark:bg-primary-dark/50 xl:min-w-[800] ",
+              ? " ring-1 shadow-lg  ring-black/30 dark:ring-white/30 xl:min-w-[400px] bg-primary-light/0"
+              : " bg-primary-light dark:bg-primary-dark/50 xl:min-w-[800px] ",
           ].join(" ")}
         >
           {/* House icon */}

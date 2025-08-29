@@ -218,12 +218,13 @@ export default function ServicesUI() {
             </div>
           ) : (
             <>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3  gap-6">
                 {listServices?.result &&
                   listServices.result.map((service: IService) => (
                     <motion.article
                       whileHover={{ scale: 1.02 }}
                       key={service._id}
+                      className="max-small:flex max-sm:justify-center"
                     >
                       <ContextMenu>
                         <ContextMenuTrigger>
@@ -337,8 +338,6 @@ export default function ServicesUI() {
               </div>
             </CarouselItem>
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
         </Carousel>
 
         {/* Modal tạo dịch vụ */}

@@ -25,10 +25,8 @@ async function bootstrap() {
 
   //config cors
   app.enableCors({
-    origin: [
-      configService.getOrThrow<string>('FE_BASE_URL') ??
-        'http://localhost:3000',
-    ],
+    origin: [configService.getOrThrow<string>('FE_BASE_URL')],
+
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
     preflightContinue: false,
     credentials: true,

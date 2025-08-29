@@ -240,12 +240,12 @@ export default function Appointments({ service }: { service: string | null }) {
 
   return (
     <div className="min-h-screen py-8 dark:bg-gradient-to-t dark:from-primary-dark  dark:to-background-dark  bg-gradient-to-r from-primary-light to-white/30">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto md:px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-8"
+          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/50 md:p-8"
         >
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-secondary-dark to-primary-dark rounded-full mb-4">
@@ -267,7 +267,7 @@ export default function Appointments({ service }: { service: string | null }) {
             className="space-y-6"
           >
             {/* Service Info */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border  flex justify-between items-center p-6 rounded-2xl">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border  flex max-md:flex-col justify-between items-center p-6 rounded-2xl">
               <div>
                 <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5" />
@@ -286,10 +286,10 @@ export default function Appointments({ service }: { service: string | null }) {
             </div>
 
             {/* Date Picker */}
-            <div className="flex justify-center flex-col lg:flex-row items-start gap-8">
+            <div className="flex justify-center  flex-col lg:flex-row items-center gap-8">
               <div
                 className={[
-                  "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 shadow-lg",
+                  "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl md:p-6 shadow-lg",
                   service ? " block" : "block",
                 ].join(" ")}
               >

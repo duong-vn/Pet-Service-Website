@@ -42,7 +42,7 @@ export default function VerifyEmailPage() {
         <h1 className="text-5xl">{msg}</h1>
         <div
           className={[
-            "w-[400] p-5 mt-4 text-2xl",
+            "w-[400px] p-5 mt-4 text-2xl",
             " dark:hover:bg-accent-dark border border-black dark:border-white/70 rounded-xl",
             " hover:bg-primary-light cursor-pointer",
             "transition-all duration-100",
