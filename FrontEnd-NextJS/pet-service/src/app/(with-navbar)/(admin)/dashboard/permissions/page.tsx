@@ -60,7 +60,7 @@ export default function PermissionsUI() {
     }, {});
     return modules;
   }, [permissions?.result, isLoading]);
-  console.log(selected);
+
   const onToogle = useCallback((e: boolean, _id: string) => {
     setSelected((prev) => {
       const set = new Set(prev);

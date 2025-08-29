@@ -80,9 +80,8 @@ export default function MePage() {
     let picture = form?.picture;
     let public_id = form?.public_id;
     if (file) {
-      console.log("pT ", form.public_id);
       const res = await uploadToCloud("images/users", file, form.public_id);
-      console.log(res);
+
       picture = res.secure_url;
       public_id = res.public_id;
     }

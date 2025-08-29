@@ -46,9 +46,8 @@ export const postCloud = async (
   form.append("upload_preset", uploadPreset);
   if (public_id) {
     form.append("public_id", public_id);
-    console.log("appended", public_id);
   }
-  console.log("public id in file thing", public_id);
+
   const res = await axios.post(CLOUD_URL, form);
   const { public_id: pi, secure_url } = res.data;
   const pl = pi
@@ -67,7 +66,6 @@ export const uploadToCloud = async (
   public_id?: string
 ): Promise<IResData> => {
   try {
-    console.log("soon", public_id);
     const sign = await postSign(folder, public_id);
     return await postCloud(file, sign.data, public_id);
   } catch (error) {

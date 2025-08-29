@@ -148,7 +148,7 @@ export default function UsersUI() {
       if (password && password?.trim().length > 0) {
         payload.password = password?.trim();
       }
-      console.log("payload b4 patch", payload);
+
       await api.patch("/api/users/" + draft._id, payload);
       toast.success("Cập nhật user thành công");
       qc.invalidateQueries({ queryKey: ["users"] });
