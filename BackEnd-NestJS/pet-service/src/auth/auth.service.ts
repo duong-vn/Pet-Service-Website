@@ -424,12 +424,10 @@ export class AuthService {
   };
 
   resetPassword = async (id: string, password: string) => {
-    const hashedPassword = await this.userService.getHash(password);
-    const updatedUser = await this.userService.update(
-      id,
-      { password: hashedPassword },
-      { _id: id } as IUser,
-    );
+    const updatedUser = await this.userService.update(id, { password }, {
+      _id: id,
+    } as IUser);
+
     if (!updatedUser) {
       throw new BadGatewayException('Không thể cập nhật mật khẩu');
     }

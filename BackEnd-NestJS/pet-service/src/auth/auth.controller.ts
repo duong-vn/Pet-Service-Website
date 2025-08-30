@@ -119,7 +119,11 @@ export class AuthController {
     @Body('password') password: string,
   ) {
     const user = await this.authService.verifyToken(token);
-    if (!user) throw new BadRequestException('Cannot find user');
+    console.log(user, password);
+    if (!user) {
+      throw new BadRequestException('Cannot find user');
+      return false;
+    }
     return this.authService.resetPassword(user._id, password);
   }
 }
