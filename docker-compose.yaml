@@ -1,0 +1,24 @@
+services:
+  front-end:
+    image: isdon243/pets-service:fe1
+    container_name: pets-service-front-end
+    env_file: ./FrontEnd-NextJS/pet-service/.env.production
+    depends_on: [back-end]
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+
+    restart: unless-stopped
+
+  back-end:
+    image: isdon243/pets-service:be1
+    container_name: pets-service-back-end
+    env_file: ./BackEnd-NestJS/pet-service/.env.production.local
+    environment:
+      PORT: 8080
+      FE_BASE_URL: http://localhost:3000
+      EMAIL_PREVIEW: false
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

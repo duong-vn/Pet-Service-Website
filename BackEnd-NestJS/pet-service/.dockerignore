@@ -1,0 +1,9 @@
+.git
+node_modules
+out
+dist
+npm-debug.log*
+Dockerfile*
+docker-compose*.yml
+.env.local
+.env.development
