@@ -26,6 +26,7 @@ import { IService, ServiceType } from "@/types/back-end";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 
 import PriceRow from "@/components/layout/PriceRow";
+import Link from "next/link";
 
 export default function Home() {
   const {
@@ -66,28 +67,51 @@ export default function Home() {
       {/* benefit */}
       <section className="max-w-6xl mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <BenefitCard
-            icon={<Shield className="size-6" />}
-            title="An toàn & vệ sinh"
-            desc="Dụng cụ khử trùng, quy trình chuẩn – đảm bảo boss luôn sạch sẽ và khỏe mạnh."
-          />
-          <BenefitCard
-            icon={<Timer className="size-6" />}
-            title="Nhanh chóng"
-            desc="Chọn dịch vụ, đặt lịch trong 30 giây – nhận xác nhận ngay lập tức."
-          />
-          <BenefitCard
-            icon={<Sparkles className="size-6" />}
-            title="Chất lượng cao"
-            desc="Sản phẩm tắm & ủ dưỡng chọn lọc, phù hợp nhiều loại lông/da."
-          />
+          <motion.div
+            initial={{ y: 100 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <BenefitCard
+              icon={<Shield className="size-6" />}
+              title="An toàn & vệ sinh"
+              desc="Dụng cụ khử trùng, quy trình chuẩn – đảm bảo boss luôn sạch sẽ và khỏe mạnh."
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ y: 100 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <BenefitCard
+              icon={<Timer className="size-6" />}
+              title="Nhanh chóng"
+              desc="Chọn dịch vụ, đặt lịch trong 30 giây – nhận xác nhận ngay lập tức."
+            />
+          </motion.div>
+          <motion.div
+            initial={{ y: 100 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            {" "}
+            <BenefitCard
+              icon={<Sparkles className="size-6" />}
+              title="Chất lượng cao"
+              desc="Sản phẩm tắm & ủ dưỡng chọn lọc, phù hợp nhiều loại lông/da."
+            />
+          </motion.div>
         </div>
       </section>
 
       {/* FEATURED SERVICES GRID */}
       <section className="max-w-6xl mx-auto px-4 ">
         <h3 className="text-2xl md:text-3xl font-bold mb-6">Dịch vụ nổi bật</h3>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2  lg:grid-cols-3 gap-6">
           {!(!isLoading && listServices && listServices.result) ? (
             <div className="col-span-3">
               {" "}
@@ -108,7 +132,16 @@ export default function Home() {
               );
               if (!service) return null;
               return (
-                <motion.article whileHover={{ scale: 1.02 }} key={service._id}>
+                <motion.div
+                  initial={{ y: 100 }}
+                  whileInView={{
+                    y: 0,
+                    transition: { duration: 1, delay: 0.2 },
+                  }}
+                  viewport={{ once: true }}
+                  key={service._id}
+                  whileHover={{ scale: 1.05 }}
+                >
                   <ServiceCard
                     _id={service._id}
                     img={service.picture}
@@ -120,10 +153,16 @@ export default function Home() {
                     items={service.description}
                     icon={iconOf(service.type)}
                   />
-                </motion.article>
+                </motion.div>
               );
             })
           )}
+          <Link
+            href={"/services"}
+            className="block text-center md:col-start-2 hover:underline"
+          >
+            Xem tất cả
+          </Link>
         </div>
       </section>
 
@@ -136,7 +175,15 @@ export default function Home() {
           <h3 className="text-2xl md:text-3xl font-bold mb-6">
             Bảng giá nhanh
           </h3>
-          <div className="grid md:grid-cols-3 gap-6">
+          <motion.div
+            initial={{ filter: "blur(20px)" }}
+            whileInView={{
+              filter: "none",
+              transition: { duration: 0.3, delay: 0.2 },
+            }}
+            viewport={{ once: true }}
+            className="grid md:grid-cols-3 gap-6"
+          >
             {listServices &&
               listServices.result &&
               listServices.result.map((service: IService) => (
@@ -151,7 +198,7 @@ export default function Home() {
                   />
                 </motion.article>
               ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 

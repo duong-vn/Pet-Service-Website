@@ -8,7 +8,7 @@ interface IProps {
 export default function BenefitCard({ icon, title, desc }: IProps) {
   return (
     <motion.div
-      whileHover={{ y: -2 }}
+      whileHover={{ scale: 1.05 }}
       className="rounded-2xl border border-black/10 dark:border-white/10 p-5 bg-white/70 dark:bg-white/5 backdrop-blur"
     >
       <div className="inline-flex items-center justify-center size-10 rounded-full bg-primary-dark/10 dark:bg-primary-light/10 text-primary-dark dark:text-primary-light mb-3">
