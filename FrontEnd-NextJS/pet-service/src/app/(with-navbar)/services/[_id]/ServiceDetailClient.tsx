@@ -45,7 +45,6 @@ export default function ServiceDetailClient({
   const { modal, open, close } = useModal();
   const permissions = useAppSelector((s) => s.auth.user?.permissions);
   const qc = useQueryClient();
-
   const [isLoading] = useState(false);
 
   const iconOf = (t: ServiceType) => {
@@ -216,13 +215,14 @@ export default function ServiceDetailClient({
                 </div>
 
                 {/* CTA Button */}
-                <Link
-                  href={`/appointments?service=${serviceData._id}`}
-                  prefetch
+                <button
+                  onClick={() => {
+                    router.replace(`/appointments?service=${serviceData._id}`);
+                  }}
                   className=" block text-center w-full bg-gradient-to-r from-primary-light/80 to-primary-dark/80 text-white py-3 px-6 rounded-xl font-semibold hover:from-primary-light hover:to-primary-dark "
                 >
                   Đặt lịch ngay
-                </Link>
+                </button>
               </div>
 
               {/* Pricing Rules */}
