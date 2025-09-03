@@ -155,14 +155,14 @@ export default function PriceRuleModal({
 
           {/* Name Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium  mb-2">
               Tên gói <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl border transition-colors ${"border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+              className={`w-full px-4 py-3 rounded-xl border ${"border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               placeholder="Ví dụ: Tắm thường chó dưới 5kg"
               disabled={isLoading}
             />
@@ -181,7 +181,7 @@ export default function PriceRuleModal({
                 value={minWeight}
                 onChange={(e) => setMinWeight(handleNumStringForForm(e))}
                 className={`w-full bg-white px-4 py-3 rounded-xl border transition-colors 
-                  dark:text-white
+                  
                      border-gray-300 dark:border-neutral-600  dark:bg-neutral-800
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                 placeholder="0"

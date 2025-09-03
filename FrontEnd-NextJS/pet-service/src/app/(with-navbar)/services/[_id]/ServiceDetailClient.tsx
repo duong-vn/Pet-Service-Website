@@ -107,7 +107,7 @@ export default function ServiceDetailClient({
     }
   };
 
-  if (isLoading)
+  if (isLoading || !serviceData)
     return (
       <div className="min-h-[80vh] flex justify-center items-center">
         <LoadingScreen />{" "}

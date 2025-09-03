@@ -197,7 +197,7 @@ export default function ServicesUI() {
                     }
                     className="size-4"
                   />
-                  <span>
+                  <span className="text-black dark:text-white">
                     {t === ServiceType.BATH && "Tắm"}
                     {t === ServiceType.GROOMING && "Tỉa lông"}
                     {t === ServiceType.HOTEL && "Khách sạn"}
