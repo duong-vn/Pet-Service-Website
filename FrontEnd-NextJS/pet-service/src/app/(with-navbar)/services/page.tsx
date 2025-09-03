@@ -124,16 +124,15 @@ export default function ServicesUI() {
             <p className="text-base md:text-lg opacity-80">
               Chăm sóc thú cưng chuyên nghiệp
             </p>
-            {can(permissions, PERMISSIONS.SERVICES_POST) && (
-              <button
-                onClick={() => open({ type: "create-modal" })}
-                className="px-4 py-2 bg-primary-light dark:bg-primary-dark text-white rounded-xl font-semibold shadow hover:scale-105 transition-all"
-              >
-                + Tạo dịch vụ mới
-              </button>
-            )}
           </div>
-
+          {can(permissions, PERMISSIONS.SERVICES_POST) && (
+            <button
+              onClick={() => open({ type: "create-modal" })}
+              className="px-4 py-2 bg-primary-light dark:bg-primary-dark text-white rounded-xl font-semibold shadow hover:scale-105 transition-all"
+            >
+              + Tạo dịch vụ mới
+            </button>
+          )}
           {/* xem bảng giá  */}
 
           {/* Tạo đvu  */}

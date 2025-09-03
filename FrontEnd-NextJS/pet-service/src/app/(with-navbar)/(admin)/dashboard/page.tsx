@@ -153,14 +153,6 @@ export default function AdminDashboardPage() {
     close();
   };
 
-  if (isLoading) {
-    return (
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <LoadingScreen />
-      </div>
-    );
-  }
-
   if (isError) {
     handleError(error);
     return (
@@ -195,19 +187,19 @@ export default function AdminDashboardPage() {
 
         {/* Stats Overview */}
         <AppointmentsStats
-          total={appointments.meta.total}
+          total={appointments?.meta.total}
           isLoading={isLoading}
           counts={counts}
         />
       </div>
 
       {/* Appointments List */}
-      <div className="space-y-6">
+      <div className="space-y-6 px-6">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
           Danh sách lịch hẹn gần đây
         </h2>
         {/* filter, sort*/}
-        <div className="flex justify-between">
+        <div className="flex justify-between ">
           <form className=" flex items-center justify-center flex-wrap space-x-2">
             {(Object.values(IStatus) as IStatus[]).map((t) => (
               <label
@@ -254,7 +246,11 @@ export default function AdminDashboardPage() {
             </select>
           </form>
         </div>
-        {!list.length ? (
+        {isLoading ? (
+          <div className="min-h-[60%] flex justify-center items-center">
+            <LoadingScreen />
+          </div>
+        ) : !list.length ? (
           <div className="text-center py-12">
             <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">
@@ -265,7 +261,7 @@ export default function AdminDashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-2 md:px-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-2 md:px-4">
             {list.map((appointment: IAppointments, index: any) => {
               const status =
                 statusConfig[
@@ -327,6 +323,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
       </div>
+
       <Pagination
         current={appointments?.meta.current}
         setParams={setParams}

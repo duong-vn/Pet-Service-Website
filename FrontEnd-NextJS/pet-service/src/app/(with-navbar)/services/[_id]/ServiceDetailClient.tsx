@@ -256,7 +256,7 @@ export default function ServiceDetailClient({
                         <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
                           Cân nặng
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                        <th className="px-4 max-md:hidden py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
                           Tên gói
                         </th>
                         <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">
@@ -287,7 +287,7 @@ export default function ServiceDetailClient({
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-medium">
+                          <td className="px-4 py-3 max-md:hidden text-sm text-gray-900 dark:text-white font-medium">
                             {rule.name}
                           </td>
                           <td className="px-4 py-3 text-right text-sm font-semibold ">
@@ -300,7 +300,7 @@ export default function ServiceDetailClient({
                               permissions,
                               PERMISSIONS.PRICE_RULES_DELETE
                             ) && (
-                              <td className="text-center space-x-6">
+                              <td className="text-center flex max-md:flex-col justify-center md:space-x-6">
                                 <button
                                   onClick={() =>
                                     open({

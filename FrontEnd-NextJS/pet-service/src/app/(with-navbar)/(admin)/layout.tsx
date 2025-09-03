@@ -21,7 +21,7 @@ export default function LoginLayout({
     return (
       <div className="min-h-[100vh] flex justify-center items-center">
         {" "}
-        <LoadingScreen />
+        Kiểm tra đăng nhập...
       </div>
     );
   }

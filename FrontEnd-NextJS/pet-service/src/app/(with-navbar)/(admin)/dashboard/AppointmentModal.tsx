@@ -2,7 +2,7 @@ import { IAppointments } from "@/hooks/apppointments-hooks";
 import { IStatus } from "@/types/back-end";
 
 import { Calendar, FileText, User } from "lucide-react";
-import { JSX, useState } from "react";
+import { FormEvent, FormEventHandler, JSX, useState } from "react";
 
 type Props = {
   close: () => void;
@@ -36,7 +36,8 @@ export default function AppointmentModal({ close, payload, onUpdate }: Props) {
   );
   const [saving, setSaving] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       setSaving(true);
       await onUpdate({

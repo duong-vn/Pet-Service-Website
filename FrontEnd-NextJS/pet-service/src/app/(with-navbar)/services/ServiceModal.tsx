@@ -184,7 +184,7 @@ export default function ServiceModal({ close, serviceData }: IProps) {
                 <input
                   type="text"
                   disabled={loading}
-                  className="mt-1 w-full rounded-xl  border p-2 "
+                  className="mt-1 w-full rounded-xl bg-white dark:bg-neutral-800  border p-2 "
                   value={duration}
                   onChange={(e) => {
                     setDuration(handleNumStringForForm(e));
