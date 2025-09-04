@@ -29,7 +29,9 @@ export default function Sidebar() {
     if (res) dispatch(clearAuth());
 
     setLoading(false);
+
     router.refresh();
+    router.push("/");
   };
 
   const handleClose = () => {
