@@ -1,6 +1,6 @@
 services:
   front-end:
-    image: isdon243/pets-service:fe1
+    image: isdon243/pets-service:fe2
     container_name: pets-service-front-end
     env_file: ./FrontEnd-NextJS/pet-service/.env.production
     depends_on: [back-end]
