@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiResponse, handleError } from "../services";
 import { BASE_URL } from "@/utils/axiosInstance";
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const CLOUD_URL = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
 interface ISign {
   timestamp: string;
