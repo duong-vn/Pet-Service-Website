@@ -1,5 +1,3 @@
-
-
 # 🐾 ZoZo Pet Services
 
 A full-stack web application for booking pet care services such as bathing, grooming, and more.
@@ -9,35 +7,35 @@ Built with **Next.js** (frontend) and **NestJS** (backend), the platform provide
 
 ## 🚀 Features
 
-* **Authentication**
+- **Authentication**
 
-  * Google OAuth & local login
-  * JWT access/refresh token system with secure cookies
-  * Role-based access control (Admin, Staff, User, Banned)
+  - Google OAuth & local login
+  - JWT access/refresh token system with secure cookies
+  - Role-based access control (Admin, Staff, User, Banned)
 
-* **Booking System**
+- **Booking System**
 
-  * Create, manage, and cancel pet service appointments
-  * Real-time slot availability
-  * Price rules based on pet type & weight ranges
-  * Email notifications (confirmation, reminders) using Nodemailer & Handlebars
+  - Create, manage, and cancel pet service appointments
+  - Real-time slot availability
+  - Price rules based on pet type & weight ranges
+  - Email notifications (confirmation, reminders) using Nodemailer & Handlebars
 
-* **Admin Dashboard**
+- **Admin Dashboard**
 
-  * Manage services, appointments, and users
-  * Dynamic data tables with filtering & pagination
-  * Dark mode & responsive UI
+  - Manage services, appointments, and users
+  - Dynamic data tables with filtering & pagination
+  - Dark mode & responsive UI
 
-* **Media & Storage**
+- **Media & Storage**
 
-  * Pet images securely stored on **Cloudinary**
-  * Optimized delivery with `f_auto` and `q_auto`
+  - Pet images securely stored on **Cloudinary**
+  - Optimized delivery with `f_auto` and `q_auto`
 
-* **Performance & Security**
+- **Performance & Security**
 
-  * Rate limiting & health checks
-  * Secure environment variables
-  * API protection with global JWT guard
+  - Rate limiting & health checks
+  - Secure environment variables
+  - API protection with global JWT guard
 
 ---
 
@@ -45,24 +43,24 @@ Built with **Next.js** (frontend) and **NestJS** (backend), the platform provide
 
 **Frontend**
 
-* Next.js v15 (App Router)
-* React Query
-* Redux Toolkit
-* Tailwind CSS + Framer Motion
+- Next.js v15 (App Router)
+- React Query
+- Redux Toolkit
+- Tailwind CSS + Framer Motion
 
 **Backend**
 
-* NestJS v11
-* MongoDB + Mongoose
-* Nodemailer + Handlebars
-* Cloudinary
+- NestJS v11
+- MongoDB + Mongoose
+- Nodemailer + Handlebars
+- Cloudinary
 
 **Deployment**
 
-* Frontend: Vercel
-* Backend: Render
-* Database: MongoDB Atlas
-* Media: Cloudinary
+- Frontend: Vercel
+- Backend: Render
+- Database: MongoDB Atlas
+- Media: Cloudinary
 
 ---
 
@@ -127,7 +125,7 @@ AUTHZ_EXPIRE=15m
 # Verification
 VERIFY_TOKEN_SECRET=XXXXXXXXXX
 VERIFY_TOKEN_EXPIRE=30m
-
+GOOGLE_CLIENT_ID=XXXXXXXXXXXXXXXXXXXX
 # Cookie
 COOKIE_EXPIRE=86400000
 
@@ -156,11 +154,10 @@ CLOUDINARY_UPLOAD_PRESET=yourpreset
 
 ---
 
-
 ## 👤 Author
 
-* **Nguyễn Tuấn Dương**
-* Aspiring **Full-Stack Developer** (Next.js + NestJS)
-* [Email](duongnguyenhust@gmail.com)
+- **Nguyễn Tuấn Dương**
+- Aspiring **Full-Stack Developer** (Next.js + NestJS)
+- [Email](duongnguyenhust@gmail.com)
 
 ---
