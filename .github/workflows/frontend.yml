@@ -5,7 +5,7 @@ on:
     branches: [master]
     paths:
       - "FrontEnd-NextJS/pet-service/**"
-        
+
   push:
     branches: [master]
     paths:
@@ -17,25 +17,23 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-  
+
       - name: setup nodejs
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: 20
-  
+
       - name: install deps
         run: npm ci
         working-directory: ./FrontEnd-NextJS/pet-service
-        
 
       - name: lint
         run: npm run lint
         working-directory: ./FrontEnd-NextJS/pet-service
-  
+
       - name: build
         run: npm run build
         working-directory: ./FrontEnd-NextJS/pet-service
-      
 
   docker_build:
     if: github.event_name == 'push'
@@ -43,12 +41,13 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        
+
       - name: Create env file
         run: |
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" >> ./FrontEnd-NextJS/pet-service/.env.production
           echo "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}" >> ./FrontEnd-NextJS/pet-service/.env.production
-   
+          echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> ./FrontEnd-NextJS/pet-service/.env.production
+
       - name: login
         uses: docker/login-action@v3
         with:
@@ -64,6 +63,3 @@ jobs:
           tags: |
             isdon243/zozo-fe:latest
             isdon243/zozo-fe:${{ github.sha }}
-
-  
-  
