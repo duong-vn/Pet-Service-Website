@@ -43,7 +43,12 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-  
+        
+      - name: Create env file
+        run: |
+          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" >> ./FrontEnd-NextJS/pet-service/.env.production
+          echo "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}" >> ./FrontEnd-NextJS/pet-service/.env.production
+   
       - name: login
         uses: docker/login-action@v3
         with:
