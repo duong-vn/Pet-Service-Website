@@ -156,10 +156,10 @@ export class AuthService {
       if (isValid) {
         return user;
       } else {
-        throw new BadRequestException('Sai thông tin email hoặc mật khẩuu');
+        throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
       }
     } else {
-      throw new BadRequestException('Sai thông tin email hoặcc mật khẩu');
+      throw new BadRequestException('Sai thông tin email hoặc mật khẩu');
     }
   }
 
