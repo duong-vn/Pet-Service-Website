@@ -1,0 +1,64 @@
+name: frontend CI/CD
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "FrontEnd-NextJS/pet-service/**"
+        
+  push:
+    branches: [master]
+    paths:
+      - "FrontEnd-NextJS/pet-service/**"
+jobs:
+  pr_check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+  
+      - name: setup nodejs
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+  
+      - name: install deps
+        run: npm ci
+        working-directory: ./FrontEnd-NextJS/pet-service
+        
+
+      - name: lint
+        run: npm run lint
+        working-directory: ./FrontEnd-NextJS/pet-service
+  
+      - name: build
+        run: npm run build
+        working-directory: ./FrontEnd-NextJS/pet-service
+      
+
+  docker_build:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+  
+      - name: login
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+
+      - name: build && push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./FrontEnd-NextJS/pet-service
+          file: ./FrontEnd-NextJS/pet-service/Dockerfile
+          push: true
+          tags: |
+            isdon243/zozo-fe:latest
+            isdon243/zozo-fe:${{ github.sha }}
+
+  
+  
