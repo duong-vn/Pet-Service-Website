@@ -48,7 +48,8 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" >> ./FrontEnd-NextJS/pet-service/.env.production
           echo "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}" >> ./FrontEnd-NextJS/pet-service/.env.production
-   
+          echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> ./FrontEnd-NextJS/pet-service/.env.production
+
       - name: login
         uses: docker/login-action@v3
         with:
