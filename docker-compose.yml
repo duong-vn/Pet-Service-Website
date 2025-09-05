@@ -5,7 +5,9 @@ services:
     env_file: ./FrontEnd-NextJS/pet-service/.env.production
     depends_on: [back-end]
     environment:
-      API_BASE_URL: http://localhost:8080
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+      CLIENT_ID: 887432126253-2pro6ag0cb968q6r0oqffda1ba1rmklh.apps.googleusercontent.com
+
     ports:
       - "3000:3000"
 
